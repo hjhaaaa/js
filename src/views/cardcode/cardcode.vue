@@ -1,33 +1,79 @@
 <template>
 	<div>
-		<a-card title="激活码管理" :bordered="false">
+		<a-card title="激活码管理">
+			<a-card title style="width:80%;margin-bottom: 20px">
+				<a-card-grid style="width:15%;text-align:center">当前账号：</a-card-grid>
+				<a-card-grid style="width:15%;text-align:center">13123456879</a-card-grid>
+				<a-card-grid style="width:15%;text-align:center">剩余激活码：</a-card-grid>
+				<a-card-grid style="width:15%;text-align:center">{{myCardCodeCount}}</a-card-grid>
+				<a-card-grid style="width:15%;text-align:center">购买方式：</a-card-grid>
+				<a-card-grid style="width:25%;text-align:center">
+					扫码添加
+					<a @click="showKFQr">客服微信</a>购买,按下列价格购买二维码
+				</a-card-grid>
+
+				<a-card-grid style="width:15%;text-align:center">价格：</a-card-grid>
+				<a-card-grid style="width:85%;text-align:left;padding:9.5px;" class="price-box">
+					<a-button type="primary">5~30个（30元一个）</a-button>
+					<a-button type="primary">31~100个（28元一个）</a-button>
+					<a-button type="primary">101~1000个（25元一个）</a-button>
+					<a-button type="primary">1000个以上（23元一个）</a-button>
+				</a-card-grid>
+			</a-card>
+
 			<a-form layout="inline" :form="form" style="margin-bottom: 10px">
 				<a-form-item label="激活码">
 					<a-input v-model="form.CardCode" placeholder="请输入激活码" />
 				</a-form-item>
+				<a-form-item label="用户名">
+					<a-input v-model="form.UserName" placeholder="请输入用户名" />
+				</a-form-item>
+				<a-form-item label="工位Id">
+					<a-input v-model="form.WorkstationId" placeholder="请输入工位Id" />
+				</a-form-item>
 				<a-form-item label="状态">
-					<a-select v-model="form.Status">
-						<a-select-option value="all">全部</a-select-option>
+					<a-select style="width:100px" v-model="form.Status" default-value="-1">
+						<a-select-option value="-1">全部</a-select-option>
 						<a-select-option value="0">未使用</a-select-option>
 						<a-select-option value="1">已使用</a-select-option>
-						<a-select-option value="2">已转移</a-select-option>
+						<a-select-option value="2">可转让</a-select-option>
+						<a-select-option value="3">已转让</a-select-option>
 					</a-select>
 				</a-form-item>
+
 				<a-form-item>
 					<a-button icon="search" @click="handleSearch">查询</a-button>
 				</a-form-item>
 			</a-form>
+			<div style="margin-bottom: 16px" :visible="transferVisible">
+				<a-button type="primary" :disabled="!hasSelected" :loading="transferLoading">转移激活码</a-button>
+				<span style="margin-left: 8px">
+					<template v-if="hasSelected">{{ `已选择数量【${selectedRowKeys.length}】` }}</template>
+				</span>
+			</div>
 			<a-table
 				:columns="columns"
 				:dataSource="data"
 				rowKey="Id"
 				:loading="tableLoading"
 				:pagination="false"
+				:row-selection="rowSelection"
 			>
-				<div slot="Status" slot-scope="row">
-					<p v-if="row.StationRechageType==2">充值中</p>
-					<p v-else-if="row.StationRechageType==1">已充值</p>
-					<p v-else>未充值</p>
+				<!-- :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" -->
+				<div slot="UseStatus" slot-scope="row">
+					<p v-if="row.UseStatus==2">充值中</p>
+					<p v-else-if="row.UseStatus==1">已使用</p>
+					<p v-else>未使用</p>
+				</div>
+				<div slot="UseObject" slot-scope="row">
+					<div v-if="row.UseStatus==1">
+						<p>用户：{{row.UserName}}</p>
+						<p>工位：{{row.UseWorkstationId}}</p>
+					</div>
+				</div>
+				<div slot="UseType" slot-scope="row">
+					<!-- <p v-if="row.UseType==2">充值中</p> -->
+					<p v-if="row.UseType==1">充值工位</p>
 				</div>
 			</a-table>
 			<div style="margin-top: 15px">
@@ -42,13 +88,30 @@
 				/>
 			</div>
 		</a-card>
+
+		<a-modal
+			class="qrcode"
+			v-model="qrVisible"
+			title="客服微信二维码"
+			:footer="null"
+			@cencel="closeKfQr"
+			width="300px"
+		>
+			<div>
+				<img src />
+			</div>
+		</a-modal>
 	</div>
 </template>
 
 <script>
 import moment from 'moment'
 import notification from 'ant-design-vue/es/notification'
-import { CardCodeList, GetRechargeCode } from '@/api/cardCodeAPI.js'
+import {
+	CardCodeList,
+	GetRechargeCode,
+	BatchTransferCardCode
+} from '@/api/cardCodeAPI.js'
 
 export default {
 	name: 'cardcode',
@@ -65,8 +128,10 @@ export default {
 				}
 			},
 			form: {
+				UserName: '',
+				WorkstationId: '',
 				CardCode: '',
-				Status: 'all',
+				Status: '-1',
 				pageSize: 20,
 				pageNum: 1
 			},
@@ -79,7 +144,7 @@ export default {
 				{
 					title: '激活码',
 					Key: 'CardCode',
-					width: '130px',
+					width: '250px',
 					dataIndex: 'CardCode'
 				},
 				{
@@ -91,59 +156,67 @@ export default {
 				{
 					title: '使用时间',
 					Key: 'UseTime',
-					width: '200px',
+					width: '200px	',
 					dataIndex: 'UseTime'
 				},
 				{
-					title: '备注',
-					Key: 'Remarks',
-					width: '20%',
-					dataIndex: 'Remarks',
-					scopedSlots: { customRender: 'editRemarks' }
-				},
-				{
-					title: '微信用户',
-					Key: '',
+					title: '使用状态',
+					key: 'UseStatus',
 					width: '120px',
-					dataIndex: '',
-					scopedSlots: { customRender: 'showWXAvatar' }
+					scopedSlots: { customRender: 'UseStatus' }
 				},
 				{
-					title: '微信操作',
-					Key: '',
+					title: '使用项目',
+					key: 'UseType',
 					width: '120px',
-					dataIndex: '',
-					scopedSlots: { customRender: 'wxOp' }
+					scopedSlots: { customRender: 'UseType' }
 				},
 				{
-					title: '微信状态',
-					Key: '',
-					width: '100px',
-					dataIndex: '',
-					scopedSlots: { customRender: 'wxStatus' }
+					title: '使用对象',
+					width: '250px',
+					scopedSlots: { customRender: 'UseObject' }
 				},
 				{
-					title: '状态',
-					key: 'Status',
+					title: '转让状态',
+					key: 'TransferString',
 					width: '100px',
-					scopedSlots: { customRender: 'Status' }
-				},
-				{
-					title: '发单状态',
-					key: 'SwitchStatus',
-					width: '100px',
-					scopedSlots: { customRender: 'opSwitchStatus' }
+					dataIndex: 'TransferString'
 				}
 			],
 			data: [],
 			total: 0,
-			tableLoading: false
+			tableLoading: false,
+			selectedRowKeys: [], //列表选中项
+			transferLoading: false,
+			transferVisible: true,
+			qrVisible: false,
+			myCardCodeCount: 0
+		}
+	},
+	computed: {
+		hasSelected() {
+			return this.selectedRowKeys.length > 0
+		},
+		rowSelection() {
+			return {
+				onChange: (selectedRowKeys, selectedRows) => {
+					this.selectedRowKeys = selectedRowKeys
+				},
+				getCheckboxProps: record => ({
+					props: {
+						disabled: record.TransferString != '可转让', // Column configuration not to be checked
+						name: record.CardCode
+					}
+				})
+			}
 		}
 	},
 	methods: {
 		query() {
 			this.tableLoading = true
-			CardCodeList(this.form)
+			let params = Object.assign({}, this.form)
+			params.Status *= 1
+			CardCodeList(params)
 				.then(res => {
 					this.data = res.Data
 					this.total = res.TotalCount
@@ -160,50 +233,50 @@ export default {
 		pageChange(p, s) {
 			this.form.pageNum = p
 			this.query()
+		},
+		onSelectChange(selectedRowKeys) {
+			console.log('selectedRowKeys changed: ', selectedRowKeys)
+			this.selectedRowKeys = selectedRowKeys
+		},
+		showKFQr() {
+			this.qrVisible = true
+		},
+		closeKfQr() {
+			this.qrVisible = false
+		},
+		getCardCode() {
+			let v = this
+			GetRechargeCode()
+				.then(res => {
+					if (res.IsSuccess) {
+						this.myCardCodeCount = res.Data
+					} else {
+						this.$message.error('获取卡密失败')
+					}
+				})
+				.catch(() => {})
 		}
 	},
 	created() {
 		this.query()
+		this.getCardCode()
 	}
 }
 </script>
 
 <style lang="scss" scoped>
-.setRole-content {
-	height: 400px;
-	.left-block,
-	.btnbox-block,
-	.right-block {
-		float: left;
-		width: 180px;
-		height: 400px;
-	}
-	.left,
-	.right {
-		width: 180px;
-		height: 400px;
-		border: 1px solid #ccc;
-		overflow: auto;
-		.ant-btn-primary {
-			margin-bottom: 10px;
-		}
-	}
-	.btnbox-block {
-		width: 100px;
-		border: 0 none;
-	}
+.ant-card-grid {
+	padding: 15px;
 }
-.table.operation a {
-	padding-right: 10px;
+.price-box button {
+	margin-right: 10px;
 }
-.tip {
-	margin-bottom: 10px;
+
+.qrcode div:first-child {
+	text-align: center;
 }
-.WXAvatar {
-	width: 80px;
-	height: 80px;
-}
-.wxOp button:not(:last-child) {
-	margin-bottom: 4px;
+.qrcode div:first-child img {
+	width: 240px;
+	height: 240px;
 }
 </style>

@@ -12,3 +12,7 @@ export function GetRechargeCode(params) {
 export function RechargeWorkstation(params) {
     return request.post('/CardCode/WorkRecharge', params)
 }
+//批量转让卡密
+export function BatchTransferCardCode(params) {
+    return request.post('/CardCode/BatchTransfer', params)
+}
