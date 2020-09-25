@@ -9,6 +9,11 @@ const otherRoutes = [
         component: () => import(/* webpackChunkName: "login" */ '@/views/auth/login')
     },
     {
+        path: '/regester',
+        name: 'regester',
+        component: () => import(/* webpackChunkName: "login" */ '@/views/auth/regester')
+    },
+    {
         path: '/error',
         name: 'error',
         redirect: '404',
@@ -19,6 +24,35 @@ const otherRoutes = [
                 name: '404',
                 component: () => import(/* webpackChunkName: "404" */ '@/views/error/404')
             }
+        ]
+    }
+]
+const yfdRoutes = [
+    {
+        path: '/user',
+        name: 'userManage',
+        component: ViewLayout,
+        children: [
+            {
+                path: 'manage',
+                name: '',
+                component: () => import(/* webpackChunkName: "login" */ '@/views/user/user.vue')
+            }, {
+                path: 'workstation',
+                name: '',
+                component: () => import(/* webpackChunkName: "login" */ '@/views/user/workstation.vue')
+            }
+        ]
+    },    {
+        path: '/cardcode',
+        name: 'cardcodeManage',
+        component: ViewLayout,
+        children: [
+            {
+                path: 'manage',
+                name: '',
+                component: () => import(/* webpackChunkName: "login" */ '@/views/cardcode/cardcode.vue')
+            },
         ]
     }
 ]
@@ -175,7 +209,7 @@ const TkRoutes = [
     }
 ]
 
-const routes = [...otherRoutes, ...TkRoutes]
+const routes = [...otherRoutes, ...TkRoutes, ...yfdRoutes]
 
 
 // Vue.use(Router)

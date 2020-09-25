@@ -75,7 +75,7 @@ request.interceptors.request.use(
     if (process.env.NODE_ENV === 'development') {
       const { method } = config
       if (['post', 'put', 'patch'].includes(method)) {
-        console.log(config.data)
+   
       }
     }
 

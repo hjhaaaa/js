@@ -49,10 +49,11 @@ module.exports = {
         // },
         // lintOnSave: false,
         disableHostCheck: true,
-        // host: 'test.sxytest.sitezt.cn',
+        //host: 'test.sxytest.sitezt.cn',
         proxy: {
             '/api': {
-                target: 'http://sxytest.sitezt.cn', // 后端服务器
+                // target: 'http://sxytest.sitezt.cn', // 后端服务器
+                target: 'http://192.168.9.155:13513', // 后端服务器
                 ws: false,
                 changeOrigin: true,
                 pathRewrite: {

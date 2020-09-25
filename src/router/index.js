@@ -10,7 +10,7 @@ import { AppLayout } from '@/components/Layout'
 Vue.use(Router)
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
-const whiteList = ['login', '404'] // no redirect whitelist
+const whiteList = ['regester','login', '404'] // no redirect whitelist
 
 export const createRouter = () =>
   new Router({		
@@ -32,11 +32,12 @@ router.beforeEach((to, from, next) => {
       next()
     }
   } else {
-    if (whiteList.includes(to.name)) {
-      next()
-    } else {
-      next({ path: '/login' })
-    }
+    next()
+    // if (whiteList.includes(to.name)) {
+    //   next()
+    // } else {
+    //   next({ path: '/login' })
+    // }
   }
 })
 
