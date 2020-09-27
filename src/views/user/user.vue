@@ -132,13 +132,13 @@
 import moment from 'moment'
 import EditableCell from '@/components/Table/EditableCell.vue'
 import BasicsConfig from '@/components/Config/BasicsConfig.vue'
-import notification from 'ant-design-vue/es/notification'
+import tipMessage from '@/utils/messageUtil.js'
 import {
 	UserList,
 	CreatUser,
 	UpdateUserStatus,
 	UpdateUserRemark
-} from '@/api/userAPi.js'
+} from '@/api/userApi.js'
 import { CreateWorkstation } from '@/api/workstatusApi.js'
 
 import { constants } from 'zlib'
@@ -340,9 +340,10 @@ export default {
 				.then(res => {
 					if (res.IsSuccess) {
 						this.query()
-						this.$message.success('保存成功')
+						tipMessage.success('保存成功')
+					//	tipMessage.success
 					} else {
-						this.$message.error(res.msg)
+						tipMessage.error(res.msg)
 					}
 				})
 				.catch(() => {
@@ -363,7 +364,7 @@ export default {
 			UpdateUserStatus(row.Id, newValue)
 				.then(res => {
 					nowRow.Status = newValue
-					this.$message.success('操作成功')
+					tipMessage.success('操作成功')
 				})
 				.catch(() => {
 					nowRow.Status = row.Status
@@ -396,9 +397,9 @@ export default {
 							this.query()
 						}
 
-						this.$message.success('创建工位成功')
+						tipMessage.success('创建工位成功')
 					} else {
-						this.$message.error(res.msg)
+						tipMessage.error(res.msg)
 					}
 
 					if (isTk) {
@@ -434,7 +435,7 @@ export default {
 			// EditUserInfo(this.editInfo)
 			// 	.then(res => {
 			// 		if (res.IsSuccess) {
-			// 			this.$message.success('操作成功')
+			// 			tipMessage.success('操作成功')
 			// 			if (this.editType == 1) {
 			// 				this.queryTk()
 			// 			} else {
@@ -442,7 +443,7 @@ export default {
 			// 			}
 			// 			this.editVisible = false
 			// 		} else {
-			// 			this.$message.error(res.msg)
+			// 			tipMessage.error(res.msg)
 			// 		}
 			// 	})
 			// 	.catch(() => {
@@ -472,11 +473,11 @@ export default {
 					CreatUser(values)
 						.then(res => {
 							if (res.code == 0) {
-								this.$message.success('用户创建成功')
+								tipMessage.success('用户创建成功')
 								this.query()
 								this.visible = false
 							} else {
-								this.$message.error(res.msg)
+								tipMessage.error(res.msg)
 							}
 						})
 						.catch(() => {

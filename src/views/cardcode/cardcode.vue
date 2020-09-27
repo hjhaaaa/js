@@ -46,9 +46,10 @@
 				</a-form-item>
 			</a-form>
 			<div style="margin-bottom: 16px" :visible="transferVisible">
-				<a-button type="primary" :disabled="!hasSelected" :loading="transferLoading">转移激活码</a-button>
+				<!-- :loading="transferLoading" ss -->
+				<a-button type="primary" :disabled="!hasSelected" @click="openTransfer">转移激活码</a-button>
 				<span style="margin-left: 8px">
-					<template v-if="hasSelected">{{ `已选择数量【${selectedRowKeys.length}】` }}</template>
+					<template v-if="hasSelected">{{ `已选择数量【${transferInfo.transferCount}】` }}</template>
 				</span>
 			</div>
 			<a-table
@@ -59,7 +60,6 @@
 				:pagination="false"
 				:row-selection="rowSelection"
 			>
-				<!-- :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" -->
 				<div slot="UseStatus" slot-scope="row">
 					<p v-if="row.UseStatus==2">充值中</p>
 					<p v-else-if="row.UseStatus==1">已使用</p>
@@ -101,24 +101,49 @@
 				<img src />
 			</div>
 		</a-modal>
+
+		<a-modal
+			v-model="transferVisible"
+			title="转移激活码"
+			@cencel="transferHandleCancel"
+			@ok="transferHandleOk"
+		>
+			<a-form :form="transferForm" :model="transferInfo" ref="transferForm">
+				<a-form-item v-bind="formItemLayout" label="转让目标">
+					<a-select
+						v-model="transferInfo.tkId"
+						placeholder="请选择转让目标"
+						allowClear
+						showSearch
+						:filter-option="filterUser"
+					>
+						<a-select-option v-for="d in userList" :key="d.Id">{{ d.UserName }}({{ d.Remarks }})</a-select-option>
+					</a-select>
+				</a-form-item>
+
+				<a-form-item v-bind="formItemLayout" label="本次转让数量">
+					<a-input v-model="transferInfo.transferCount" autocomplete="off" read-only />
+				</a-form-item>
+			</a-form>
+		</a-modal>
 	</div>
 </template>
 
 <script>
 import moment from 'moment'
-import notification from 'ant-design-vue/es/notification'
+import tipMessage from '@/utils/messageUtil.js'
 import {
 	CardCodeList,
 	GetRechargeCode,
 	BatchTransferCardCode
-} from '@/api/cardCodeAPI.js'
-
+} from '@/api/cardCodeApi.js'
+import { UserList } from '@/api/userApi.js'
 export default {
 	name: 'cardcode',
 	components: {},
 	data() {
 		return {
-			aform: this.$form.createForm(this),
+			transferForm: this.$form.createForm(this),
 			formItemLayout: {
 				labelCol: {
 					sm: { span: 7 }
@@ -186,21 +211,32 @@ export default {
 			data: [],
 			total: 0,
 			tableLoading: false,
-			selectedRowKeys: [], //列表选中项
+			transferList: [], //列表选中项
 			transferLoading: false,
-			transferVisible: true,
+			transferVisible: false,
+
+			userList: [],
+			transferInfo: {
+				tkId: undefined,
+				transferCount: 0
+			},
 			qrVisible: false,
 			myCardCodeCount: 0
 		}
 	},
 	computed: {
 		hasSelected() {
-			return this.selectedRowKeys.length > 0
+			return this.transferInfo.transferCount > 0
 		},
 		rowSelection() {
 			return {
 				onChange: (selectedRowKeys, selectedRows) => {
-					this.selectedRowKeys = selectedRowKeys
+					console.log('selectedRows:', selectedRows)
+					// selectedRows.forEach(function(row) {
+					// 	this.transferList.push(row.Id)
+					// })
+					this.transferList = selectedRows
+					this.transferInfo.transferCount = selectedRowKeys.length
 				},
 				getCheckboxProps: record => ({
 					props: {
@@ -234,10 +270,7 @@ export default {
 			this.form.pageNum = p
 			this.query()
 		},
-		onSelectChange(selectedRowKeys) {
-			console.log('selectedRowKeys changed: ', selectedRowKeys)
-			this.selectedRowKeys = selectedRowKeys
-		},
+
 		showKFQr() {
 			this.qrVisible = true
 		},
@@ -251,15 +284,71 @@ export default {
 					if (res.IsSuccess) {
 						this.myCardCodeCount = res.Data
 					} else {
-						this.$message.error('获取卡密失败')
+						tipMessage.error('获取卡密失败')
 					}
 				})
 				.catch(() => {})
+		},
+		openTransfer() {
+			this.transferVisible = true
+		},
+		transferHandleCancel() {
+			this.transferVisible = false
+			this.this.transferInfo.tkId = undefined
+		},
+		transferHandleOk() {
+			console.log('tkId:', this.transferInfo.tkId)
+
+			if (!this.transferInfo.tkId || this.transferInfo.tkId <= 0) {
+				tipMessage.error('请选择转让目标')
+				return
+			}
+			var tkId = parseInt(this.transferInfo.tkId)
+			var ids = this.transferList.map(function(row) {
+				return row.Id
+			})
+			console.log('ids:', ids)
+			var params = {
+				tkId: tkId,
+				ids: ids
+			}
+			BatchTransferCardCode(params)
+				.then(res => {
+					if (res.IsSuccess) {
+						tipMessage.success('转让成功')
+					} else {
+						tipMessage.error('转让失败:' + res.Msg)
+					}
+				})
+				.catch(() => {})
+		},
+		getUserList() {
+			var params = {
+				pageNum: 1,
+				pageSize: 1000
+			}
+			UserList(params)
+				.then(res => {
+					if (res.Data.length > 0) {
+						this.userList = res.Data
+					} else {
+						fetching = true
+					}
+				})
+				.catch(() => {})
+		},
+		filterUser(input, option) {
+			return (
+				option.componentOptions.children[0].text
+					.toLowerCase()
+					.indexOf(input.toLowerCase()) >= 0
+			)
 		}
 	},
 	created() {
 		this.query()
 		this.getCardCode()
+		this.getUserList()
 	}
 }
 </script>

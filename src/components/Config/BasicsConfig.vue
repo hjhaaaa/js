@@ -82,10 +82,10 @@ export default {
 				// { Id: 2, Nick: 'pddnk2', SessionKey: 'pddSessionKeytest2' }
 			],
 			configModel: {
-				TaoBaoSessionId: '',
+				TaoBaoSessionId: undefined,
 				TaoBaoPid: '',
 				TaoBaoRid: '',
-				PddSessionId: '',
+				PddSessionId: undefined,
 				PddPid: '',
 				PddTip: '',
 				InviteCode: '',

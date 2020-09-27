@@ -53,7 +53,7 @@ module.exports = {
         proxy: {
             '/api': {
                 // target: 'http://sxytest.sitezt.cn', // 后端服务器
-                target: 'http://192.168.9.155:13513', // 后端服务器
+                target: 'http://localhost:13513', // 后端服务器
                 ws: false,
                 changeOrigin: true,
                 pathRewrite: {

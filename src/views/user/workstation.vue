@@ -128,7 +128,7 @@ import moment from 'moment'
 import Sendgroup from '@/components/Sendgourp/Sendgourp.vue'
 import BasicsConfig from '@/components/Config/BasicsConfig.vue'
 import EditableCell from '@/components/Table/EditableCell.vue'
-import notification from 'ant-design-vue/es/notification'
+import tipMessage from '@/utils/messageUtil.js'
 import {
 	WorkstationList,
 	DeleteWorkstation,
@@ -146,7 +146,7 @@ import {
 	UpdateSendGroupStatus,
 	UpdateSendGroupRemark
 } from '@/api/sendGroupApi.js'
-import { GetRechargeCode, RechargeWorkstation } from '@/api/cardCodeAPI.js'
+import { GetRechargeCode, RechargeWorkstation } from '@/api/cardCodeApi.js'
 import { constants } from 'zlib'
 import { callbackify, log } from 'util'
 import { deeppink } from 'color-name'
@@ -292,12 +292,9 @@ export default {
 			UpdateWorkstationRemark(row.Id, value)
 				.then(res => {
 					if (res.IsSuccess) {
-						this.$message.success('保存成功')
+						tipMessage.success('保存成功')
 					} else {
-						notification.error({
-							message: '错误',
-							description: '保存失败:' + res.Msg
-						})
+						tipMessage.error('保存失败:' + res.Msg)
 					}
 				})
 				.catch(() => {})
@@ -310,13 +307,10 @@ export default {
 				row.Uid.length == 0 ||
 				row.StationRechageType <= 0
 			) {
-				notification.error({
-					message: '错误',
-					description: '请充值后再试'
-				})
+				tipMessage.error('请充值后再试')
 				return
 			}
-			this.$message.success('成功')
+			tipMessage.success('成功')
 			// //连接ws
 			// this.socket = new WebSocket(
 			// 	'ws://192.168.0.200:8005/qrCodePage/ID=1/refreshTime=5'
@@ -334,7 +328,7 @@ export default {
 			WechatPushLogin(row.Id)
 				.then(res => {
 					if (res.IsSuccess) {
-						this.$message.success('推送成功,请在手机微信上进行操作')
+						tipMessage.success('推送成功,请在手机微信上进行操作')
 					} else {
 						notification.error({
 							message: '错误',
@@ -348,7 +342,7 @@ export default {
 			WechatLogout(row.Id)
 				.then(res => {
 					if (res.IsSuccess) {
-						this.$message.success('退出成功')
+						tipMessage.success('退出成功')
 					} else {
 						notification.error({
 							message: '错误',
@@ -367,7 +361,7 @@ export default {
 			UpdateWorkstationStatus(row.Id, newValue)
 				.then(res => {
 					nowRow.SwitchStatus = newValue
-					this.$message.success('操作成功')
+					tipMessage.success('操作成功')
 				})
 				.catch(() => {
 					notification.error({
@@ -398,7 +392,7 @@ export default {
 						this.checkNeedCardCodeCount()
 						this.rechargeVisible = true
 					} else {
-						this.$message.error('获取卡密失败')
+						tipMessage.error('获取卡密失败')
 					}
 				})
 				.catch(() => {})
@@ -442,7 +436,7 @@ export default {
 								v.$message.success('充值成功')
 								v.rechargeVisible = false
 							} else {
-								this.$message.error(res.msg)
+								tipMessage.error(res.msg)
 							}
 							v.tableLoading = false
 							v.rechargeInfo.WorkstationId = 0
@@ -472,9 +466,9 @@ export default {
 						.then(res => {
 							if (res.IsSuccess) {
 								v.query()
-								this.$message.success('删除工位成功')
+								tipMessage.success('删除工位成功')
 							} else {
-								this.$message.error(res.msg)
+								tipMessage.error(res.msg)
 							}
 							v.tableLoading = false
 						})
