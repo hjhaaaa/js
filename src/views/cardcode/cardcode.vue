@@ -36,8 +36,8 @@
 						<a-select-option value="-1">全部</a-select-option>
 						<a-select-option value="0">未使用</a-select-option>
 						<a-select-option value="1">已使用</a-select-option>
-						<a-select-option value="2">可转让</a-select-option>
-						<a-select-option value="3">已转让</a-select-option>
+						<a-select-option value="2" v-if="isSupplier">可转让</a-select-option>
+						<a-select-option value="3" v-if="isSupplier">已转让</a-select-option>
 					</a-select>
 				</a-form-item>
 
@@ -45,7 +45,7 @@
 					<a-button icon="search" @click="handleSearch">查询</a-button>
 				</a-form-item>
 			</a-form>
-			<div style="margin-bottom: 16px" :visible="transferVisible">
+			<div v-if="isSupplier" style="margin-bottom: 16px">
 				<!-- :loading="transferLoading" ss -->
 				<a-button type="primary" :disabled="!hasSelected" @click="openTransfer">转移激活码</a-button>
 				<span style="margin-left: 8px">
@@ -58,7 +58,7 @@
 				rowKey="Id"
 				:loading="tableLoading"
 				:pagination="false"
-				:row-selection="rowSelection"
+				:row-selection="isSupplier ? rowSelection : undefined"
 			>
 				<div slot="UseStatus" slot-scope="row">
 					<p v-if="row.UseStatus==2">充值中</p>
@@ -104,20 +104,22 @@
 
 		<a-modal
 			v-model="transferVisible"
-			title="转移激活码"
-			@cencel="transferHandleCancel"
+			title="转让激活码"
+			:confirm-loading="transferConfirmLoading"
+			@cancel="transferHandleCancel"
 			@ok="transferHandleOk"
 		>
 			<a-form :form="transferForm" :model="transferInfo" ref="transferForm">
 				<a-form-item v-bind="formItemLayout" label="转让目标">
 					<a-select
-						v-model="transferInfo.tkId"
+						v-model="transferInfo.tkInfo"
 						placeholder="请选择转让目标"
 						allowClear
 						showSearch
 						:filter-option="filterUser"
+						labelInValue
 					>
-						<a-select-option v-for="d in userList" :key="d.Id">{{ d.UserName }}({{ d.Remarks }})</a-select-option>
+						<a-select-option v-for="d in userList" :key="d.Id">{{ d.UserName }}</a-select-option>
 					</a-select>
 				</a-form-item>
 
@@ -200,41 +202,39 @@ export default {
 					title: '使用对象',
 					width: '250px',
 					scopedSlots: { customRender: 'UseObject' }
-				},
-				{
-					title: '转让状态',
-					key: 'TransferString',
-					width: '100px',
-					dataIndex: 'TransferString'
 				}
 			],
 			data: [],
 			total: 0,
+			isSupplier: false, //是否供应商
 			tableLoading: false,
-			transferList: [], //列表选中项
+			transferList: [], //选中的行数据
 			transferLoading: false,
 			transferVisible: false,
-
+			transferConfirmLoading: false,
 			userList: [],
 			transferInfo: {
-				tkId: undefined,
+				tkInfo: undefined,
 				transferCount: 0
 			},
 			qrVisible: false,
-			myCardCodeCount: 0
+			myCardCodeCount: 0,
+			selectedRowKeys: []
 		}
 	},
 	computed: {
 		hasSelected() {
-			return this.transferInfo.transferCount > 0
+			return this.selectedRowKeys.length > 0
 		},
+		// hasSelected() {
+		// 	return this.hasSelect
+		// },
 		rowSelection() {
 			return {
+				selectedRowKeys: this.selectedRowKeys,
 				onChange: (selectedRowKeys, selectedRows) => {
-					console.log('selectedRows:', selectedRows)
-					// selectedRows.forEach(function(row) {
-					// 	this.transferList.push(row.Id)
-					// })
+					console.log('selectedRowKeys:', selectedRowKeys)
+					this.selectedRowKeys = selectedRowKeys
 					this.transferList = selectedRows
 					this.transferInfo.transferCount = selectedRowKeys.length
 				},
@@ -293,43 +293,67 @@ export default {
 			this.transferVisible = true
 		},
 		transferHandleCancel() {
+			this.transferInfo.tkId = undefined
+			this.transferList = []
+			this.transferInfo.transferCount = 0
+			this.selectedRowKeys = []
 			this.transferVisible = false
-			this.this.transferInfo.tkId = undefined
 		},
 		transferHandleOk() {
 			console.log('tkId:', this.transferInfo.tkId)
 
-			if (!this.transferInfo.tkId || this.transferInfo.tkId <= 0) {
+			if (!this.transferInfo.tkInfo || this.transferInfo.tkInfo.key <= 0) {
 				tipMessage.error('请选择转让目标')
 				return
 			}
-			var tkId = parseInt(this.transferInfo.tkId)
-			var ids = this.transferList.map(function(row) {
-				return row.Id
-			})
-			console.log('ids:', ids)
-			var params = {
-				tkId: tkId,
-				ids: ids
-			}
-			BatchTransferCardCode(params)
-				.then(res => {
-					if (res.IsSuccess) {
-						tipMessage.success('转让成功')
-					} else {
-						tipMessage.error('转让失败:' + res.Msg)
+
+			let v = this //保存外层this对象
+			this.$confirm({
+				title: '提示',
+				content: `确定将【${v.transferInfo.transferCount}】个卡密转让给用户【${v.transferInfo.tkInfo.label}】?`,
+				okText: '确定',
+				onOk() {
+					v.transferConfirmLoading = true
+					var tkId = parseInt(v.transferInfo.tkInfo.key)
+					var ids = v.transferList.map(function(row) {
+						return row.Id
+					})
+					var params = {
+						tkId: tkId,
+						ids: ids
 					}
-				})
-				.catch(() => {})
+					BatchTransferCardCode(params)
+						.then(res => {
+							if (res.IsSuccess) {
+								v.query()
+								v.transferHandleCancel()
+								tipMessage.success('转让成功')
+							} else {
+								tipMessage.error('转让失败:' + res.Msg)
+							}
+						})
+						.catch(() => {})
+				},
+				onCancel() {}
+			})
+
+			this.transferConfirmLoading = false
 		},
 		getUserList() {
 			var params = {
 				pageNum: 1,
-				pageSize: 1000
+				pageSize: 1000,
+				IsHasSelf: true
 			}
 			UserList(params)
 				.then(res => {
 					if (res.Data.length > 0) {
+						// var tkList=[];
+						// res.Data.forEach(function(row){
+
+						// 	tkList.push(new {Id:row.Id,Text})
+						// })
+
 						this.userList = res.Data
 					} else {
 						fetching = true
@@ -346,6 +370,14 @@ export default {
 		}
 	},
 	created() {
+		if (this.isSupplier) {
+			this.columns.push({
+				title: '转让状态',
+				width: '120px',
+				dataIndex: 'TransferString'
+			})
+		}
+
 		this.query()
 		this.getCardCode()
 		this.getUserList()

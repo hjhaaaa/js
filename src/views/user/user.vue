@@ -42,7 +42,7 @@
 				</a-form-item>
 				<a-form-item label="发单状态">
 					<a-select style="width: 120px" v-model="form.Status">
-						<a-select-option value="all">全部</a-select-option>
+						<a-select-option value="-1">全部</a-select-option>
 						<a-select-option value="1">开启</a-select-option>
 						<a-select-option value="0">关闭</a-select-option>
 					</a-select>
@@ -166,7 +166,7 @@ export default {
 			},
 			form: {
 				Remark: '',
-				Status: 'all',
+				Status: '-1',
 				UserName: '',
 				pageSize: 20,
 				pageNum: 1
@@ -301,7 +301,11 @@ export default {
 	methods: {
 		query() {
 			this.tableLoading = true
-			UserList(this.form)
+
+			let params = Object.assign({}, this.form)
+			params.Status *= 1
+
+			UserList(params)
 				.then(res => {
 					this.data = res.Data
 					this.total = res.TotalCount
@@ -341,7 +345,7 @@ export default {
 					if (res.IsSuccess) {
 						this.query()
 						tipMessage.success('保存成功')
-					//	tipMessage.success
+						//	tipMessage.success
 					} else {
 						tipMessage.error(res.msg)
 					}
