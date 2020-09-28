@@ -504,14 +504,10 @@ export default {
 			}
 		},
 		diconnectSignalServer() {
-			this.wxloginVisible = true
-			this.$nextTick(() => {
-				this.creatQrCode('111111')
-			})
-			// if (this.signalRconnection) {
-			// 	this.signalRconnection.stop()
-			// 	this.signalRconnection = undefined
-			// }
+			if (this.signalRconnection) {
+				this.signalRconnection.stop()
+				this.signalRconnection = undefined
+			}
 		},
 		signalRReceiveMessage(msg) {
 			console.log('signalRconnection:', this.signalRconnection)
@@ -529,13 +525,12 @@ export default {
 				this.signalRconnection
 					.invoke('SetWorkstationId', this.currentLoginWorkstation.Id)
 					.catch(function(err) {
-						this.currentLoginId = 0
+						this.currentLoginWorkstation = undefined
 						console.log('err：', err)
-						// return console.error(err.toString())
 					})
 			} else if (msg.type == 'SetWorkstationId') {
 				console.log('请求扫码登录接口')
-				if (this.currentLoginId <= 0) {
+				if (!this.currentLoginWorkstation) {
 					return
 				}
 				//请求二维码登录接口
@@ -552,7 +547,12 @@ export default {
 					})
 					.catch(() => {})
 			} else if (msg.type == 'LoginSuccessful') {
+				console.log('登录成功')
 				if (this.currentLoginWorkstation.Uid == msg.data) {
+					this.wxloginVisible=false;
+					this.currentLoginWorkstation = undefined
+					this.$refs.qrCodeUrl.innerHTML="";
+					diconnectSignalServer();
 				}
 			}
 		},
@@ -614,12 +614,7 @@ export default {
 .wxOp button:not(:last-child) {
 	margin-bottom: 4px;
 }
-.wxlogin div {
-	text-align: center;
-}
-.wxlogin  img:first-child {
-	margin-right: auto; margin-left: auto; 
-}
+
 // .qrcode div:first-child {
 // 	text-align: center;
 // }
@@ -627,4 +622,15 @@ export default {
 // 	width: 240px;
 // 	height: 240px;
 // }
+</style>
+
+
+<style lang="scss" >
+.wxlogin div {
+	text-align: center;
+}
+.wxlogin img {
+	margin-right: auto;
+	margin-left: auto;
+}
 </style>
