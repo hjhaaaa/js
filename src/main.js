@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import $ from 'jquery'
 import App from './App.vue'
 import { store, initStore } from './store/index'
 import router from './router/index'
@@ -6,6 +7,10 @@ import './plugins'
 import * as filters from './filters'
 import './assets/styles/index.scss'
 import commonFunc from './utils/mformat.js'
+
+console.log('$：', $)
+window.$ = $
+window.jQuery = $
 
 Vue.use(commonFunc)
 

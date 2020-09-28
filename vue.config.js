@@ -59,6 +59,15 @@ module.exports = {
                 pathRewrite: {
                     // '^/api': ''
                 }
+            },
+            '/signalr': {
+                // target: 'http://sxytest.sitezt.cn', // 后端服务器
+                target: 'http://localhost:13513', // 后端服务器
+                ws: false,
+                changeOrigin: true,
+                pathRewrite: {
+                    // '^/api': ''
+                }
             }
         }
     }

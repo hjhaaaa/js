@@ -45,7 +45,8 @@
 				</div>
 				<div slot="wxOp" class="wxOp" slot-scope="row">
 					<a-button type="primary" @click="wxQrLogin(row)">扫码登录</a-button>
-					<a-button type="primary" @click="wxPushlogin(row)">退出微信</a-button>
+					<!-- <a-button type="primary" @click="wxPushlogin(row)">退出微信</a-button> -->
+					<a-button type="primary" @click="diconnectSignalServer()">退出微信</a-button>
 					<a-button type="primary" @click="wxLogout(row)">推送登录</a-button>
 				</div>
 				<div slot="wxStatus" slot-scope="row">
@@ -117,6 +118,22 @@
 			</a-form>
 		</a-modal>
 
+		<!--扫码登录-->
+		<a-modal
+			:visible="wxloginVisible"
+			class="wxlogin"
+			title="扫码登录"
+			:footer="null"
+			@cencel="wxQrloginHandleCancel"
+		>
+			<div>
+				<div ref="qrCodeUrl"></div>
+			</div>
+			<!-- <div>
+				<img :src="wxloginQr" />
+			</div>-->
+		</a-modal>
+
 		<Sendgroup ref="sendgroup"></Sendgroup>
 		<BasicsConfig :configType="2" ref="basicsConfig"></BasicsConfig>
 	</div>
@@ -124,6 +141,8 @@
 
 <script>
 import moment from 'moment'
+// import 'jquery'
+// import signalR from 'signalr'
 // import { mgCpsList, cpsdropdownlist } from '@/api/auth.js'
 import Sendgroup from '@/components/Sendgourp/Sendgourp.vue'
 import BasicsConfig from '@/components/Config/BasicsConfig.vue'
@@ -150,7 +169,7 @@ import { GetRechargeCode, RechargeWorkstation } from '@/api/cardCodeApi.js'
 import { constants } from 'zlib'
 import { callbackify, log } from 'util'
 import { deeppink } from 'color-name'
-
+import QRCode from 'qrcodejs2'
 export default {
 	name: 'user-workstation',
 	components: { EditableCell, Sendgroup, BasicsConfig },
@@ -263,8 +282,15 @@ export default {
 				CardCodeCount: 0,
 				NeedCardCodeCount: 1
 			},
-			socket: {}
+			socket: {},
+			signalRconnection: undefined, //signalR对象
+			currentLoginWorkstation: undefined, //当前正在登录的工位
+			wxloginVisible: false,
+			wxloginQr: ''
 		}
+	},
+	mounted() {
+		var $this = this
 	},
 	methods: {
 		query() {
@@ -300,29 +326,11 @@ export default {
 				.catch(() => {})
 		},
 		wxQrLogin(row) {
-			console.log(row)
-			if (
-				row.Uid == null ||
-				row.Uid == undefined ||
-				row.Uid.length == 0 ||
-				row.StationRechageType <= 0
-			) {
-				tipMessage.error('请充值后再试')
-				return
-			}
-			tipMessage.success('成功')
-			// //连接ws
-			// this.socket = new WebSocket(
-			// 	'ws://192.168.0.200:8005/qrCodePage/ID=1/refreshTime=5'
-			// )
-			// // 监听socket连接
-			// this.socket.onopen = this.open
-			// // 监听socket错误信息
-			// this.socket.onerror = this.error
-			// // 监听socket消息
-			// this.socket.onmessage = this.getMessage
-
-			//请求登录接口
+			this.connectSignalServer()
+			this.currentLoginWorkstation = row
+		},
+		wxQrloginHandleCancel() {
+			this.wxloginVisible = false
 		},
 		wxPushlogin(row) {
 			WechatPushLogin(row.Id)
@@ -330,10 +338,7 @@ export default {
 					if (res.IsSuccess) {
 						tipMessage.success('推送成功,请在手机微信上进行操作')
 					} else {
-						notification.error({
-							message: '错误',
-							description: '推送失败:' + res.Msg
-						})
+						tipMessage.error('推送失败:' + res.Msg)
 					}
 				})
 				.catch(() => {})
@@ -344,10 +349,7 @@ export default {
 					if (res.IsSuccess) {
 						tipMessage.success('退出成功')
 					} else {
-						notification.error({
-							message: '错误',
-							description: '退出失败:' + res.Msg
-						})
+						tipMessage.error('退出失败:' + res.Msg)
 					}
 				})
 				.catch(() => {})
@@ -485,7 +487,88 @@ export default {
 				'指定工位配置【' + row.Id + '】'
 			)
 		},
-		setGroup(row) {}
+		setGroup(row) {},
+		connectSignalServer() {
+			if (this.signalRconnection == null) {
+				this.signalRconnection = new signalR.HubConnectionBuilder()
+					.withUrl('http://localhost:13513/WorkstationHub')
+					.withAutomaticReconnect() //断线自动重连
+					.build()
+				//接收消息
+				this.signalRconnection.on('ReceiveMessage', this.signalRReceiveMessage)
+
+				this.signalRconnection.start()
+			} else {
+				this.diconnectSignalServer()
+				this.connectSignalServer()
+			}
+		},
+		diconnectSignalServer() {
+			this.wxloginVisible = true
+			this.$nextTick(() => {
+				this.creatQrCode('111111')
+			})
+			// if (this.signalRconnection) {
+			// 	this.signalRconnection.stop()
+			// 	this.signalRconnection = undefined
+			// }
+		},
+		signalRReceiveMessage(msg) {
+			console.log('signalRconnection:', this.signalRconnection)
+			console.log(msg)
+
+			if (!msg.isSuccess) {
+				tipMessage.error(msg.text)
+				return
+			}
+
+			//连接返回的消息
+			if (msg.type == 'Connected') {
+				console.log('调用服务端设置工位Id方法')
+				//调用服务端设置工位Id方法
+				this.signalRconnection
+					.invoke('SetWorkstationId', this.currentLoginWorkstation.Id)
+					.catch(function(err) {
+						this.currentLoginId = 0
+						console.log('err：', err)
+						// return console.error(err.toString())
+					})
+			} else if (msg.type == 'SetWorkstationId') {
+				console.log('请求扫码登录接口')
+				if (this.currentLoginId <= 0) {
+					return
+				}
+				//请求二维码登录接口
+				WechatQRLogin(this.currentLoginWorkstation.Id)
+					.then(res => {
+						if (res.IsSuccess) {
+							this.wxloginVisible = true
+							this.$nextTick(() => {
+								this.creatQrCode(res.Data.newUrl)
+							})
+						} else {
+							tipMessage.error('请求扫码出错:' + res.Msg)
+						}
+					})
+					.catch(() => {})
+			} else if (msg.type == 'LoginSuccessful') {
+				if (this.currentLoginWorkstation.Uid == msg.data) {
+				}
+			}
+		},
+		creatQrCode(text) {
+			console.log(text)
+			console.log(this.$refs.qrCodeUrl)
+
+			var qrcode = new QRCode(this.$refs.qrCodeUrl, {
+				text: text,
+				width: 240,
+				height: 240,
+				colorDark: '#000000',
+				colorLight: '#ffffff',
+				correctLevel: QRCode.CorrectLevel.H
+			})
+		}
 	},
 	created() {
 		this.query()
@@ -531,4 +614,17 @@ export default {
 .wxOp button:not(:last-child) {
 	margin-bottom: 4px;
 }
+.wxlogin div {
+	text-align: center;
+}
+.wxlogin  img:first-child {
+	margin-right: auto; margin-left: auto; 
+}
+// .qrcode div:first-child {
+// 	text-align: center;
+// }
+// .qrcode div:first-child img {
+// 	width: 240px;
+// 	height: 240px;
+// }
 </style>
