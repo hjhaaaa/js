@@ -54,13 +54,15 @@
 			</div>
 		</a-modal>
 		<BasicsConfig :configType="3" ref="basicsConfig"></BasicsConfig>
+		<SetClassifyGroup :targetType="3" ref="setClassifyGroup"></SetClassifyGroup>
 	</div>
 </template>
 	
 <script>
 import EditableCell from '@/components/Table/EditableCell.vue'
 import BasicsConfig from '@/components/Config/BasicsConfig.vue'
-import notification from 'ant-design-vue/es/notification'
+import tipMessage from '@/utils/messageUtil.js'
+import SetClassifyGroup from '@/components/ClassifyGroup/SetClassifyGroup.vue'
 import {
 	SendGroupList,
 	DeleteSendGroup,
@@ -69,7 +71,7 @@ import {
 } from '@/api/sendGroupApi.js'
 
 export default {
-	components: { EditableCell, BasicsConfig },
+	components: { EditableCell, BasicsConfig, SetClassifyGroup },
 	data() {
 		return {
 			sendGroupData: [],
@@ -147,12 +149,9 @@ export default {
 			UpdateSendGroupRemark(row.Id, value)
 				.then(res => {
 					if (res.IsSuccess) {
-						this.$message.success('保存成功')
+						tipMessage.success('保存成功')
 					} else {
-						notification.error({
-							message: '错误',
-							description: '保存失败:' + res.Msg
-						})
+						tipMessage.error('保存失败:' + res.Msg)
 					}
 				})
 				.catch(() => {})
@@ -166,13 +165,10 @@ export default {
 			UpdateSendGroupStatus(row.Id, newValue)
 				.then(res => {
 					nowRow.IsEnable = newValue
-					this.$message.success('操作成功')
+					tipMessage.success('操作成功')
 				})
 				.catch(() => {
-					notification.error({
-						message: '错误',
-						description: '操作失败:' + res.Msg
-					})
+					tipMessage.error('操作失败:' + res.Msg)
 					nowRow.IsEnable = !newValue
 				})
 		},
@@ -190,13 +186,9 @@ export default {
 						.then(res => {
 							if (res.IsSuccess) {
 								v.querySendGroup()
-								this.$message.success('删除工位成功')
+								tipMessage.success('删除工位成功')
 							} else {
-								//this.$message.error(res.msg)
-								notification.error({
-									message: '错误',
-									description: '操作失败:' + res.Msg
-								})
+								tipMessage.error('操作失败:' + res.Msg)
 							}
 							v.sendGroupTableLoading = false
 						})
@@ -212,6 +204,9 @@ export default {
 				row.Id,
 				'指定发送群配置【' + row.GroupName + '】'
 			)
+		},
+		setGroup(row) {
+			this.$refs.setClassifyGroup.openSetClassify(row)
 		}
 	}
 	// created() {

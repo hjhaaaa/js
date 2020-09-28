@@ -6,7 +6,7 @@
 					<a-form-item label="工位Id">
 						<a-input style="width: 120px" v-model="form.Id" placeholder="请输入工位Id" />
 					</a-form-item>
-							<a-form-item label="用户名">
+					<a-form-item label="用户名">
 						<a-input v-model="form.UserName" placeholder="请输入用户名" />
 					</a-form-item>
 					<a-form-item label="工位备注">
@@ -14,7 +14,8 @@
 					</a-form-item>
 					<a-form-item label="工位状态">
 						<a-select style="width: 150px" v-model="form.Status" :options="statusOptions"></a-select>
-					</a-form-item>	<a-form-item label="微信状态">
+					</a-form-item>
+					<a-form-item label="微信状态">
 						<a-select v-model="form.WxStatus" :options="wxStatusOptions"></a-select>
 					</a-form-item>
 					<a-form-item label="充值类型">
@@ -149,6 +150,7 @@
 
 		<Sendgroup ref="sendgroup"></Sendgroup>
 		<BasicsConfig :configType="2" ref="basicsConfig"></BasicsConfig>
+		<SetClassifyGroup :targetType="2" ref="setClassifyGroup"></SetClassifyGroup>
 	</div>
 </template>
 
@@ -157,6 +159,7 @@ import moment from 'moment'
 // import 'jquery'
 // import signalR from 'signalr'
 // import { mgCpsList, cpsdropdownlist } from '@/api/auth.js'
+import SetClassifyGroup from '@/components/ClassifyGroup/SetClassifyGroup.vue'
 import Sendgroup from '@/components/Sendgourp/Sendgourp.vue'
 import BasicsConfig from '@/components/Config/BasicsConfig.vue'
 import EditableCell from '@/components/Table/EditableCell.vue'
@@ -185,7 +188,7 @@ import { deeppink } from 'color-name'
 import QRCode from 'qrcodejs2'
 export default {
 	name: 'user-workstation',
-	components: { EditableCell, Sendgroup, BasicsConfig },
+	components: { EditableCell, Sendgroup, BasicsConfig, SetClassifyGroup },
 	data() {
 		return {
 			statusOptions: [
@@ -514,7 +517,9 @@ export default {
 				'指定工位配置【' + row.Id + '】'
 			)
 		},
-		setGroup(row) {},
+		setGroup(row) {
+			this.$refs.setClassifyGroup.openSetClassify(row)
+		},
 		connectSignalServer() {
 			if (this.signalRconnection == null) {
 				this.signalRconnection = new signalR.HubConnectionBuilder()
@@ -657,7 +662,7 @@ export default {
 .wxOp button:not(:last-child) {
 	margin-bottom: 4px;
 }
-.searchrow{
+.searchrow {
 	margin-bottom: 5px;
 }
 </style>
