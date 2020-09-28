@@ -415,7 +415,7 @@ export default {
 						v.rechargeInfo.WorkstationId = row.Id
 						v.rechargeInfo.RechageType = 1
 						this.rechargeInfo.NeedCardCodeCount = 1
-						v.rechargeInfo.CardCodeCount = res.Data
+						v.rechargeInfo.CardCodeCount = res.Data.CardCodeCount
 						v.rechargeTitle =
 							'充值用户【' + row.UserName + '】工位【' + row.Id + '】'
 						this.checkNeedCardCodeCount()

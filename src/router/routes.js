@@ -56,6 +56,20 @@ const yfdRoutes = [
         ]
     }
 ]
+const agentRoutes=[
+    {
+        path: '/agent',
+        name: 'agentmanage',
+        component: ViewLayout,
+        children: [
+            {
+                path: 'index',
+                name: '',
+                component: () => import(/* webpackChunkName: "login" */ '@/views/agent/index.vue')
+            },
+        ]
+    }
+]
 
 
 const TkRoutes = [
