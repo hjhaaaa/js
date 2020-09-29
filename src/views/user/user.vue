@@ -125,6 +125,7 @@
 		</a-modal>-->
 
 		<BasicsConfig :configType="1" ref="basicsConfig"></BasicsConfig>
+		<SetClassifyGroup :targetType="1" ref="setClassifyGroup"></SetClassifyGroup>
 	</div>
 </template>
 
@@ -132,6 +133,7 @@
 import moment from 'moment'
 import EditableCell from '@/components/Table/EditableCell.vue'
 import BasicsConfig from '@/components/Config/BasicsConfig.vue'
+import SetClassifyGroup from '@/components/ClassifyGroup/SetClassifyGroup.vue'
 import tipMessage from '@/utils/messageUtil.js'
 import {
 	UserList,
@@ -147,7 +149,7 @@ import { deeppink } from 'color-name'
 
 export default {
 	name: 'user',
-	components: { EditableCell, BasicsConfig },
+	components: { EditableCell, BasicsConfig,SetClassifyGroup },
 	data() {
 		return {
 			statusOptions: [
@@ -420,7 +422,9 @@ export default {
 					}
 				})
 		},
-		setGroup(row) {},
+		setGroup(row) {
+				this.$refs.setClassifyGroup.openSetClassify(row)
+		},
 		goAgent(row) {},
 		edit(row, type) {
 			this.editVisible = true

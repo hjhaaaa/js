@@ -15,8 +15,8 @@
 			<a-form-item v-bind="formItemLayout" label="备注">
 				<a-input v-model="eidtModel.remarks" autocomplete="off" read-only />
 			</a-form-item>
-
-			<a-form-item v-bind="formItemLayout" label="指定分组" prop="classifyId">
+			<!-- v-model="eidtModel.classifyId"  prop="classifyId" v-decorator="['classifyId',{ rules: [{ required: true, message: '请选择分组!' }] }]" -->
+			<a-form-item v-bind="formItemLayout" label="指定分组">
 				<a-select placeholder="请选择分组" v-model="eidtModel.classifyId">
 					<a-select-option v-for="d in ClassifyList" :key="d.Id">{{ d.ClassifyName }}</a-select-option>
 				</a-select>
@@ -26,7 +26,11 @@
 </template>
 <script>
 import tipMessage from '@/utils/messageUtil.js'
-import { ClassifyGroupList, GetTargetClassify,SetTargetClassify } from '@/api/classGroupApi.js'
+import {
+	ClassifyGroupList,
+	GetTargetClassify,
+	SetTargetClassify
+} from '@/api/classGroupApi.js'
 export default {
 	name: 'component-SetClassifyGroup',
 	props: {
@@ -35,7 +39,7 @@ export default {
 	data() {
 		return {
 			targetId: 0,
-			showTitle: '指定配置',
+			showTitle: '指定分组',
 			form: this.$form.createForm(this),
 			formItemLayout: {
 				labelCol: {
@@ -59,6 +63,7 @@ export default {
 				targetId: 0
 			},
 			isInit: false,
+			isUser: this.targetType == 1,
 			isWorkstatsion: this.targetType == 2,
 			isSendGroup: this.targetType == 3
 		}
@@ -66,10 +71,11 @@ export default {
 	methods: {
 		openSetClassify: function(row) {
 			console.log(row, this.isSendGroup)
-			// if (title) {
-			// 	this.showTitle = title
-			// }
-			if (this.isWorkstatsion) {
+			if (this.isUser) {
+				this.eidtModel.targetIdLable = '用户名'
+				this.eidtModel.remarks = row.Remarks
+				this.eidtModel.targetId = row.UserName
+			} else if (this.isWorkstatsion) {
 				this.eidtModel.targetIdLable = '工位Id'
 				this.eidtModel.remarks = row.Remarks
 				this.eidtModel.targetId = row.Id
@@ -114,7 +120,15 @@ export default {
 		},
 		handleOk() {
 			this.confirmLoading = true
-			SetTargetClassify(this.targetType, this.targetId,this. eidtModel.classifyId)
+			if (this.eidtModel.classifyId<=0) {
+				tipMessage.error("请选择分组!")
+				return
+			}
+			SetTargetClassify(
+				this.targetType,
+				this.targetId,
+				this.eidtModel.classifyId
+			)
 				.then(res => {
 					if (res.IsSuccess) {
 						tipMessage.success('保存成功')
@@ -125,14 +139,11 @@ export default {
 				})
 				.catch(() => {})
 			this.confirmLoading = false
-		
 		},
 		handleCancel() {
 			this.closeSetClassify()
 		},
-		created() {
-			
-		}
+		created() {}
 	}
 }
 </script>

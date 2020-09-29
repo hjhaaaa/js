@@ -1,27 +1,28 @@
 <template>
 	<div>
-		<a-card title="工位列表" :bordered="false">
+		<a-card title="分组管理" :bordered="false">
+			<a-form layout="inline" style="margin-bottom: 10px">
+				<a-form-item label="开启分组">
+					<a-switch
+						checked-children="开"
+						un-checked-children="关"
+						:checked="ClassifyGroupStatus"
+						@change="classifyGroupStatusChange"
+					/>开启分组后，可以自由配置发单方案。查看教程
+				</a-form-item>
+			</a-form>
 			<a-form layout="inline" :form="form" style="margin-bottom: 10px">
-				<a-form-item label="工位Id">
-					<a-input v-model="form.Id" placeholder="请输入工位Id" />
-				</a-form-item>
-				<a-form-item label="用户名">
-					<a-input v-model="form.UserName" placeholder="请输入用户名" />
-				</a-form-item>
-
-				<a-form-item label="备注">
-					<a-input v-model="form.Remark" placeholder="请输入关键词" />
-				</a-form-item>
-				<a-form-item label="微信状态">
-					<a-select style="width: 80px" v-model="form.WxStatus" :options="wxStatusOptions"></a-select>
-				</a-form-item>
-				<a-form-item label="工位状态">
-					<a-select style="width: 100px" v-model="form.Status" :options="statusOptions"></a-select>
+				<a-form-item label="分组名称">
+					<a-input v-model="form.Name" placeholder="请输入分组名称" />
 				</a-form-item>
 				<a-form-item>
 					<a-button icon="search" @click="handleSearch">查询</a-button>
 				</a-form-item>
+				<a-form-item>
+					<a-button type="primary" icon="plus-circle" @click="add">添加分组</a-button>
+				</a-form-item>
 			</a-form>
+
 			<a-table
 				:columns="columns"
 				:dataSource="data"
@@ -29,51 +30,9 @@
 				:loading="tableLoading"
 				:pagination="false"
 			>
-				<template slot="editRemarks" slot-scope="text, row">
-					<editable-cell :text="text" @change="RemarksChange(row, 'Remarks', $event)" editTitle="编辑备注" />
-				</template>
-
-				<div slot="Status" slot-scope="row">
-					<a-tag v-if="row.StationRechageType==2" color="purple">增强版</a-tag>
-					<a-tag v-else-if="row.StationRechageType==1" color="blue">普通版</a-tag>
-					<p>{{row.WorkStatus==2?'启用':'禁用'}}</p>
-					<p>到期时间:</p>
-					<p>{{row.EndTime||' '}}</p>
-				</div>
-				<div slot="showWXAvatar" slot-scope="row">
-					<img :src="row.WXAvatar" class="WXAvatar" />
-				</div>
-				<div slot="wxOp" class="wxOp" slot-scope="row">
-					<a-button type="primary" @click="wxQrLogin(row)">扫码登录</a-button>
-					<a-button type="primary" @click="wxPushlogin(row)">退出微信</a-button>
-					<a-button type="primary" @click="wxLogout(row)">推送登录</a-button>
-				</div>
-				<div slot="wxStatus" slot-scope="row">
-					<div v-if="row.WxLogStatus==1">
-						<p>在线</p>
-						<p>最近登录：</p>
-						<p>{{row.OnLineTime||' '}}</p>
-					</div>
-					<div v-else>
-						<p>离线</p>
-						<p>最近离线：</p>
-						<p>{{row.OffLineTime||' '}}</p>
-					</div>
-				</div>
-				<div slot="opSwitchStatus" class="wxOp" slot-scope="row">
-					<a-switch
-						checked-children="开"
-						un-checked-children="关"
-						:checked="!!row.SwitchStatus"
-						@change="editSwitchStatus(row)"
-					/>
-				</div>
-				<div class="table operation" slot="opti" slot-scope="row">
-					<a @click="showSendGroup(row)">发单群</a>
-					<a type="link" @click="showRecharge(row)">充值</a>
-					<a type="link" @click="removeWorkstation(row)">删除工位</a>
-					<a type="link" @click="setConfig(row)">指定配置</a>
-					<a type="link" @click="setGroup(row)">指定分组</a>
+				<div class="table operation" slot="action" slot-scope="row">
+					<a type="link" @click="edit(row)">编辑</a>
+					<a type="link" @click="remove(row)">删除</a>
 				</div>
 			</a-table>
 			<div style="margin-top: 15px">
@@ -90,70 +49,43 @@
 		</a-card>
 
 		<!--充值弹窗-->
-		<a-modal :title="rechargeTitle" :visible="rechargeVisible" :closable="false">
-			<template slot="footer">
-				<a-button key="back" @click="rechargeHandleCancel">取消</a-button>
-				<a-button
-					key="submit"
-					type="primary"
-					:loading="rechargeButtonLoading"
-					@click="rechargeHandleOk"
-					:disabled="rechargeButtonDisabled"
-				>确定</a-button>
-			</template>
-			<a-form :form="rechargeForm" :model="rechargeInfo" ref="rechargeForm">
-				<!-- <p v-bind="formItemLayout">工位类型设置后将不能修改</p> -->
-				<a-form-item v-bind="formItemLayout" label="工位类型" prop="RechageType">
-					<a-radio-group v-model="rechargeInfo.RechageType" @change="rechageTypeChange">
-						<a-radio :value="1">基础版 有效期30天 10个发单群</a-radio>
-						<a-radio :value="2">增强版 有效期30天 60个发单群</a-radio>
+		<a-modal
+			:title="editTitle"
+			:visible="editVisible"
+			:closable="false"
+			@ok="editHandleOk"
+			@cancel="editHandleCancel"
+		>
+			<a-form :form="editForm" :model="editInfo" ref="editForm">
+				<a-form-item v-bind="formItemLayout" label="分组名称">
+					<a-input placeholder="请输入分组名称" v-model="editInfo.Name" autocomplete="off" />
+				</a-form-item>
+				<a-form-item v-bind="formItemLayout" label="是否转链">
+					<a-radio-group v-model="editInfo.IsNeedTLink">
+						<a-radio :value="1">是</a-radio>
+						<a-radio :value="0">否</a-radio>
 					</a-radio-group>
 				</a-form-item>
-				<a-form-item v-bind="formItemLayout" label="需要卡密数">
-					<a-input v-model="rechargeInfo.NeedCardCodeCount" autocomplete="off" read-only />
-					<!-- <span>剩余卡密数：{{rechargeInfo.CardCodeCount}}</span> -->
+				<a-form-item v-bind="formItemLayout" label="分组介绍">
+					<a-textarea placeholder="分组介绍" v-model="editInfo.GroupInfo" autocomplete="off" :rows="3" />
 				</a-form-item>
-				<a-form-item v-bind="formItemLayout" label="剩余卡密数：">{{rechargeInfo.CardCodeCount}}</a-form-item>
 			</a-form>
 		</a-modal>
-
-		<Sendgroup ref="sendgroup"></Sendgroup>
-		<BasicsConfig :configType="2" ref="basicsConfig"></BasicsConfig>
 	</div>
 </template>
 
 <script>
 import moment from 'moment'
-// import { mgCpsList, cpsdropdownlist } from '@/api/auth.js'
-import Sendgroup from '@/components/Sendgourp/Sendgourp.vue'
-import BasicsConfig from '@/components/Config/BasicsConfig.vue'
-import EditableCell from '@/components/Table/EditableCell.vue'
-import notification from 'ant-design-vue/es/notification'
+import tipMessage from '@/utils/messageUtil.js'
 import {
-	WorkstationList,
-	DeleteWorkstation,
-	UpdateWorkstationStatus,
-	UpdateWorkstationRemark
-} from '@/api/workstatusApi.js'
-import {
-	WechatQRLogin,
-	WechatLogout,
-	WechatPushLogin
-} from '@/api/wechatApi.js'
-import {
-	SendGroupList,
-	DeleteSendGroup,
-	UpdateSendGroupStatus,
-	UpdateSendGroupRemark
-} from '@/api/sendGroupApi.js'
-import { GetRechargeCode, RechargeWorkstation } from '@/api/cardCodeAPI.js'
-import { constants } from 'zlib'
-import { callbackify, log } from 'util'
-import { deeppink } from 'color-name'
+	ClassifyGroupList,
+	EditClassifyGroup,
+	DeleteClassifyGroup
+} from '@/api/classGroupApi.js'
 
 export default {
 	name: 'classifygroup',
-	components: { EditableCell, Sendgroup, BasicsConfig },
+	components: {},
 	data() {
 		return {
 			statusOptions: [
@@ -168,7 +100,7 @@ export default {
 				{ label: '离线', value: '0' }
 			],
 			aform: this.$form.createForm(this),
-			rechargeForm: this.$form.createForm(this),
+			editForm: this.$form.createForm(this),
 			formItemLayout: {
 				labelCol: {
 					sm: { span: 7 }
@@ -178,66 +110,29 @@ export default {
 				}
 			},
 			form: {
-				Id: '',
-				Remark: '',
-				Status: 'all',
-				UserName: '',
-				pageSize: 10,
-				pageNum: 1,
-				WxStatus: 'all'
+				Name: '',
+				pageSize: 20,
+				pageNum: 1
 			},
 			columns: [
 				{
-					title: '工位Id',
-					width: '100px',
+					title: '序号',
+					width: '150px',
 					dataIndex: 'Id'
 				},
 				{
-					title: '用户名',
-					Key: 'UserName',
-					width: '130px',
-					dataIndex: 'UserName'
+					title: '分组名称',
+					Key: 'Name',
+					width: '200px',
+					dataIndex: 'Name'
 				},
 				{
-					title: '备注',
-					Key: 'Remarks',
-					width: '20%',
-					dataIndex: 'Remarks',
-					scopedSlots: { customRender: 'editRemarks' }
+					title: '分组介绍',
+					Key: 'GroupInfo',
+					width: '30%',
+					dataIndex: 'GroupInfo'
 				},
-				{
-					title: '微信用户',
-					Key: '',
-					width: '120px',
-					dataIndex: '',
-					scopedSlots: { customRender: 'showWXAvatar' }
-				},
-				{
-					title: '微信操作',
-					Key: '',
-					width: '120px',
-					dataIndex: '',
-					scopedSlots: { customRender: 'wxOp' }
-				},
-				{
-					title: '微信状态',
-					Key: '',
-					width: '100px',
-					dataIndex: '',
-					scopedSlots: { customRender: 'wxStatus' }
-				},
-				{
-					title: '工位状态',
-					key: 'Status',
-					width: '100px',
-					scopedSlots: { customRender: 'Status' }
-				},
-				{
-					title: '发单状态',
-					key: 'SwitchStatus',
-					width: '100px',
-					scopedSlots: { customRender: 'opSwitchStatus' }
-				},
+
 				{
 					title: '创建时间',
 					Key: 'CTime',
@@ -246,30 +141,30 @@ export default {
 				},
 				{
 					title: '操作',
-					scopedSlots: { customRender: 'opti' }
+					scopedSlots: { customRender: 'action' }
 				}
 			],
 			visible: false, //添加用户
 			data: [],
 			total: 0,
 			tableLoading: false,
-			rechargeTitle: '用户充值',
-			rechargeVisible: false, //充值页面
-			rechargeButtonDisabled: null, //确定充值按钮可用状态
-			rechargeButtonLoading: false,
-			rechargeInfo: {
-				WorkstationId: 0,
-				RechageType: 1,
-				CardCodeCount: 0,
-				NeedCardCodeCount: 1
+			editTitle: '添加分组',
+			editVisible: false, //充值页面
+			editButtonDisabled: null, //确定充值按钮可用状态
+			editButtonLoading: false,
+			editInfo: {
+				Id: 0,
+				IsNeedTLink: 1,
+				GroupInfo: '',
+				Name: ''
 			},
-			socket: {}
+			ClassifyGroupStatus: false
 		}
 	},
 	methods: {
 		query() {
 			this.tableLoading = true
-			WorkstationList(this.form)
+			ClassifyGroupList(this.form)
 				.then(res => {
 					this.data = res.Data
 					this.total = res.TotalCount
@@ -287,211 +182,43 @@ export default {
 			this.form.pageNum = p
 			this.query()
 		},
-		RemarksChange(row, key, value) {
-			if (!value) return
-			UpdateWorkstationRemark(row.Id, value)
-				.then(res => {
-					if (res.IsSuccess) {
-						this.$message.success('保存成功')
-					} else {
-						notification.error({
-							message: '错误',
-							description: '保存失败:' + res.Msg
-						})
-					}
-				})
-				.catch(() => {})
+		classifyGroupStatusChange(checked) {
+			this.classifyGroupStatusChange = checked
 		},
-		wxQrLogin(row) {
-			console.log(row)
-			if (
-				row.Uid == null ||
-				row.Uid == undefined ||
-				row.Uid.length == 0 ||
-				row.StationRechageType <= 0
-			) {
-				notification.error({
-					message: '错误',
-					description: '请充值后再试'
-				})
-				return
-			}
-			this.$message.success('成功')
-			// //连接ws
-			// this.socket = new WebSocket(
-			// 	'ws://192.168.0.200:8005/qrCodePage/ID=1/refreshTime=5'
-			// )
-			// // 监听socket连接
-			// this.socket.onopen = this.open
-			// // 监听socket错误信息
-			// this.socket.onerror = this.error
-			// // 监听socket消息
-			// this.socket.onmessage = this.getMessage
+		add() {
+			this.editInfo.Id = 0
+			this.editInfo.IsNeedTLink = 1
+			this.editVisible = true
+			this.editTitle = '添加分组'
+		},
+		edit(row) {
+			this.editInfo.Id = row.Id
+			this.editVisible = true
+			this.editTitle = `编辑分组${row.Id}`
+		},
+		remove(row) {
+			var $this = this
+			// tipMessage.confirmDelete(undefined, function() {
+			// 	tipMessage.success('ok')
+			// })
 
-			//请求登录接口
-		},
-		wxPushlogin(row) {
-			WechatPushLogin(row.Id)
-				.then(res => {
-					if (res.IsSuccess) {
-						this.$message.success('推送成功,请在手机微信上进行操作')
-					} else {
-						notification.error({
-							message: '错误',
-							description: '推送失败:' + res.Msg
-						})
-					}
-				})
-				.catch(() => {})
-		},
-		wxLogout(row) {
-			WechatLogout(row.Id)
-				.then(res => {
-					if (res.IsSuccess) {
-						this.$message.success('退出成功')
-					} else {
-						notification.error({
-							message: '错误',
-							description: '退出失败:' + res.Msg
-						})
-					}
-				})
-				.catch(() => {})
-		},
-		editSwitchStatus(row) {
-			let nowRow = this.data.find(item => {
-				return item.Id == row.Id
-			})
-
-			var newValue = !row.SwitchStatus
-			UpdateWorkstationStatus(row.Id, newValue)
-				.then(res => {
-					nowRow.SwitchStatus = newValue
-					this.$message.success('操作成功')
-				})
-				.catch(() => {
-					notification.error({
-						message: '错误',
-						description: '操作失败:' + res.Msg
-					})
-					nowRow.SwitchStatus = !newValue
-				})
-		},
-		showSendGroup(row) {
-			this.$refs.sendgroup.openSendgroup(row)
-		},
-		showRecharge(row) {
-			//充值弹窗充值
-
-			let v = this
-			GetRechargeCode()
-				.then(res => {
-					console.log('rechargeInfo', v.rechargeInfo)
-
-					if (res.IsSuccess) {
-						v.rechargeInfo.WorkstationId = row.Id
-						v.rechargeInfo.RechageType = 1
-						this.rechargeInfo.NeedCardCodeCount = 1
-						v.rechargeInfo.CardCodeCount = res.Data
-						v.rechargeTitle =
-							'充值用户【' + row.UserName + '】工位【' + row.Id + '】'
-						this.checkNeedCardCodeCount()
-						this.rechargeVisible = true
-					} else {
-						this.$message.error('获取卡密失败')
-					}
-				})
-				.catch(() => {})
-		},
-		checkNeedCardCodeCount() {
-			if (
-				this.rechargeInfo.CardCodeCount >= this.rechargeInfo.NeedCardCodeCount
-			) {
-				this.rechargeButtonDisabled = null
-			} else {
-				this.rechargeButtonDisabled = ''
-			}
-		},
-		rechageTypeChange(e) {
-			if (e.target.value == 2) {
-				this.rechargeInfo.NeedCardCodeCount = 3
-			} else {
-				this.rechargeInfo.NeedCardCodeCount = 1
-			}
-			this.checkNeedCardCodeCount()
-		},
-		rechargeHandleOk() {
-			let v = this
-			var content = '当前选择【普通版(30天)10个发单群】消耗1个卡密,确认继续?'
-			if (v.rechargeInfo.RechageType == 2) {
-				content = '当前选择【增强版(30天)60个发单群】,消耗3个卡密,确认继续?'
-			}
 			this.$confirm({
 				title: '提示',
-				content: content,
-				okText: '确定',
-				onOk() {
-					v.tableLoading = true
-					RechargeWorkstation({
-						workstationId: v.rechargeInfo.WorkstationId,
-						rechageType: v.rechargeInfo.RechageType
-					})
-						.then(res => {
-							if (res.IsSuccess) {
-								v.query()
-								v.$message.success('充值成功')
-								v.rechargeVisible = false
-							} else {
-								this.$message.error(res.msg)
-							}
-							v.tableLoading = false
-							v.rechargeInfo.WorkstationId = 0
-						})
-						.catch(() => {
-							v.tableLoading = false
-							v.rechargeInfo.WorkstationId = 0
-						})
-				},
-				onCancel() {}
-			})
-		},
-		rechargeHandleCancel() {
-			this.rechargeVisible = false
-		},
-		removeWorkstation(row) {
-			let v = this //保存外层this对象
-			//删除工位
-			this.$confirm({
-				title: '提示',
-				content: '删除后工位不可恢复,确定继续?',
+				content: "确定删除？",
 				okText: '确定',
 				okType: 'danger',
 				onOk() {
-					v.tableLoading = true
-					DeleteWorkstation(row.Id)
-						.then(res => {
-							if (res.IsSuccess) {
-								v.query()
-								this.$message.success('删除工位成功')
-							} else {
-								this.$message.error(res.msg)
-							}
-							v.tableLoading = false
-						})
-						.catch(() => {
-							v.tableLoading = false
-						})
+					tipMessage.success('ok')
 				},
-				onCancel() {}
+				onCancel() {
+					tipMessage.error('ok')
+				}
 			})
 		},
-		setConfig(row) {
-			this.$refs.basicsConfig.openBasicsConfig(
-				row.Id,
-				'指定工位配置【' + row.Id + '】'
-			)
+		editHandleCancel() {
+			this.editVisible = false
 		},
-		setGroup(row) {}
+		editHandleOk() {}
 	},
 	created() {
 		this.query()

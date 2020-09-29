@@ -369,16 +369,6 @@ export default {
 			this.wxloginType = 'pushlogin'
 			this.connectSignalServer()
 			this.currentLoginWorkstation = row
-			// connectSignalServer
-			// WechatPushLogin(row.Id)
-			// 	.then(res => {
-			// 		if (res.IsSuccess) {
-			// 			tipMessage.success('推送成功,请在手机微信上进行操作')
-			// 		} else {
-			// 			tipMessage.error('推送失败:' + res.Msg)
-			// 		}
-			// 	})
-			// 	.catch(() => {})
 		},
 		wxLogout(row) {
 			WechatLogout(row.Id)
