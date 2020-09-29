@@ -1,59 +1,128 @@
 <template>
 	<div>
-		<a-card title="工位列表" :bordered="false">
-			<a-form layout="inline" :form="form" style="margin-bottom: 10px">
+		<a-card
+		 title="工位列表"
+		 :bordered="false"
+		>
+			<a-form
+			 layout="inline"
+			 :form="form"
+			 style="margin-bottom: 10px"
+			>
 				<div class="searchrow">
 					<a-form-item label="工位Id">
-						<a-input style="width: 120px" v-model="form.Id" placeholder="请输入工位Id" />
+						<a-input
+						 style="width: 120px"
+						 v-model="form.Id"
+						 placeholder="请输入工位Id"
+						/>
 					</a-form-item>
 					<a-form-item label="用户名">
-						<a-input v-model="form.UserName" placeholder="请输入用户名" />
+						<a-input
+						 v-model="form.UserName"
+						 placeholder="请输入用户名"
+						/>
 					</a-form-item>
 					<a-form-item label="工位备注">
-						<a-input v-model="form.Remark" placeholder="请输入关键词" />
+						<a-input
+						 v-model="form.Remark"
+						 placeholder="请输入关键词"
+						/>
 					</a-form-item>
 					<a-form-item label="工位状态">
-						<a-select style="width: 150px" v-model="form.Status" :options="statusOptions"></a-select>
+						<a-select
+						 style="width: 150px"
+						 v-model="form.Status"
+						 :options="statusOptions"
+						></a-select>
 					</a-form-item>
 					<a-form-item label="微信状态">
-						<a-select v-model="form.WxStatus" :options="wxStatusOptions"></a-select>
+						<a-select
+						 v-model="form.WxStatus"
+						 :options="wxStatusOptions"
+						></a-select>
 					</a-form-item>
 					<a-form-item label="充值类型">
-						<a-select style="width: 120px" v-model="form.RechageType" :options="rechageTypeOptions"></a-select>
+						<a-select
+						 style="width: 120px"
+						 v-model="form.RechageType"
+						 :options="rechageTypeOptions"
+						></a-select>
 					</a-form-item>
 					<a-form-item>
-						<a-button icon="search" @click="handleSearch">查询</a-button>
+						<a-button
+						 icon="search"
+						 @click="handleSearch"
+						>查询</a-button>
 					</a-form-item>
 				</div>
 			</a-form>
 			<a-table
-				:columns="columns"
-				:dataSource="data"
-				rowKey="Id"
-				:loading="tableLoading"
-				:pagination="false"
+			 :columns="columns"
+			 :dataSource="data"
+			 rowKey="Id"
+			 :loading="tableLoading"
+			 :pagination="false"
 			>
-				<template slot="editRemarks" slot-scope="text, row">
-					<editable-cell :text="text" @change="RemarksChange(row, 'Remarks', $event)" editTitle="编辑备注" />
+				<template
+				 slot="editRemarks"
+				 slot-scope="text, row"
+				>
+					<editable-cell
+					 :text="text"
+					 @change="RemarksChange(row, 'Remarks', $event)"
+					 editTitle="编辑备注"
+					/>
 				</template>
 
-				<div slot="Status" slot-scope="row">
-					<a-tag v-if="row.StationRechageType==2" color="purple">增强版</a-tag>
-					<a-tag v-else-if="row.StationRechageType==1" color="blue">普通版</a-tag>
+				<div
+				 slot="Status"
+				 slot-scope="row"
+				>
+					<a-tag
+					 v-if="row.StationRechageType==2"
+					 color="purple"
+					>增强版</a-tag>
+					<a-tag
+					 v-else-if="row.StationRechageType==1"
+					 color="blue"
+					>普通版</a-tag>
 					<p>{{row.WorkStatus==2?'启用':'禁用'}}</p>
 					<p>到期时间:</p>
 					<p>{{row.EndTime||' '}}</p>
 				</div>
-				<div slot="showWXAvatar" slot-scope="row">
-					<img :src="row.WXAvatar" class="WXAvatar" />
+				<div
+				 slot="showWXAvatar"
+				 slot-scope="row"
+				>
+					<img
+					 :src="row.WXAvatar"
+					 class="WXAvatar"
+					/>
 				</div>
-				<div slot="wxOp" class="wxOp" slot-scope="row">
-					<a-button type="primary" @click="wxQrLogin(row)">扫码登录</a-button>
+				<div
+				 slot="wxOp"
+				 class="wxOp"
+				 slot-scope="row"
+				>
+					<a-button
+					 type="primary"
+					 @click="wxQrLogin(row)"
+					>扫码登录</a-button>
 					<!-- <a-button type="primary" @click="wxPushlogin(row)">退出微信</a-button> -->
-					<a-button type="primary" @click="diconnectSignalServer()">退出微信</a-button>
-					<a-button type="primary" @click="wxLogout(row)">推送登录</a-button>
+					<a-button
+					 type="primary"
+					 @click="diconnectSignalServer()"
+					>退出微信</a-button>
+					<a-button
+					 type="primary"
+					 @click="wxLogout(row)"
+					>推送登录</a-button>
 				</div>
-				<div slot="wxStatus" slot-scope="row">
+				<div
+				 slot="wxStatus"
+				 slot-scope="row"
+				>
 					<div v-if="row.WxLogStatus==1">
 						<p>在线</p>
 						<p>最近登录：</p>
@@ -65,79 +134,133 @@
 						<p>{{row.OffLineTime||' '}}</p>
 					</div>
 				</div>
-				<div slot="opSwitchStatus" class="wxOp" slot-scope="row">
+				<div
+				 slot="opSwitchStatus"
+				 class="wxOp"
+				 slot-scope="row"
+				>
 					<a-switch
-						checked-children="开"
-						un-checked-children="关"
-						:checked="!!row.SwitchStatus"
-						@change="editSwitchStatus(row)"
+					 checked-children="开"
+					 un-checked-children="关"
+					 :checked="!!row.SwitchStatus"
+					 @change="editSwitchStatus(row)"
 					/>
 				</div>
-				<div class="table operation" slot="opti" slot-scope="row">
+				<div
+				 class="table operation"
+				 slot="opti"
+				 slot-scope="row"
+				>
 					<a @click="showSendGroup(row)">发单群</a>
-					<a type="link" @click="showRecharge(row)">充值</a>
-					<a type="link" @click="removeWorkstation(row)">删除工位</a>
-					<a type="link" @click="setConfig(row)">指定配置</a>
-					<a type="link" @click="setGroup(row)">指定分组</a>
+					<a
+					 type="link"
+					 @click="showRecharge(row)"
+					>充值</a>
+					<a
+					 type="link"
+					 @click="removeWorkstation(row)"
+					>删除工位</a>
+					<a
+					 type="link"
+					 @click="setConfig(row)"
+					>指定配置</a>
+					<a
+					 type="link"
+					 @click="setGroup(row)"
+					>指定分组</a>
 				</div>
 			</a-table>
 			<div style="margin-top: 15px">
 				<a-pagination
-					size="small"
-					:pageSize.sync="form.pageSize"
-					v-model="form.pageNum"
-					@change="pageChange"
-					:total="total"
-					showQuickJumper
-					:showTotal="total => `共${total}条`"
+				 size="small"
+				 :pageSize.sync="form.pageSize"
+				 v-model="form.pageNum"
+				 @change="pageChange"
+				 :total="total"
+				 showQuickJumper
+				 :showTotal="total => `共${total}条`"
 				/>
 			</div>
 		</a-card>
 
 		<!--充值弹窗-->
-		<a-modal :title="rechargeTitle" :visible="rechargeVisible" :closable="false">
+		<a-modal
+		 :title="rechargeTitle"
+		 :visible="rechargeVisible"
+		 :closable="false"
+		>
 			<template slot="footer">
-				<a-button key="back" @click="rechargeHandleCancel">取消</a-button>
 				<a-button
-					key="submit"
-					type="primary"
-					:loading="rechargeButtonLoading"
-					@click="rechargeHandleOk"
-					:disabled="rechargeButtonDisabled"
+				 key="back"
+				 @click="rechargeHandleCancel"
+				>取消</a-button>
+				<a-button
+				 key="submit"
+				 type="primary"
+				 :loading="rechargeButtonLoading"
+				 @click="rechargeHandleOk"
+				 :disabled="rechargeButtonDisabled"
 				>确定</a-button>
 			</template>
-			<a-form :form="rechargeForm" :model="rechargeInfo" ref="rechargeForm">
+			<a-form
+			 :form="rechargeForm"
+			 :model="rechargeInfo"
+			 ref="rechargeForm"
+			>
 				<!-- <p v-bind="formItemLayout">工位类型设置后将不能修改</p> -->
-				<a-form-item v-bind="formItemLayout" label="工位类型" prop="RechageType">
-					<a-radio-group v-model="rechargeInfo.RechageType" @change="rechageTypeChange">
+				<a-form-item
+				 v-bind="formItemLayout"
+				 label="工位类型"
+				 prop="RechageType"
+				>
+					<a-radio-group
+					 v-model="rechargeInfo.RechageType"
+					 @change="rechageTypeChange"
+					>
 						<a-radio :value="1">基础版 有效期30天 10个发单群</a-radio>
 						<a-radio :value="2">增强版 有效期30天 60个发单群</a-radio>
 					</a-radio-group>
 				</a-form-item>
-				<a-form-item v-bind="formItemLayout" label="需要卡密数">
-					<a-input v-model="rechargeInfo.NeedCardCodeCount" autocomplete="off" read-only />
+				<a-form-item
+				 v-bind="formItemLayout"
+				 label="需要卡密数"
+				>
+					<a-input
+					 v-model="rechargeInfo.NeedCardCodeCount"
+					 autocomplete="off"
+					 read-only
+					/>
 					<!-- <span>剩余卡密数：{{rechargeInfo.CardCodeCount}}</span> -->
 				</a-form-item>
-				<a-form-item v-bind="formItemLayout" label="剩余卡密数：">{{rechargeInfo.CardCodeCount}}</a-form-item>
+				<a-form-item
+				 v-bind="formItemLayout"
+				 label="剩余卡密数："
+				>{{rechargeInfo.CardCodeCount}}</a-form-item>
 			</a-form>
 		</a-modal>
 
 		<!--扫码登录-->
 		<a-modal
-			:visible="wxloginVisible"
-			class="wxlogin"
-			title="扫码登录"
-			:footer="null"
-			@cancel="wxQrloginHandleCancel"
-			width="400px"
+		 :visible="wxloginVisible"
+		 class="wxlogin"
+		 title="扫码登录"
+		 :footer="null"
+		 @cancel="wxQrloginHandleCancel"
+		 width="400px"
 		>
 			<div>
-				<div id="divQrcode" ref="qrCodeUrl"></div>
+				<div
+				 id="divQrcode"
+				 ref="qrCodeUrl"
+				></div>
 			</div>
 			<div>
 				<p style="text-align: center;">
 					请在
-					<span data-v-6e0de69a style="color: red;">{{canloginSecond}}</span>秒以内扫码登录微信
+					<span
+					 data-v-6e0de69a
+					 style="color: red;"
+					>{{canloginSecond}}</span>秒以内扫码登录微信
 				</p>
 				<p>登录方式</p>
 				<p>1.将二维码截图发送给他们</p>
@@ -149,8 +272,14 @@
 		</a-modal>
 
 		<Sendgroup ref="sendgroup"></Sendgroup>
-		<BasicsConfig :configType="2" ref="basicsConfig"></BasicsConfig>
-		<SetClassifyGroup :targetType="2" ref="setClassifyGroup"></SetClassifyGroup>
+		<BasicsConfig
+		 :configType="2"
+		 ref="basicsConfig"
+		></BasicsConfig>
+		<SetClassifyGroup
+		 :targetType="2"
+		 ref="setClassifyGroup"
+		></SetClassifyGroup>
 	</div>
 </template>
 
@@ -164,6 +293,8 @@ import Sendgroup from '@/components/Sendgourp/Sendgourp.vue'
 import BasicsConfig from '@/components/Config/BasicsConfig.vue'
 import EditableCell from '@/components/Table/EditableCell.vue'
 import tipMessage from '@/utils/messageUtil.js'
+import $ from 'jquery'
+import '@/assets/js/signalr.min.js'
 import {
 	WorkstationList,
 	DeleteWorkstation,
