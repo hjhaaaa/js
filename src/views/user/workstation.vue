@@ -496,7 +496,7 @@ export default {
 								v.query()
 								tipMessage.success('删除工位成功')
 							} else {
-								tipMessage.error(res.msg)
+								tipMessage.error(res.Msg)
 							}
 							v.tableLoading = false
 						})

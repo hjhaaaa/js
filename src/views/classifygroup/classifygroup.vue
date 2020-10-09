@@ -55,13 +55,14 @@
 			:closable="false"
 			@ok="editHandleOk"
 			@cancel="editHandleCancel"
+			:confirm-loading="editConfirmLoading"
 		>
 			<a-form :form="editForm" :model="editInfo" ref="editForm">
 				<a-form-item v-bind="formItemLayout" label="分组名称">
 					<a-input placeholder="请输入分组名称" v-model="editInfo.Name" autocomplete="off" />
 				</a-form-item>
 				<a-form-item v-bind="formItemLayout" label="是否转链">
-					<a-radio-group v-model="editInfo.IsNeedTLink">
+					<a-radio-group v-model="editInfo.IsNeedTLinkValue">
 						<a-radio :value="1">是</a-radio>
 						<a-radio :value="0">否</a-radio>
 					</a-radio-group>
@@ -169,11 +170,12 @@ export default {
 			editButtonLoading: false,
 			editInfo: {
 				Id: 0,
-				IsNeedTLink: 1,
+				IsNeedTLinkValue: 1,
 				GroupInfo: '',
 				Name: ''
 			},
-			ClassifyGroupStatus: false
+			ClassifyGroupStatus: false,
+			editConfirmLoading: false
 		}
 	},
 	methods: {
@@ -202,12 +204,17 @@ export default {
 		},
 		add() {
 			this.editInfo.Id = 0
-			this.editInfo.IsNeedTLink = 1
+			this.editInfo.IsNeedTLinkValue = 1
+			this.editInfo.Name = ''
+			this.editInfo.GroupInfo = ''
 			this.editVisible = true
 			this.editTitle = '添加分组'
 		},
 		edit(row) {
 			this.editInfo.Id = row.Id
+			this.editInfo.Name = row.Name
+			this.editInfo.GroupInfo = row.GroupInfo
+			this.editInfo.IsNeedTLinkValue = row.IsNeedTLink ? 1 : 0
 			this.editVisible = true
 			this.editTitle = `编辑分组${row.Id}`
 		},
@@ -219,21 +226,41 @@ export default {
 
 			this.$confirm({
 				title: '提示',
-				content: "确定删除？",
+				content: '确定删除？',
 				okText: '确定',
 				okType: 'danger',
 				onOk() {
-					tipMessage.success('ok')
+					tipMessage.success('操作成功')
 				},
 				onCancel() {
-					tipMessage.error('ok')
+					//tipMessage.error('ok')
 				}
 			})
 		},
 		editHandleCancel() {
 			this.editVisible = false
 		},
-		editHandleOk() {}
+		editHandleOk() {
+			var pram = {
+				ClassifyName: this.editInfo.Name,
+				IsNeedTLink: this.editInfo.IsNeedTLinkValue == 1,
+				GroupInfo: this.editInfo.GroupInfo,
+				Id: this.editInfo.Id
+			}
+			this.editConfirmLoading = true
+			EditClassifyGroup(pram)
+				.then(res => {
+					if (res.IsSuccess) {
+						tipMessage.success('操作成功')
+						this.query();
+						this.editVisible = false
+					} else {
+						tipMessage.error(res.Msg)
+					}
+				})
+				.catch(() => {})
+			this.editConfirmLoading = false
+		}
 	},
 	created() {
 		this.query()

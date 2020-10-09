@@ -13,15 +13,20 @@ let menus = [
   },
   {
     id: '20',
-    icon: 'appstore',
+    icon: 'desktop',
     path: '/user/workstation',
     title: '工位管理'
   },
   {
-    id: '20',
+    id: '30',
     icon: 'appstore',
-    path: '/group/index',
+    path: '/classifygroup/manage',
     title: '分组管理'
+  },  {
+    id: '30',
+    icon: 'appstore',
+    path: '/collection/index',
+    title: '采集对象'
   },
   {
     id: '70',

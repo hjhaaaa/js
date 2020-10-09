@@ -56,20 +56,21 @@ const yfdRoutes = [
         ]
     },
     {
-        path: '/group',
-        name: 'group',
+        path: '/collection',
+        name: 'collectionManege',
         component: AppLayout,
         children: [
             {
                 path: 'index',
                 name: '',
-                component: () => import(/* webpackChunkName: "login" */ '@/views/group/index.vue')
+                component: () => import(/* webpackChunkName: "login" */ '@/views/collection/index.vue')
             },
         ]
-    }, {
+    }, 
+    {
         path: '/classifygroup',
         name: 'classifygroupManage',
-        component: ViewLayout,
+        component: AppLayout,
         children: [
             {
                 path: 'manage',
