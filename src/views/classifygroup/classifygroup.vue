@@ -146,7 +146,7 @@ import {
 	UpdateSendGroupStatus,
 	UpdateSendGroupRemark
 } from '@/api/sendGroupApi.js'
-import { GetRechargeCode, RechargeWorkstation } from '@/api/cardCodeAPI.js'
+import { GetRechargeCode, RechargeWorkstation } from '@/api/cardCodeApi.js'
 import { constants } from 'zlib'
 import { callbackify, log } from 'util'
 import { deeppink } from 'color-name'

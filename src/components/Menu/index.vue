@@ -88,84 +88,9 @@ export default {
   created () {
     this.updateMenu()
     let _name = this.getCookie('_tkdataadmin_nick')
-
-    console.log('xxxxx',Vue.ss.get(ROUTER))
-    let T = Vue.ss.get(ROUTER);
-    let Meu=[];
-    T[0].children.forEach(item => {
-      let Obj={};
-      if(item.hidden==0){
-        if(item.name=='home'){
-          Obj={
-            id: '0',
-            icon: 'home',
-            path: '/home',
-            name: 'home',
-            title: '首页'
-          }
-        }else{
-          Obj={
-            id: item.id,
-            icon: item.meta.icon,
-            path: item.path,
-            name: item.name,
-            title: item.meta.title
-          }
-        }
-        Meu.push(Obj)
-        
-      }
-    });
     let _menuArr = [...menuData]
-
-    //
-    console.log('xxxxxx',Meu);
-    //  let _menuArr = [...Meu]
-     
-    // if(
-    //   _name != 'admin' 
-    //   && _name != 'xiaomeng' 
-    //   && _name != 'guobinbin'
-    // ){
-    //   _menuArr.splice(1,1)
-    // }
-    // 拦截菜单  shoufadan账号
-    if(_name == 'shoufadan'){
-      this.menus = [
-        {
-          id: '91',
-          icon: 'appstore',
-          path: '/tk/sfdcount',
-          name: 'sfdcount',
-          title: '首发单数据'
-        },
-      ]
-    }else if(
-      _name == 'zhangjing' ||
-      _name == 'chepengpeng' ||
-      _name == 'zhoukaiyi' ||
-      _name == 'jialingling' ||
-      _name == 'fanxiwei' ||
-      _name == 'caoshucheng' ||
-      _name == 'linqi' ||
-      _name == 'liaoxingxing' ||
-      _name == 'guobinbin' ||
-      _name == 'wangyuanyuan' ||
-      _name == 'zhangyanni' ||
-      _name == 'huxiongjian'
-    ){
-      this.menus = [
-        {
-          id: '92',
-          icon: 'appstore',
-          path: '/tk/newUserFollowUp',
-          name: 'newUserFollowUp',
-          title: '组团新用户跟进'
-        }
-      ]
-    }else{
-      this.menus = _menuArr
-    }
+    
+    this.menus = _menuArr
   },
   render () {
     const {

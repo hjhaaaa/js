@@ -101,7 +101,7 @@ export default {
     }
   },
   mounted(){
-    console.log(123, this.user)
+    
   },
 }
 </script>

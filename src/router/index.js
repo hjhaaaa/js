@@ -24,7 +24,6 @@ const router = createRouter()
 router.beforeEach((to, from, next) => {
   NProgress.start()
   const token = Vue.ss.get(USER);
-  console.log('token', token);
   if (token && token.username) {
     if (to.name === 'login') {
       next()

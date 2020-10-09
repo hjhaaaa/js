@@ -30,7 +30,7 @@
         </div>
       </a-layout-content>
       <!-- <layout-footer /> -->
-      <setting></setting>
+      <!-- <setting></setting> -->
     </a-layout>
   </a-layout>
 </template>

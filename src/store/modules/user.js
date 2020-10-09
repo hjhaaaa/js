@@ -64,10 +64,12 @@ const user = {
     Login({ commit, dispatch }, userInfo) {
       return new Promise(async (resolve, reject) => {
         userLogin(userInfo).then(res => {
-          commit('SET_USER', { username: userInfo.LoginName })
+          if(res.IsSuccess){
+            commit('SET_USER', { username: userInfo.UserName })
+          }
           resolve(res)
         }).catch(err => {
-          reject(err.data)
+          reject(err)
         })
       })
     },

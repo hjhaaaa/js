@@ -3,26 +3,32 @@ let menus = [
     id: '1',
     icon: 'home',
     path: '/home',
-    name: 'home',
     title: '首页'
   },
   {
     id: '10',
-    icon: 'table',
-    path: '/tk/data',
-    name: 'data',
-    title: '淘客全盘数据'
+    icon: 'appstore',
+    path: '/user/manage',
+    title: '用户管理'
   },
   {
-    id: '30',
+    id: '20',
     icon: 'appstore',
-    path: '/tk/group',
-    name: 'group',
-    title: '群组管理'
+    path: '/user/workstation',
+    title: '工位管理'
+  },
+  {
+    id: '20',
+    icon: 'appstore',
+    path: '/group/index',
+    title: '分组管理'
+  },
+  {
+    id: '70',
+    icon: 'appstore',
+    path: '/cardcode/manage',
+    title: '激活码管理'
   },
 ]
-
-
-
 
 export default menus

@@ -8,7 +8,6 @@ import * as filters from './filters'
 import './assets/styles/index.scss'
 import commonFunc from './utils/mformat.js'
 
-console.log('$：', $)
 window.$ = $
 window.jQuery = $
 

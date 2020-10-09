@@ -4,7 +4,6 @@ import router from '@/router'
 import axios from 'axios'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 import notification from 'ant-design-vue/es/notification'
-import Modal from 'ant-design-vue/es/modal/index.js'
 
 // api 配置
 
@@ -22,6 +21,10 @@ const onError = error => {
 
     if (status === 404) {
       notification.error({ message: '未知资源', description: message })
+    }
+
+    if (status === 405) {
+      notification.error({ message: '错误码：405', description: message })
     }
 
     if (status === 500) {
@@ -92,30 +95,15 @@ request.interceptors.request.use(
 
 // 响应拦截器
 request.interceptors.response.use(res => {
-  const jsonPattern = /application\/json/gi
-  if(res.data.code === 101){ // 未登录
-    // Modal.error({
-    //   title: '请求失败',
-    //   content: res.data.msg,
-    //   onOk() {
-    //     // router.replace('/login')
-    //     // Vue.$router.push({path:'login'});
-    //     location.reload()
-
-    //   },
-    //   // onCancel() {},
-    // });
-    store.dispatch('user/Logout').then(() => {
-      router.replace('/login')
-    })
-  }else if(res.data.code === 0 || !res.data.code){
+  if(res.data.IsSuccess){
     return res.data
   }else{
-    notification.error({
-      message: '错误',
-      description: res.data.msg
-    })
-    return Promise.reject(res)
+    return res.data
+    // notification.error({
+    //   message: '错误',
+    //   description: res.data.msg
+    // })
+    // return Promise.reject(res)
   }
 }, onError)
 
