@@ -2,25 +2,29 @@
 	<div>
 		<a-card title="工位列表" :bordered="false">
 			<a-form layout="inline" :form="form" style="margin-bottom: 10px">
-				<a-form-item label="工位Id">
-					<a-input v-model="form.Id" placeholder="请输入工位Id" />
-				</a-form-item>
-				<a-form-item label="用户名">
-					<a-input v-model="form.UserName" placeholder="请输入用户名" />
-				</a-form-item>
-
-				<a-form-item label="备注">
-					<a-input v-model="form.Remark" placeholder="请输入关键词" />
-				</a-form-item>
-				<a-form-item label="微信状态">
-					<a-select style="width: 80px" v-model="form.WxStatus" :options="wxStatusOptions"></a-select>
-				</a-form-item>
-				<a-form-item label="工位状态">
-					<a-select style="width: 100px" v-model="form.Status" :options="statusOptions"></a-select>
-				</a-form-item>
-				<a-form-item>
-					<a-button icon="search" @click="handleSearch">查询</a-button>
-				</a-form-item>
+				<div class="searchrow">
+					<a-form-item label="工位Id">
+						<a-input style="width: 120px" v-model="form.Id" placeholder="请输入工位Id" />
+					</a-form-item>
+					<a-form-item label="用户名">
+						<a-input v-model="form.UserName" placeholder="请输入用户名" />
+					</a-form-item>
+					<a-form-item label="工位备注">
+						<a-input v-model="form.Remark" placeholder="请输入关键词" />
+					</a-form-item>
+					<a-form-item label="工位状态">
+						<a-select style="width: 150px" v-model="form.Status" :options="statusOptions"></a-select>
+					</a-form-item>
+					<a-form-item label="微信状态">
+						<a-select v-model="form.WxStatus" :options="wxStatusOptions"></a-select>
+					</a-form-item>
+					<a-form-item label="充值类型">
+						<a-select style="width: 120px" v-model="form.RechageType" :options="rechageTypeOptions"></a-select>
+					</a-form-item>
+					<a-form-item>
+						<a-button icon="search" @click="handleSearch">查询</a-button>
+					</a-form-item>
+				</div>
 			</a-form>
 			<a-table
 				:columns="columns"
@@ -46,8 +50,8 @@
 				<div slot="wxOp" class="wxOp" slot-scope="row">
 					<a-button type="primary" @click="wxQrLogin(row)">扫码登录</a-button>
 					<!-- <a-button type="primary" @click="wxPushlogin(row)">退出微信</a-button> -->
-					<a-button type="primary" @click="diconnectSignalServer()">退出微信</a-button>
-					<a-button type="primary" @click="wxLogout(row)">推送登录</a-button>
+					<a-button type="primary" @click="wxPushlogin(row)">推送登录</a-button>
+					<a-button type="primary" @click="wxLogout(row)">退出微信</a-button>
 				</div>
 				<div slot="wxStatus" slot-scope="row">
 					<div v-if="row.WxLogStatus==1">
@@ -124,10 +128,20 @@
 			class="wxlogin"
 			title="扫码登录"
 			:footer="null"
-			@cencel="wxQrloginHandleCancel"
+			@cancel="wxQrloginHandleCancel"
+			width="400px"
 		>
 			<div>
-				<div ref="qrCodeUrl"></div>
+				<div id="divQrcode" ref="qrCodeUrl"></div>
+			</div>
+			<div>
+				<p style="text-align: center;">
+					请在
+					<span data-v-6e0de69a style="color: red;">{{canloginSecond}}</span>秒以内扫码登录微信
+				</p>
+				<p>登录方式</p>
+				<p>1.将二维码截图发送给他们</p>
+				<p>2.将二维码截图发送至电脑，手机登录</p>
 			</div>
 			<!-- <div>
 				<img :src="wxloginQr" />
@@ -136,18 +150,21 @@
 
 		<Sendgroup ref="sendgroup"></Sendgroup>
 		<BasicsConfig :configType="2" ref="basicsConfig"></BasicsConfig>
+		<SetClassifyGroup :targetType="2" ref="setClassifyGroup"></SetClassifyGroup>
 	</div>
 </template>
 
 <script>
 import moment from 'moment'
 // import 'jquery'
-// import signalR from 'signalr'
 // import { mgCpsList, cpsdropdownlist } from '@/api/auth.js'
+import SetClassifyGroup from '@/components/ClassifyGroup/SetClassifyGroup.vue'
 import Sendgroup from '@/components/Sendgourp/Sendgourp.vue'
 import BasicsConfig from '@/components/Config/BasicsConfig.vue'
 import EditableCell from '@/components/Table/EditableCell.vue'
 import tipMessage from '@/utils/messageUtil.js'
+import $ from 'jquery'
+import '@/assets/js/signalr.min.js'
 import {
 	WorkstationList,
 	DeleteWorkstation,
@@ -172,19 +189,25 @@ import { deeppink } from 'color-name'
 import QRCode from 'qrcodejs2'
 export default {
 	name: 'user-workstation',
-	components: { EditableCell, Sendgroup, BasicsConfig },
+	components: { EditableCell, Sendgroup, BasicsConfig, SetClassifyGroup },
 	data() {
 		return {
 			statusOptions: [
-				{ label: '全部', value: 'all' },
-				{ label: '启用', value: '1' },
-				{ label: '禁用', value: '0' },
-				{ label: '三天内到期', value: '2' }
+				{ label: '全部', value: -1 },
+				{ label: '启用', value: 1 },
+				{ label: '禁用', value: 0 },
+				{ label: '三天内到期', value: 2 }
 			],
 			wxStatusOptions: [
-				{ label: '全部', value: 'all' },
-				{ label: '在线', value: '1' },
-				{ label: '离线', value: '0' }
+				{ label: '全部', value: -1 },
+				{ label: '在线', value: 1 },
+				{ label: '离线', value: 0 }
+			],
+			rechageTypeOptions: [
+				{ label: '全部', value: -1 },
+				{ label: '未充值', value: 0 },
+				{ label: '普通版', value: 1 },
+				{ label: '增强版', value: 2 }
 			],
 			aform: this.$form.createForm(this),
 			rechargeForm: this.$form.createForm(this),
@@ -199,11 +222,12 @@ export default {
 			form: {
 				Id: '',
 				Remark: '',
-				Status: 'all',
+				Status: -1,
 				UserName: '',
 				pageSize: 10,
 				pageNum: 1,
-				WxStatus: 'all'
+				WxStatus: -1,
+				RechageType: -1
 			},
 			columns: [
 				{
@@ -282,11 +306,13 @@ export default {
 				CardCodeCount: 0,
 				NeedCardCodeCount: 1
 			},
-			socket: {},
+
 			signalRconnection: undefined, //signalR对象
 			currentLoginWorkstation: undefined, //当前正在登录的工位
 			wxloginVisible: false,
-			wxloginQr: ''
+			timer: null,
+			canloginSecond: 200,
+			wxloginType: 'qrcode'
 		}
 	},
 	mounted() {
@@ -328,20 +354,21 @@ export default {
 		wxQrLogin(row) {
 			this.connectSignalServer()
 			this.currentLoginWorkstation = row
+			this.wxloginType = 'qrlogin'
 		},
 		wxQrloginHandleCancel() {
+			console.log('wxQrloginHandleCancel')
+			this.wxloginType = ''
+			this.canloginSecond = 0
 			this.wxloginVisible = false
+			this.currentLoginWorkstation = undefined
+			$('#divQrcode').empty()
+			this.diconnectSignalServer()
 		},
 		wxPushlogin(row) {
-			WechatPushLogin(row.Id)
-				.then(res => {
-					if (res.IsSuccess) {
-						tipMessage.success('推送成功,请在手机微信上进行操作')
-					} else {
-						tipMessage.error('推送失败:' + res.Msg)
-					}
-				})
-				.catch(() => {})
+			this.wxloginType = 'pushlogin'
+			this.connectSignalServer()
+			this.currentLoginWorkstation = row
 		},
 		wxLogout(row) {
 			WechatLogout(row.Id)
@@ -378,7 +405,6 @@ export default {
 		},
 		showRecharge(row) {
 			//充值弹窗充值
-
 			let v = this
 			GetRechargeCode()
 				.then(res => {
@@ -388,7 +414,7 @@ export default {
 						v.rechargeInfo.WorkstationId = row.Id
 						v.rechargeInfo.RechageType = 1
 						this.rechargeInfo.NeedCardCodeCount = 1
-						v.rechargeInfo.CardCodeCount = res.Data
+						v.rechargeInfo.CardCodeCount = res.Data.CardCodeCount
 						v.rechargeTitle =
 							'充值用户【' + row.UserName + '】工位【' + row.Id + '】'
 						this.checkNeedCardCodeCount()
@@ -487,7 +513,9 @@ export default {
 				'指定工位配置【' + row.Id + '】'
 			)
 		},
-		setGroup(row) {},
+		setGroup(row) {
+			this.$refs.setClassifyGroup.openSetClassify(row)
+		},
 		connectSignalServer() {
 			if (this.signalRconnection == null) {
 				this.signalRconnection = new signalR.HubConnectionBuilder()
@@ -526,33 +554,50 @@ export default {
 					.invoke('SetWorkstationId', this.currentLoginWorkstation.Id)
 					.catch(function(err) {
 						this.currentLoginWorkstation = undefined
+						this.wxloginType = ''
 						console.log('err：', err)
 					})
 			} else if (msg.type == 'SetWorkstationId') {
-				console.log('请求扫码登录接口')
 				if (!this.currentLoginWorkstation) {
 					return
 				}
-				//请求二维码登录接口
-				WechatQRLogin(this.currentLoginWorkstation.Id)
-					.then(res => {
-						if (res.IsSuccess) {
-							this.wxloginVisible = true
-							this.$nextTick(() => {
-								this.creatQrCode(res.Data.newUrl)
-							})
-						} else {
-							tipMessage.error('请求扫码出错:' + res.Msg)
-						}
-					})
-					.catch(() => {})
+
+				if (this.wxloginType == 'qrlogin') {
+					console.log('请求二维码登录接口')
+					//请求二维码登录接口
+					WechatQRLogin(this.currentLoginWorkstation.Id)
+						.then(res => {
+							if (res.IsSuccess) {
+								this.wxloginVisible = true
+								this.$nextTick(() => {
+									this.creatQrCode(res.Data.newUrl)
+									this.canloginSecond = 180
+									this.doCountDown()
+									this.countDownIsRun = true
+								})
+							} else {
+								tipMessage.error('请求扫码出错:' + res.Msg)
+							}
+						})
+						.catch(() => {})
+				} else if (this.wxloginType == 'pushlogin') {
+					console.log('请求推送登录接口')
+					//推送登录
+					WechatPushLogin(this.currentLoginWorkstation.Id)
+						.then(res => {
+							if (res.IsSuccess) {
+								tipMessage.success('推送成功,请在手机微信上进行操作')
+								this.wxQrloginHandleCancel()
+							} else {
+								tipMessage.error('推送失败:' + res.Msg)
+							}
+						})
+						.catch(() => {})
+				}
 			} else if (msg.type == 'LoginSuccessful') {
 				console.log('登录成功')
 				if (this.currentLoginWorkstation.Uid == msg.data) {
-					this.wxloginVisible=false;
-					this.currentLoginWorkstation = undefined
-					this.$refs.qrCodeUrl.innerHTML="";
-					diconnectSignalServer();
+					this.wxQrloginHandleCancel()
 				}
 			}
 		},
@@ -562,12 +607,28 @@ export default {
 
 			var qrcode = new QRCode(this.$refs.qrCodeUrl, {
 				text: text,
-				width: 240,
-				height: 240,
+				width: 300,
+				height: 300,
 				colorDark: '#000000',
 				colorLight: '#ffffff',
 				correctLevel: QRCode.CorrectLevel.H
 			})
+		},
+		doCountDown() {
+			if (!this.timer) {
+				this.timer = setInterval(() => {
+					console.log(this.canloginSecond)
+					if (this.canloginSecond > 0) {
+						this.canloginSecond--
+					} else {
+						this.stopCountDown()
+					}
+				}, 1000)
+			}
+		},
+		stopCountDown() {
+			clearInterval(this.timer)
+			this.timer = null
 		}
 	},
 	created() {
@@ -614,20 +675,15 @@ export default {
 .wxOp button:not(:last-child) {
 	margin-bottom: 4px;
 }
-
-// .qrcode div:first-child {
-// 	text-align: center;
-// }
-// .qrcode div:first-child img {
-// 	width: 240px;
-// 	height: 240px;
-// }
+.searchrow {
+	margin-bottom: 5px;
+}
 </style>
 
-
 <style lang="scss" >
-.wxlogin div {
-	text-align: center;
+.wxlogin div p {
+	padding-left: 24px;
+	line-height: 30px;
 }
 .wxlogin img {
 	margin-right: auto;

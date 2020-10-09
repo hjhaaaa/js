@@ -43,8 +43,7 @@ const yfdRoutes = [
                 component: () => import(/* webpackChunkName: "login" */ '@/views/user/workstation.vue')
             }
         ]
-    },    
-    {
+    }, {
         path: '/cardcode',
         name: 'cardcodeManage',
         component: AppLayout,
@@ -65,6 +64,31 @@ const yfdRoutes = [
                 path: 'index',
                 name: '',
                 component: () => import(/* webpackChunkName: "login" */ '@/views/group/index.vue')
+            },
+        ]
+    }, {
+        path: '/classifygroup',
+        name: 'classifygroupManage',
+        component: ViewLayout,
+        children: [
+            {
+                path: 'manage',
+                name: '',
+                component: () => import(/* webpackChunkName: "login" */ '@/views/classifygroup/classifygroup.vue')
+            },
+        ]
+    }
+]
+const agentRoutes = [
+    {
+        path: '/agent',
+        name: 'agentmanage',
+        component: ViewLayout,
+        children: [
+            {
+                path: 'index',
+                name: '',
+                component: () => import(/* webpackChunkName: "login" */ '@/views/agent/index.vue')
             },
         ]
     }

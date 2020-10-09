@@ -3,7 +3,7 @@
 		<a-card title="激活码管理">
 			<a-card title style="width:80%;margin-bottom: 20px">
 				<a-card-grid style="width:15%;text-align:center">当前账号：</a-card-grid>
-				<a-card-grid style="width:15%;text-align:center">13123456879</a-card-grid>
+				<a-card-grid style="width:15%;text-align:center">{{currentUserName}}</a-card-grid>
 				<a-card-grid style="width:15%;text-align:center">剩余激活码：</a-card-grid>
 				<a-card-grid style="width:15%;text-align:center">{{myCardCodeCount}}</a-card-grid>
 				<a-card-grid style="width:15%;text-align:center">购买方式：</a-card-grid>
@@ -95,7 +95,7 @@
 			title="客服微信二维码"
 			:footer="null"
 			@cencel="closeKfQr"
-			width="300px"
+			width="400px"
 		>
 			<div>
 				<img src />
@@ -219,6 +219,7 @@ export default {
 			},
 			qrVisible: false,
 			myCardCodeCount: 0,
+				currentUserName: "",
 			selectedRowKeys: []
 		}
 	},
@@ -282,7 +283,8 @@ export default {
 			GetRechargeCode()
 				.then(res => {
 					if (res.IsSuccess) {
-						this.myCardCodeCount = res.Data
+						this.myCardCodeCount = res.Data.CardCodeCount
+						this.currentUserName=res.Data.UserName
 					} else {
 						tipMessage.error('获取卡密失败')
 					}
@@ -397,7 +399,7 @@ export default {
 	text-align: center;
 }
 .qrcode div:first-child img {
-	width: 240px;
-	height: 240px;
+	width: 300px;
+	height: 300px;
 }
 </style>
