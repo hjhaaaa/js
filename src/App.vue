@@ -29,4 +29,11 @@ export default {
 .ant-table{
   font-size: 10px !important;      
 }
+.left-h3{
+  padding-left: 5px;
+  border-left: 3px solid #1890ff;
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
 </style>
