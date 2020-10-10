@@ -98,12 +98,11 @@ request.interceptors.response.use(res => {
   if(res.data.IsSuccess){
     return res.data
   }else{
-    return res.data
-    // notification.error({
-    //   message: '错误',
-    //   description: res.data.msg
-    // })
-    // return Promise.reject(res)
+    notification.error({
+      message: '错误',
+      description: res.data.Msg
+    })
+    return Promise.reject(res.data)
   }
 }, onError)
 

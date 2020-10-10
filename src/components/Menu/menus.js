@@ -6,6 +6,12 @@ let menus = [
     title: '首页'
   },
   {
+    id: '5',
+    icon: 'appstore',
+    path: '/authorize/manage',
+    title: '账号授权'
+  },
+  {
     id: '10',
     icon: 'appstore',
     path: '/user/manage',

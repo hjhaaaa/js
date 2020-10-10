@@ -56,6 +56,8 @@ const yfdRoutes = [
         ]
     },
     {
+
+
         path: '/collection',
         name: 'collectionManege',
         component: AppLayout,
@@ -66,6 +68,19 @@ const yfdRoutes = [
                 component: () => import(/* webpackChunkName: "login" */ '@/views/collection/index.vue')
             },
         ]
+    },
+    {
+        path: '/authorize',
+        name: 'authorizeManage',
+        component: AppLayout,
+        children: [
+            {
+                path: 'manage',
+                name: '',
+                component: () => import(/* webpackChunkName: "login" */ '@/views/authorize/index.vue')
+            },
+        ]
+        
     }, 
     {
         path: '/classifygroup',
@@ -78,7 +93,7 @@ const yfdRoutes = [
                 component: () => import(/* webpackChunkName: "login" */ '@/views/classifygroup/classifygroup.vue')
             },
         ]
-    }
+    },
 ]
 const agentRoutes = [
     {
