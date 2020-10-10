@@ -13,7 +13,7 @@ let menus = [
   },
   {
     id: '10',
-    icon: 'appstore',
+    icon: 'user',
     path: '/user/manage',
     title: '用户管理'
   },
@@ -36,7 +36,7 @@ let menus = [
   },
   {
     id: '70',
-    icon: 'appstore',
+    icon: 'credit-card',
     path: '/cardcode/manage',
     title: '激活码管理'
   },

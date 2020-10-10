@@ -36,13 +36,14 @@
 				<template slot="editRemarks" slot-scope="text, row">
 					<editable-cell :text="text" @change="RemarksChange(row, 'Remarks', $event)" editTitle="编辑备注" />
 				</template>
-
+				<!-- v-if="row.StationRechageType==2" -->
 				<div slot="Status" slot-scope="row">
 					<a-tag v-if="row.StationRechageType==2" color="purple">增强版</a-tag>
 					<a-tag v-else-if="row.StationRechageType==1" color="blue">普通版</a-tag>
-					<p>{{row.WorkStatus==2?'启用':'禁用'}}</p>
-					<p>到期时间:</p>
-					<p>{{row.EndTime||' '}}</p>
+					<a-tag v-if="isShowExpireTag(row)" color="red">即将到期</a-tag>
+					<p>状态:{{row.WorkStatus==2?'启用':'禁用'}}</p>
+					<p>到期时间:{{ formatEndDate(row)}}</p>
+					<!-- <p></p> -->
 				</div>
 				<div slot="showWXAvatar" slot-scope="row">
 					<img :src="row.WXAvatar" class="WXAvatar" />
@@ -55,12 +56,12 @@
 				</div>
 				<div slot="wxStatus" slot-scope="row">
 					<div v-if="row.WxLogStatus==1">
-						<p>在线</p>
+						<a-tag  color="#87d068">在线</a-tag>
 						<p>最近登录：</p>
 						<p>{{row.OnLineTime||' '}}</p>
 					</div>
 					<div v-else>
-						<p>离线</p>
+						<a-tag >离线</a-tag>
 						<p>最近离线：</p>
 						<p>{{row.OffLineTime||' '}}</p>
 					</div>
@@ -72,13 +73,15 @@
 						:checked="!!row.SwitchStatus"
 						@change="editSwitchStatus(row)"
 					/>
-				</div>
+				</div>primary
 				<div class="table operation" slot="opti" slot-scope="row">
-					<a @click="showSendGroup(row)">发单群</a>
-					<a type="link" @click="showRecharge(row)">充值</a>
-					<a type="link" @click="removeWorkstation(row)">删除工位</a>
-					<a type="link" @click="setConfig(row)">指定配置</a>
-					<a type="link" @click="setGroup(row)">指定分组</a>
+					<a-button type="primary" @click="showRecharge(row)" size="small">充值工位</a-button>
+					<a-button type="primary" @click="showSendGroup(row)" size="small">发单群</a-button>
+					<br />
+					<a-button type="primary" @click="setConfig(row)" size="small">指定配置</a-button>
+					<a-button type="primary" @click="setGroup(row)" size="small">指定分组</a-button>
+					<br />
+					<a-button type="primary" @click="removeWorkstation(row)" size="small">删除工位</a-button>
 				</div>
 			</a-table>
 			<div style="margin-top: 15px">
@@ -232,7 +235,7 @@ export default {
 			columns: [
 				{
 					title: '工位Id',
-					width: '100px',
+					width: '80px',
 					dataIndex: 'Id'
 				},
 				{
@@ -272,7 +275,7 @@ export default {
 				{
 					title: '工位状态',
 					key: 'Status',
-					width: '100px',
+					// width: '100px',
 					scopedSlots: { customRender: 'Status' }
 				},
 				{
@@ -289,6 +292,7 @@ export default {
 				},
 				{
 					title: '操作',
+					width: '200px',
 					scopedSlots: { customRender: 'opti' }
 				}
 			],
@@ -629,6 +633,23 @@ export default {
 		stopCountDown() {
 			clearInterval(this.timer)
 			this.timer = null
+		},
+		isShowExpireTag(row) {
+			// console.log(row)
+			if (!row.EndTime) {
+				return false
+			}
+			var nowTime = moment()
+			var workEndTime = moment(row.EndTime)
+			var duration = moment.duration(workEndTime.diff(nowTime))
+			// console.log('duration', )
+			return duration._data.days <= 7
+		},
+		formatEndDate(row) {
+			if (!row.EndTime) {
+				return ' '
+			}
+			return moment(row.EndTime).format('YYYY-MM-DD')
 		}
 	},
 	created() {
@@ -662,8 +683,9 @@ export default {
 		border: 0 none;
 	}
 }
-.table.operation a {
-	padding-right: 10px;
+.table.operation button {
+	margin-right: 10px;
+	margin-bottom: 10px;
 }
 .tip {
 	margin-bottom: 10px;
