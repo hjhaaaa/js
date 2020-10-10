@@ -56,20 +56,9 @@ const yfdRoutes = [
         ]
     },
     {
-        path: '/group',
-        name: 'group',
-        component: AppLayout,
-        children: [
-            {
-                path: 'index',
-                name: '',
-                component: () => import(/* webpackChunkName: "login" */ '@/views/group/index.vue')
-            },
-        ]
-    }, {
         path: '/classifygroup',
         name: 'classifygroupManage',
-        component: ViewLayout,
+        component: AppLayout,
         children: [
             {
                 path: 'manage',
@@ -77,7 +66,19 @@ const yfdRoutes = [
                 component: () => import(/* webpackChunkName: "login" */ '@/views/classifygroup/classifygroup.vue')
             },
         ]
-    }
+    },
+    {
+        path: '/authorize',
+        name: 'authorizeManage',
+        component: AppLayout,
+        children: [
+            {
+                path: 'manage',
+                name: '',
+                component: () => import(/* webpackChunkName: "login" */ '@/views/authorize/index.vue')
+            },
+        ]
+    },
 ]
 const agentRoutes = [
     {
