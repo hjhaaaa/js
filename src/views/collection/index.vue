@@ -82,7 +82,8 @@ import SetCollectionGroup from '@/components/ClassifyGroup/SetCollectionGroup.vu
 import tipMessage from '@/utils/messageUtil.js'
 import {
 	GetCollectionGroupList,
-	GetCollectionGroupLogList
+	GetCollectionGroupLogList,
+	DeleteCollectionGroup
 } from '@/api/collectionGroupApi.js'
 export default {
 	components: { SetCollectionGroup },
@@ -189,19 +190,19 @@ export default {
 				okType: 'danger',
 				onOk() {
 					v.tableLoading = true
-					// DeleteWorkstation(row.Id)
-					// 	.then(res => {
-					// 		if (res.IsSuccess) {
+					DeleteCollectionGroup(row.Id)
+						.then(res => {
+							if (res.IsSuccess) {
 								v.query()
 								tipMessage.success('删除成功')
-					// 		} else {
-					// 			tipMessage.error(res.Msg)
-					// 		}
-					// 		v.tableLoading = false
-					// 	})
-					// 	.catch(() => {
-					// 		v.tableLoading = false
-					// 	})
+							} else {
+								tipMessage.error(res.Msg)
+							}
+							v.tableLoading = false
+						})
+						.catch(() => {
+							v.tableLoading = false
+						})
 				},
 				onCancel() {}
 			})
