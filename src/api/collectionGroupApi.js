@@ -8,5 +8,10 @@ export function GetCollectionGroupList(params) {
 export function GetCollectionGroupLogList(params) {
     return request.post('/CollectionGroup/LogList',params)
 }
+//删除采集对象
+export function DeleteCollectionGroup(id) {
+    return request.post('/CollectionGroup/Delete',{Id:id})
+}
+
 
 
