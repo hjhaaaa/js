@@ -56,14 +56,16 @@ const yfdRoutes = [
         ]
     },
     {
-        path: '/classifygroup',
-        name: 'classifygroupManage',
+
+
+        path: '/collection',
+        name: 'collectionManege',
         component: AppLayout,
         children: [
             {
-                path: 'manage',
+                path: 'index',
                 name: '',
-                component: () => import(/* webpackChunkName: "login" */ '@/views/classifygroup/classifygroup.vue')
+                component: () => import(/* webpackChunkName: "login" */ '@/views/collection/index.vue')
             },
         ]
     },
@@ -76,6 +78,19 @@ const yfdRoutes = [
                 path: 'manage',
                 name: '',
                 component: () => import(/* webpackChunkName: "login" */ '@/views/authorize/index.vue')
+            },
+        ]
+        
+    }, 
+    {
+        path: '/classifygroup',
+        name: 'classifygroupManage',
+        component: AppLayout,
+        children: [
+            {
+                path: 'manage',
+                name: '',
+                component: () => import(/* webpackChunkName: "login" */ '@/views/classifygroup/classifygroup.vue')
             },
         ]
     },
