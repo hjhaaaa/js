@@ -68,3 +68,12 @@ export function deletefilter(params) {
   return request.post('/userconfig/deletefilter', params)
 }
 
+// 淘宝配置信息
+export function taobaoconfig(params) {
+  return request.post('/usertaobaoconfig/taobaoconfig', params)
+}
+
+// 保存淘宝配置信息
+export function saveTaobaoconfig(params) {
+  return request.post('/usertaobaoconfig/config', params)
+}

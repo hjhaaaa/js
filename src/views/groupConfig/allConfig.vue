@@ -57,7 +57,7 @@
             style="vertical-align: middle;color: #fff;background-color: #ff4d4f;border-color: #ff4d4f;">删除条件</a-button>
         </div>
         <div style="height: 40px;margin-top: 10px">
-          <a-button type="primary" @click="saveTime">保存</a-button>
+          <a-button type="primary" style="width: 120px" @click="saveTime">保存</a-button>
         </div>
       </a-col>
     </a-row>
