@@ -28,11 +28,18 @@ let menus = [
     icon: 'appstore',
     path: '/classifygroup/manage',
     title: '分组管理'
-  },  {
-    id: '30',
+  },
+  {
+    id: '40',
     icon: 'appstore',
     path: '/collection/index',
     title: '采集对象'
+  },
+  {
+    id: '50',
+    icon: 'appstore',
+    path: '/groupConfig/manage',
+    title: '群发配置'
   },
   {
     id: '70',

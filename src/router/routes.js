@@ -81,7 +81,20 @@ const yfdRoutes = [
             },
         ]
         
-    }, 
+    },
+    {
+        path: '/groupConfig',
+        name: 'groupConfigManage',
+        component: AppLayout,
+        children: [
+            {
+                path: 'manage',
+                name: '',
+                component: () => import(/* webpackChunkName: "login" */ '@/views/groupConfig/index.vue')
+            },
+        ]
+        
+    },
     {
         path: '/classifygroup',
         name: 'classifygroupManage',
