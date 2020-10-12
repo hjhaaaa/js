@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="user">
 		<a-card title="我的账号">
 			<p class="tip">此账号配置的信息为淘客信息，PID使用优先级：群PID>工位PID>用户PID>淘客PID</p>
 			<a-table
@@ -8,6 +8,7 @@
 				rowKey="Id"
 				:loading="mytableLoading"
 				:pagination="false"
+				:scroll="{ x: 1000 }"
 			>
 				<template slot="editRemarks" slot-scope="text, row">
 					<editable-cell :text="text" @change="RemarksChange(row, 'Remarks', $event)" editTitle="编辑备注" />
@@ -21,16 +22,16 @@
 					/>
 				</div>
 				<div class="table operation" slot="opti" slot-scope="row">
-					<a @click="workstationManage(row)">工位管理</a>
-					<a type="link" @click="setConfig(row)">指定配置</a>
-					<a type="link" @click="addWorkstation(row,1)">创建工位</a>
-					<a type="link" @click="setGroup(row)">指定分组</a>
+					<a-button type="primary" @click="workstationManage(row)" size="small">工位管理</a-button>
+					<a-button type="primary" @click="setConfig(row)" size="small">指定配置</a-button>
+					<a-button type="primary" @click="addWorkstation(row,1)" size="small">创建工位</a-button>
+					<a-button type="primary" @click="setGroup(row)" size="small">指定分组</a-button>
 					<!-- <a type="link" @click="edit(row,1)">编辑信息</a> -->
-					<a type="link" @click="goAgent(row)">登录代理端</a>
+					<a-button type="primary" @click="goAgent(row)" size="small">登录代理端</a-button>
 				</div>
 			</a-table>
 		</a-card>
-		<a-card title="用户列表" :bordered="false">
+		<a-card title="用户列表"   style="margin-top: 10px">
 			<p class="tip">此账号配置的信息为用户信息，PID使用优先级：群PID>工位PID>用户PID>淘客PID</p>
 			<a-form layout="inline" :form="form" style="margin-bottom: 10px">
 				<a-form-item label="用户名">
@@ -58,6 +59,7 @@
 				rowKey="Id"
 				:loading="tableLoading"
 				:pagination="false"
+				:scroll="{ x: 1000 }"
 			>
 				<template slot="editRemarks" slot-scope="text, row">
 					<editable-cell :text="text" @change="RemarksChange(row, 'Remarks', $event)" editTitle="编辑备注" />
@@ -73,12 +75,12 @@
 				</div>
 				<!-- <span slot="Status" slot-scope="row"><a-switch id="row_{{row.id}}" checked='' @change="onChange" /></span> -->
 				<div class="table operation" slot="opti" slot-scope="row">
-					<a @click="workstationManage(row)">工位管理</a>
-					<a type="link" @click="setConfig(row)">指定配置</a>
-					<a type="link" @click="addWorkstation(row,2)">创建工位</a>
-					<a type="link" @click="setGroup(row)">指定分组</a>
-					<!-- <a type="link" @click="edit(row,2)">编辑信息</a> -->
-					<a type="link" @click="goAgent(row)">登录代理端</a>
+						<a-button type="primary" @click="workstationManage(row)" size="small">工位管理</a-button>
+					<a-button type="primary" @click="setConfig(row)" size="small">指定配置</a-button>
+					<a-button type="primary" @click="addWorkstation(row,2)" size="small">创建工位</a-button>
+					<a-button type="primary" @click="setGroup(row)" size="small">指定分组</a-button>
+					<!-- <a type="link" @click="edit(row,1)">编辑信息</a> -->
+					<a-button type="primary" @click="goAgent(row)" size="small">登录代理端</a-button>
 				</div>
 			</a-table>
 			<div style="margin-top: 15px">
@@ -149,7 +151,7 @@ import { deeppink } from 'color-name'
 
 export default {
 	name: 'user',
-	components: { EditableCell, BasicsConfig,SetClassifyGroup },
+	components: { EditableCell, BasicsConfig, SetClassifyGroup },
 	data() {
 		return {
 			statusOptions: [
@@ -248,7 +250,7 @@ export default {
 				{
 					title: '序号',
 					Key: 'Id',
-					width: '100px',
+					width: '80px',
 					dataIndex: 'Id'
 				},
 				{
@@ -260,20 +262,20 @@ export default {
 				{
 					title: '备注',
 					Key: 'Remarks',
-					width: '250px',
+					width: '200px',
 					dataIndex: 'Remarks',
 					scopedSlots: { customRender: 'editRemarks' }
 				},
 				{
 					title: '发单状态',
 					key: 'Status',
-					width: '150px',
+					width: '100px',
 					scopedSlots: { customRender: 'opSwitchStatus' }
 				},
 				{
 					title: '创建时间',
 					Key: 'CTime',
-					width: '200px',
+					width: '150px',
 					dataIndex: 'CTime'
 				},
 				{
@@ -423,7 +425,7 @@ export default {
 				})
 		},
 		setGroup(row) {
-				this.$refs.setClassifyGroup.openSetClassify(row)
+			this.$refs.setClassifyGroup.openSetClassify(row)
 		},
 		goAgent(row) {},
 		edit(row, type) {
@@ -540,34 +542,40 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.setRole-content {
-	height: 400px;
-	.left-block,
-	.btnbox-block,
-	.right-block {
-		float: left;
-		width: 180px;
-		height: 400px;
+.user {
+	.ant-table-body {
+		overflow-x: auto !important;
 	}
-	.left,
-	.right {
-		width: 180px;
+	.setRole-content {
 		height: 400px;
-		border: 1px solid #ccc;
-		overflow: auto;
-		.ant-btn-primary {
-			margin-bottom: 10px;
+		.left-block,
+		.btnbox-block,
+		.right-block {
+			float: left;
+			width: 180px;
+			height: 400px;
+		}
+		.left,
+		.right {
+			width: 180px;
+			height: 400px;
+			border: 1px solid #ccc;
+			overflow: auto;
+			.ant-btn-primary {
+				margin-bottom: 10px;
+			}
+		}
+		.btnbox-block {
+			width: 100px;
+			border: 0 none;
 		}
 	}
-	.btnbox-block {
-		width: 100px;
-		border: 0 none;
+	.table.operation button {
+		margin-bottom: 5px;
+		margin-right: 5px;
 	}
-}
-.table.operation a {
-	padding-right: 10px;
-}
-.tip {
-	margin-bottom: 10px;
+	.tip {
+		margin-bottom: 10px;
+	}
 }
 </style>

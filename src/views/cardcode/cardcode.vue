@@ -1,25 +1,72 @@
 <template>
-	<div>
+	<div class="cradcode">
 		<a-card title="激活码管理">
-			<a-card title style="width:80%;margin-bottom: 20px">
-				<a-card-grid style="width:15%;text-align:center">当前账号：</a-card-grid>
-				<a-card-grid style="width:15%;text-align:center">{{currentUserName}}</a-card-grid>
-				<a-card-grid style="width:15%;text-align:center">剩余激活码：</a-card-grid>
-				<a-card-grid style="width:15%;text-align:center">{{myCardCodeCount}}</a-card-grid>
-				<a-card-grid style="width:15%;text-align:center">购买方式：</a-card-grid>
-				<a-card-grid style="width:25%;text-align:center">
-					扫码添加
-					<a @click="showKFQr">客服微信</a>购买,按下列价格购买二维码
-				</a-card-grid>
+			<div class="mycrad">
+				<table class="mycradtable" border="1">
+					<tr>
+						<td class="mycard-title">当前账号：</td>
+						<td class="mycard-title">{{currentUserName}}</td>
+						<td class="mycard-title">剩余激活码：</td>
+						<td class="mycard-title">{{myCardCodeCount}}</td>
+					</tr>
+					<tr>
+						<td>购买方式：</td>
+						<td colspan="3">
+							扫码添加
+							<a @click="showKFQr">客服微信</a>购买,按下列价格购买二维码
+						</td>
+					</tr>
+					<tr>
+						<td>价格:</td>
+						<td colspan="3">
+							<a-button type="primary">5~30个（30元一个）</a-button>
+							<a-button type="primary">31~100个（28元一个）</a-button>
+							<a-button type="primary">101~1000个（25元一个）</a-button>
+							<a-button type="primary">1000个以上（23元一个）</a-button>
+						</td>
+					</tr>
+				</table>
+				<!-- 
+				<a-row type="flex">
+					<a-col :span="6" :order="1" style>当前账号：</a-col>
+					<a-col :span="6" :order="2">{{currentUserName}}</a-col>
+					<a-col :span="6" :order="3">剩余激活码：</a-col>
+					<a-col :span="6" :order="4">{{myCardCodeCount}}</a-col>
+				</a-row>
+				<a-row type="flex">
+					<a-col flex="25%">购买方式：</a-col>
+					<a-col flex="auto">
+						扫码添加
+						<a @click="showKFQr">客服微信</a>购买,按下列价格购买二维码
+					</a-col>
+				</a-row>
+				<a-row type="flex">
+					<a-col flex="25%">价格:</a-col>
+					<a-col flex="auto">
+						<a-button type="primary" size="small">5~30个（30元一个）</a-button>
+						<a-button type="primary" size="small">31~100个（28元一个）</a-button>
+						<a-button type="primary" size="small">101~1000个（25元一个）</a-button>
+						<a-button type="primary" size="small">1000个以上（23元一个）</a-button>
+					</a-col>
+				</a-row>-->
+			</div>
+			<!-- 
+			<a-card title style class="mycode">
+				<a-card-grid class="mycode-card">当前账号：</a-card-grid>
+				<a-card-grid class="mycode-card">{{currentUserName}}</a-card-grid>
+				<a-card-grid class="mycode-card">剩余激活码：</a-card-grid>
+				<a-card-grid class="mycode-card">{{myCardCodeCount}}</a-card-grid>
+				<a-card-grid class="mycode-card">购买方式：</a-card-grid>
+				<a-card-grid style="width:25%;text-align:center"></a-card-grid>
 
-				<a-card-grid style="width:15%;text-align:center">价格：</a-card-grid>
-				<a-card-grid style="width:85%;text-align:left;padding:9.5px;" class="price-box">
-					<a-button type="primary">5~30个（30元一个）</a-button>
-					<a-button type="primary">31~100个（28元一个）</a-button>
-					<a-button type="primary">101~1000个（25元一个）</a-button>
-					<a-button type="primary">1000个以上（23元一个）</a-button>
+				<a-card-grid class="mycode-card">价格：</a-card-grid>
+				<a-card-grid class="mycode-card price-box" style="padding:9.5px;">
+					<a-button type="primary" size="small">5~30个（30元一个）</a-button>
+					<a-button type="primary" size="small">31~100个（28元一个）</a-button>
+					<a-button type="primary" size="small">101~1000个（25元一个）</a-button>
+					<a-button type="primary" size="small">1000个以上（23元一个）</a-button>
 				</a-card-grid>
-			</a-card>
+			</a-card>-->
 
 			<a-form layout="inline" :form="form" style="margin-bottom: 10px">
 				<a-form-item label="激活码">
@@ -59,6 +106,7 @@
 				:loading="tableLoading"
 				:pagination="false"
 				:row-selection="isSupplier ? rowSelection : undefined"
+				:scroll="{ x: 800 }"
 			>
 				<div slot="UseStatus" slot-scope="row">
 					<p v-if="row.UseStatus==2">充值中</p>
@@ -97,8 +145,8 @@
 			@cencel="closeKfQr"
 			width="400px"
 		>
-			<div>
-				<img src />
+			<div style="text-align: center;">
+				<img style="width: 240px;height: 240px;" src />
 			</div>
 		</a-modal>
 
@@ -165,7 +213,7 @@ export default {
 			columns: [
 				{
 					title: '序号',
-					width: '100px',
+					width: '80px',
 					dataIndex: 'Id'
 				},
 				{
@@ -177,25 +225,25 @@ export default {
 				{
 					title: '购买时间',
 					Key: 'CTime',
-					width: '200px',
+					width: '180px',
 					dataIndex: 'CTime'
 				},
 				{
 					title: '使用时间',
 					Key: 'UseTime',
-					width: '200px	',
+					width: '180px	',
 					dataIndex: 'UseTime'
 				},
 				{
 					title: '使用状态',
 					key: 'UseStatus',
-					width: '120px',
+					width: '150px',
 					scopedSlots: { customRender: 'UseStatus' }
 				},
 				{
 					title: '使用项目',
 					key: 'UseType',
-					width: '120px',
+					width: '150px',
 					scopedSlots: { customRender: 'UseType' }
 				},
 				{
@@ -206,7 +254,7 @@ export default {
 			],
 			data: [],
 			total: 0,
-			isSupplier: false, //是否供应商
+			isSupplier: true, //是否供应商
 			tableLoading: false,
 			transferList: [], //选中的行数据
 			transferLoading: false,
@@ -219,7 +267,7 @@ export default {
 			},
 			qrVisible: false,
 			myCardCodeCount: 0,
-				currentUserName: "",
+			currentUserName: '',
 			selectedRowKeys: []
 		}
 	},
@@ -284,7 +332,7 @@ export default {
 				.then(res => {
 					if (res.IsSuccess) {
 						this.myCardCodeCount = res.Data.CardCodeCount
-						this.currentUserName=res.Data.UserName
+						this.currentUserName = res.Data.UserName
 					} else {
 						tipMessage.error('获取卡密失败')
 					}
@@ -328,6 +376,7 @@ export default {
 						.then(res => {
 							if (res.IsSuccess) {
 								v.query()
+								v.getCardCode()
 								v.transferHandleCancel()
 								tipMessage.success('转让成功')
 							} else {
@@ -375,7 +424,7 @@ export default {
 		if (this.isSupplier) {
 			this.columns.push({
 				title: '转让状态',
-				width: '120px',
+				width: '150px',
 				dataIndex: 'TransferString'
 			})
 		}
@@ -388,18 +437,34 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.ant-card-grid {
-	padding: 15px;
-}
-.price-box button {
-	margin-right: 10px;
-}
-
-.qrcode div:first-child {
-	text-align: center;
-}
-.qrcode div:first-child img {
-	width: 300px;
-	height: 300px;
+.cradcode {
+	.ant-card-grid {
+		padding: 15px;
+	}
+	.price-box button {
+		margin-right: 10px;
+	}
+	.ant-table-body {
+		overflow-x: auto !important;
+	}
+	.mycrad {
+		margin-bottom: 15px;
+		text-align: center;
+	}
+	.mycradtable {
+		width: 100%;
+		border: 1px solid #e8e8e8;
+	}
+	.mycradtable td {
+		width: 25%;
+		padding: 10px;
+	}
+	.mycradtable td button {
+		margin-right: 5px;
+		margin-bottom: 5px;
+	}
+	.mycradtable td button:last-child {
+		margin-bottom: 0px;
+	}
 }
 </style>

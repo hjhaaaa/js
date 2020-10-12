@@ -12,6 +12,11 @@ export function GetCollectionGroupLogList(params) {
 export function DeleteCollectionGroup(id) {
     return request.post('/CollectionGroup/Delete',{Id:id})
 }
+//修改采集对象名称
+export function EditCollectionGroupName(id,name,type) {
+    return request.post('/CollectionGroup/EditName',{Id:id,Name:name,NameType:type})
+}
+
 
 
 

@@ -1,10 +1,10 @@
 <template>
-	<div>
+	<div class="workstation">
 		<a-card title="工位列表" :bordered="false">
 			<a-form layout="inline" :form="form" style="margin-bottom: 10px">
-				<div class="searchrow">
+				<!-- <div class="searchrow"> -->
 					<a-form-item label="工位Id">
-						<a-input style="width: 120px" v-model="form.Id" placeholder="请输入工位Id" />
+						<a-input  v-model="form.Id" placeholder="请输入工位Id" />
 					</a-form-item>
 					<a-form-item label="用户名">
 						<a-input v-model="form.UserName" placeholder="请输入用户名" />
@@ -24,7 +24,7 @@
 					<a-form-item>
 						<a-button icon="search" @click="handleSearch">查询</a-button>
 					</a-form-item>
-				</div>
+				<!-- </div> -->
 			</a-form>
 			<a-table
 				:columns="columns"
@@ -32,9 +32,10 @@
 				rowKey="Id"
 				:loading="tableLoading"
 				:pagination="false"
+				:scroll="{ x: 1000 }"
 			>
 				<template slot="editRemarks" slot-scope="text, row">
-					<editable-cell :text="text" @change="RemarksChange(row, 'Remarks', $event)" editTitle="编辑备注" />
+					<editable-cell :text="text" @change="remarksChange(row, 'Remarks', $event)" editTitle="编辑备注" />
 				</template>
 				<!-- v-if="row.StationRechageType==2" -->
 				<div slot="Status" slot-scope="row">
@@ -50,18 +51,17 @@
 				</div>
 				<div slot="wxOp" class="wxOp" slot-scope="row">
 					<a-button type="primary" @click="wxQrLogin(row)">扫码登录</a-button>
-					<!-- <a-button type="primary" @click="wxPushlogin(row)">退出微信</a-button> -->
 					<a-button type="primary" @click="wxPushlogin(row)">推送登录</a-button>
 					<a-button type="primary" @click="wxLogout(row)">退出微信</a-button>
 				</div>
 				<div slot="wxStatus" slot-scope="row">
 					<div v-if="row.WxLogStatus==1">
-						<a-tag  color="#87d068">在线</a-tag>
+						<a-tag color="#87d068">在线</a-tag>
 						<p>最近登录：</p>
 						<p>{{row.OnLineTime||' '}}</p>
 					</div>
 					<div v-else>
-						<a-tag >离线</a-tag>
+						<a-tag>离线</a-tag>
 						<p>最近离线：</p>
 						<p>{{row.OffLineTime||' '}}</p>
 					</div>
@@ -343,7 +343,7 @@ export default {
 			this.form.pageNum = p
 			this.query()
 		},
-		RemarksChange(row, key, value) {
+		remarksChange(row, key, value) {
 			if (!value) return
 			UpdateWorkstationRemark(row.Id, value)
 				.then(res => {
@@ -379,6 +379,7 @@ export default {
 				.then(res => {
 					if (res.IsSuccess) {
 						tipMessage.success('退出成功')
+						this.query()
 					} else {
 						tipMessage.error('退出失败:' + res.Msg)
 					}
@@ -602,6 +603,7 @@ export default {
 				console.log('登录成功')
 				if (this.currentLoginWorkstation.Uid == msg.data) {
 					this.wxQrloginHandleCancel()
+					this.query()
 				}
 			}
 		},
@@ -659,56 +661,59 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.setRole-content {
-	height: 400px;
-	.left-block,
-	.btnbox-block,
-	.right-block {
-		float: left;
-		width: 180px;
-		height: 400px;
+.workstation {
+	.ant-table-body {
+		overflow-x: auto !important;
 	}
-	.left,
-	.right {
-		width: 180px;
+	.setRole-content {
 		height: 400px;
-		border: 1px solid #ccc;
-		overflow: auto;
-		.ant-btn-primary {
-			margin-bottom: 10px;
+		.left-block,
+		.btnbox-block,
+		.right-block {
+			float: left;
+			width: 180px;
+			height: 400px;
+		}
+		.left,
+		.right {
+			width: 180px;
+			height: 400px;
+			border: 1px solid #ccc;
+			overflow: auto;
+			.ant-btn-primary {
+				margin-bottom: 10px;
+			}
+		}
+		.btnbox-block {
+			width: 100px;
+			border: 0 none;
 		}
 	}
-	.btnbox-block {
-		width: 100px;
-		border: 0 none;
+	.table.operation button {
+		margin-right: 10px;
+		margin-bottom: 10px;
 	}
-}
-.table.operation button {
-	margin-right: 10px;
-	margin-bottom: 10px;
-}
-.tip {
-	margin-bottom: 10px;
-}
-.WXAvatar {
-	width: 80px;
-	height: 80px;
-}
-.wxOp button:not(:last-child) {
-	margin-bottom: 4px;
-}
-.searchrow {
-	margin-bottom: 5px;
+	.tip {
+		margin-bottom: 10px;
+	}
+	.WXAvatar {
+		width: 80px;
+		height: 80px;
+	}
+	.wxOp button:not(:last-child) {
+		margin-bottom: 4px;
+	}
+	.searchrow {
+		margin-bottom: 5px;
+	}
+	.wxlogin div p {
+		padding-left: 24px;
+		line-height: 30px;
+	}
+	.wxlogin img {
+		margin-right: auto;
+		margin-left: auto;
+	}
 }
 </style>
 
-<style lang="scss" >
-.wxlogin div p {
-	padding-left: 24px;
-	line-height: 30px;
-}
-.wxlogin img {
-	margin-right: auto;
-	margin-left: auto;
-}
-</style>
