@@ -28,3 +28,7 @@ export function SetCollectionGroupClassify(params) {
 export function GetCollectionGroupClassify(id) {
     return request.post('/ClassifyGroup/CollectionClassifyList', { Id: id })
 }
+//开启分组
+export function OpenCollectionGroupClassify(status) {
+    return request.post('/ClassifyGroup/OpenClassify', { IsOpen: status })
+}

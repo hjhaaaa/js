@@ -6,7 +6,7 @@
 					<a-switch
 						checked-children="开"
 						un-checked-children="关"
-						:checked="ClassifyGroupStatus"
+						:checked="classifyGroupStatus"
 						@change="classifyGroupStatusChange"
 					/>开启分组后，可以自由配置发单方案。查看教程
 				</a-form-item>
@@ -78,11 +78,7 @@
 <script>
 import moment from 'moment'
 import tipMessage from '@/utils/messageUtil.js'
-import {
-	WechatQRLogin,
-	WechatLogout,
-	WechatPushLogin
-} from '@/api/wechatApi.js'
+import { GetLoginUserInfo } from '@/api/userApi.js'
 import {
 	SendGroupList,
 	DeleteSendGroup,
@@ -96,7 +92,8 @@ import { deeppink } from 'color-name'
 import {
 	ClassifyGroupList,
 	EditClassifyGroup,
-	DeleteClassifyGroup
+	DeleteClassifyGroup,
+	OpenCollectionGroupClassify
 } from '@/api/classGroupApi.js'
 
 export default {
@@ -174,7 +171,7 @@ export default {
 				GroupInfo: '',
 				Name: ''
 			},
-			ClassifyGroupStatus: false,
+			classifyGroupStatus: false,
 			editConfirmLoading: false
 		}
 	},
@@ -200,7 +197,18 @@ export default {
 			this.query()
 		},
 		classifyGroupStatusChange(checked) {
-			this.classifyGroupStatusChange = checked
+			OpenCollectionGroupClassify(checked)
+				.then(res => {
+					if (res.IsSuccess) {
+						tipMessage.success('操作成功')
+						this.classifyGroupStatus = checked
+						//	this.query();
+						//this.editVisible = false
+					} else {
+						tipMessage.error(res.Msg)
+					}
+				})
+				.catch(() => {})
 		},
 		add() {
 			this.editInfo.Id = 0
@@ -252,7 +260,7 @@ export default {
 				.then(res => {
 					if (res.IsSuccess) {
 						tipMessage.success('操作成功')
-						this.query();
+						this.query()
 						this.editVisible = false
 					} else {
 						tipMessage.error(res.Msg)
@@ -260,9 +268,17 @@ export default {
 				})
 				.catch(() => {})
 			this.editConfirmLoading = false
+		},
+		getLoginUserInfo() {
+			GetLoginUserInfo()
+				.then(res => {
+					this.classifyGroupStatus = res.Data.IsUseGroup
+				})
+				.catch(() => {})
 		}
 	},
 	created() {
+		this.getLoginUserInfo()
 		this.query()
 	}
 }
