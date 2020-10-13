@@ -18,7 +18,7 @@
 			<!-- v-model="eidtModel.classifyId"  prop="classifyId" v-decorator="['classifyId',{ rules: [{ required: true, message: '请选择分组!' }] }]" -->
 			<a-form-item v-bind="formItemLayout" label="指定分组">
 				<a-select placeholder="请选择分组" v-model="eidtModel.classifyId">
-					<a-select-option v-for="d in ClassifyList" :key="d.Id">{{ d.ClassifyName }}</a-select-option>
+					<a-select-option v-for="d in ClassifyList" :key="d.Id">{{ d.Name }}</a-select-option>
 				</a-select>
 			</a-form-item>
 		</a-form>

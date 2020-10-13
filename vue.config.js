@@ -53,9 +53,9 @@ module.exports = {
         proxy: {
             '/api': {
                 // target: 'http://sxytest.sitezt.cn', // 后端服务器
-                 target: 'http://localhost:13513', // 后端服务器
+                // target: 'http://localhost:13513', // 后端服务器
                 //  target: 'http://47.99.153.221:30080', // 后端服务器(测试)
-              //  target: 'http://192.168.8.128:3001', // 后端服务器
+                target: 'http://192.168.11.129:30080', // 后端服务器
                 ws: false,
                 changeOrigin: true,
                 pathRewrite: {
@@ -64,9 +64,9 @@ module.exports = {
             },
             '/signalr': {
                 // target: 'http://sxytest.sitezt.cn', // 后端服务器
-                 target: 'http://localhost:13513', // 后端服务器
-              //   target: 'http://47.99.153.221:30080', // 后端服务器(测试)
-              //  target: 'http://192.168.8.128:3001', // 后端服务器
+              //   target: 'http://localhost:13513', // 后端服务器
+               //  target: 'http://47.99.153.221:30080', // 后端服务器(测试)
+                target: 'http://192.168.11.129:30080', // 后端服务器
                 ws: false,
                 changeOrigin: true,
                 pathRewrite: {
