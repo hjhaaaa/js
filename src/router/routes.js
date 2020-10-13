@@ -14,6 +14,11 @@ const otherRoutes = [
         component: () => import(/* webpackChunkName: "login" */ '@/views/auth/regester')
     },
     {
+        path: '/dl',
+        name: 'dl',
+        component: () => import(/* webpackChunkName: "login" */ '@/views/dl')
+    },
+    {
         path: '/error',
         name: 'error',
         redirect: '404',

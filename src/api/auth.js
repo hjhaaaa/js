@@ -77,3 +77,13 @@ export function taobaoconfig(params) {
 export function saveTaobaoconfig(params) {
   return request.post('/usertaobaoconfig/config', params)
 }
+
+// 拼多多配置信息
+export function pddconfig(params) {
+  return request.post('/userpddconfig/pddconfig', params)
+}
+
+// 保存拼多多配置信息
+export function savePddconfig(params) {
+  return request.post('/userpddconfig/config', params)
+}

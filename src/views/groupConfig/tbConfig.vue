@@ -44,7 +44,7 @@
         <a-button class="g-btn" type="primary" @click="insertText('#自定义变量#')">自定义变量</a-button>
         <a-button class="g-btn" type="primary" @click="insertText('#APP邀请码#')">APP邀请码</a-button>
       </a-col>
-      <a-col :span="24" style="margin-top: 5px">
+      <!-- <a-col :span="24" style="margin-top: 5px">
         <h3 class="left-h3">自定义变量
           <span class="t-tips">可以最多设置10自定义变量，用于减少微信屏蔽，每个变量之间用半角逗号隔开</span>
         </h3>
@@ -52,7 +52,7 @@
           style="max-width: 600px"
           :autosize="{ minRows: 3, maxRows: 6 }" 
         />
-      </a-col>
+      </a-col> -->
       <a-col :span="24" style="margin-top: 10px">
         <h3 class="left-h3">发朋友圈配置</h3>
         <div style="margin-bottom: 10px">（1）朋友圈评论区第一条评论配置，最多可设置4个模板，发圈时每个代理将随机取其中的一个配置样式使用</div>
