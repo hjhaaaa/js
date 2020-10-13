@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="collection">
 		<a-card title="工位采集">
 			<div>
 				<!-- <p class="subtitle" >      Group title    </p> -->
@@ -10,7 +10,23 @@
 					rowKey="Id"
 					:loading="tableLoading"
 					:pagination="false"
+					:scroll="{ x: 1000 }"
 				>
+					<template slot="editFromNickName" slot-scope="text, row">
+						<editable-cell
+							:text="text"
+							@change="editFromNickNameChange(row, 'FromNickName', $event)"
+							editTitle="编辑昵称"
+						/>
+					</template>
+					<template slot="editGroupName" slot-scope="text, row">
+						<editable-cell
+							:text="text"
+							@change="editGroupNameChange(row, 'GroupName', $event)"
+							editTitle="编辑群名称"
+						/>
+					</template>
+
 					<div class="table operation" slot="action" slot-scope="row">
 						<a type="link" @click="remove(row)">删除</a>
 						<a type="link" @click="setGroup(row)">指定分組</a>
@@ -54,7 +70,6 @@
 						:disabled="queryLogBtnDisabled"
 						:loading="queryLogBtnLoading"
 						style="margin-bottom: 15px"
-						icon="reload"
 						@click="queryLogClick"
 					>刷新</a-button>
 					<a-table
@@ -63,7 +78,15 @@
 						rowKey="Id"
 						:loading="logTableLoading"
 						:pagination="false"
-					></a-table>
+						:scroll="{ x: 800 }"
+					>
+						<div slot="messageType" slot-scope="row">
+							<a-tag v-if="row.MessageType==1">文本</a-tag>
+							<a-tag v-else-if="row.MessageType==2" color="blue">图片</a-tag>
+							<a-tag v-else-if="row.MessageType==3" color="purple">视频</a-tag>
+							<a-tag v-else-if="row.MessageType==4" color="orange">表情</a-tag>
+						</div>
+					</a-table>
 				</div>
 				<div>
 					<!-- <a-form layout="inline" :form="form" >
@@ -79,32 +102,47 @@
 
 <script>
 import SetCollectionGroup from '@/components/ClassifyGroup/SetCollectionGroup.vue'
+import EditableCell from '@/components/Table/EditableCell.vue'
 import tipMessage from '@/utils/messageUtil.js'
 import {
 	GetCollectionGroupList,
 	GetCollectionGroupLogList,
-	DeleteCollectionGroup
+	DeleteCollectionGroup,
+	EditCollectionGroupName
 } from '@/api/collectionGroupApi.js'
 export default {
-	components: { SetCollectionGroup },
+	components: { SetCollectionGroup, EditableCell },
 	data() {
 		return {
 			form: this.$form.createForm(this),
 			columns: [
 				{
 					title: '工位Id',
-					width: '200px',
+					width: '100px',
 					dataIndex: 'WorkstationId'
 				},
+
 				{
-					title: '采集对象昵称',
-					width: '200px',
-					dataIndex: 'FromNickName'
+					title: '群Id',
+					width: '180px',
+					dataIndex: 'GroupId'
+				},
+				{
+					title: '采集对象',
+					width: '180px',
+					dataIndex: 'FromWXId'
 				},
 				{
 					title: '群名称',
 					width: '200px',
-					dataIndex: 'GroupName'
+					dataIndex: 'GroupName',
+					scopedSlots: { customRender: 'editGroupName' }
+				},
+				{
+					title: '采集对象昵称',
+					width: '200px',
+					dataIndex: 'FromNickName',
+					scopedSlots: { customRender: 'editFromNickName' }
 				},
 				{
 					title: '采集状态',
@@ -114,6 +152,7 @@ export default {
 				},
 				{
 					title: '操作',
+					width: '200px',
 					scopedSlots: { customRender: 'action' }
 				}
 			],
@@ -127,31 +166,32 @@ export default {
 			logColumns: [
 				{
 					title: '序号',
-					width: '200px',
+					width: '100px',
 					dataIndex: 'Id'
 				},
 				{
 					title: '工位Id',
-					width: '200px',
+					width: '100px',
 					dataIndex: 'WorkstationId'
 				},
 				{
-					title: '采集对象昵称',
-					width: '200px',
-					dataIndex: 'FromNickName'
+					title: '采集微信',
+					width: '180px',
+					dataIndex: 'FromWXId'
 				},
 				{
-					title: '群名称',
-					width: '200px',
-					dataIndex: 'GroupName'
+					title: '群Id',
+					width: '180px',
+					dataIndex: 'GroupId'
 				},
 				{
 					title: '消息类型',
-					width: '150px',
-					dataIndex: 'MessageType'
+					width: '80px',
+					scopedSlots: { customRender: 'messageType' }
 				},
 				{
 					title: '采集内容',
+					width: '200px',
 					dataIndex: 'ContentText'
 				}
 			],
@@ -252,20 +292,51 @@ export default {
 			this.timer = null
 			this.queryLogBtnDisabled = false
 			this.$refs.queryLogBtn.$el.innerText = `刷新`
+		},
+		editFromNickNameChange(row, key, value) {
+			console.log('编辑昵称')
+			if (!value) return
+			EditCollectionGroupName(row.Id, value, 2)
+				.then(res => {
+					if (res.IsSuccess) {
+						tipMessage.success('保存成功')
+					} else {
+						tipMessage.error('保存失败:' + res.Msg)
+					}
+				})
+				.catch(() => {})
+		},
+		editGroupNameChange(row, key, value) {
+			console.log('编辑群名称')
+			if (!value) return
+			EditCollectionGroupName(row.Id, value, 1)
+				.then(res => {
+					if (res.IsSuccess) {
+						tipMessage.success('保存成功')
+					} else {
+						tipMessage.error('保存失败:' + res.Msg)
+					}
+				})
+				.catch(() => {})
 		}
 	}
 }
 </script>
 
 <style lang="scss" scoped>
-.subtitle {
-	font-size: 15px;
-	color: rgba(0, 0, 0, 0.85);
-	margin-bottom: 15px;
-	font-weight: 500;
-}
-.table.operation a {
-	padding-right: 10px;
+.collection {
+	.subtitle {
+		font-size: 15px;
+		color: rgba(0, 0, 0, 0.85);
+		margin-bottom: 15px;
+		font-weight: 500;
+	}
+	.table.operation a {
+		padding-right: 10px;
+	}
+	.ant-table-body {
+		overflow-x: auto !important;
+	}
 }
 </style>
 

@@ -20,7 +20,7 @@ export default {
 		openEdit: function() {
 			editable = true
 		},
-		closeEdit:function(){
+		closeEdit: function() {
 			editable = false
 		}
 	},
@@ -73,14 +73,14 @@ export default {
 	color: #108ee9;
 }
 
-.editable-add-btn {
+.editable-cell .editable-add-btn {
 	margin-bottom: 8px;
 }
-.aaa {
+.editable-cell .aaa {
 	display: inline-block;
 	padding: 5px 24px 5px 5px;
 	height: 17px;
 	box-sizing: border-box;
-	width: 85%;
+	width: 80%;
 }
 </style>
