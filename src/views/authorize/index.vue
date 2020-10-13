@@ -111,12 +111,21 @@ export default {
         location.href = 'https://oauth.taobao.com/authorize' +
           '?response_type=code' +
           '&client_id=26014808' +
-          '&redirect_uri=' + location.href + 
+          '&redirect_uri=yfdoauth.sitezt.cn/api/wyfd/tk/newoauthcallback' +
           '&state=' + resState
       })
     },
     addPddsq(){
-
+      authorizeOauthcheck({
+        returnUrl: location.href
+      }).then(res => {
+        let resState = res.Data
+        location.href = 'https://ddjb.pinduoduo.com/open.html' +
+          '?client_id=013d1ace79ea4bb0bc75716c26151e29' +
+          '&response_type=code' +
+          '&redirect_uri=http%3A%2F%2Fyfdoauth.sitezt.cn%2Fapi%2Fwyfd%2Ftk%2Fpdd%2Fnewoauthcallback' +
+          '&state=' + resState
+      })
     },
     query(){
       authorizeList(this.listQuery).then(res => {
