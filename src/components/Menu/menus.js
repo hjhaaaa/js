@@ -7,7 +7,7 @@ let menus = [
   },
   {
     id: '5',
-    icon: 'appstore',
+    icon: 'lock',
     path: '/authorize/manage',
     title: '账号授权'
   },
@@ -31,13 +31,13 @@ let menus = [
   },
   {
     id: '40',
-    icon: 'appstore',
+    icon: 'project',
     path: '/collection/index',
     title: '采集对象'
   },
   {
     id: '50',
-    icon: 'appstore',
+    icon: 'setting',
     path: '/groupConfig/manage',
     title: '群发配置'
   },
