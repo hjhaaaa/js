@@ -12,6 +12,10 @@ export function UpdateUserStatus(id, status) {
     return request.post('/user/EditStatus', { Id: id, status: status })
 }
 //修改用户信息
-export function UpdateUserRemark(id,remark) {
-    return request.post('/user/EditRemark',  { Id: id, remark: remark })
+export function UpdateUserRemark(id, remark) {
+    return request.post('/user/EditRemark', { Id: id, remark: remark })
+}
+//获取登录用户信息
+export function GetLoginUserInfo() {
+    return request.post('/user/LoginInfo')
 }
