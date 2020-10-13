@@ -180,7 +180,7 @@ export default {
   methods: {
     getConfig(){
       pddconfig().then(res => {
-        this.conData = res.Data
+        this.con = res.Data
         this.saveDisabled = false
       }).catch(err => {
         

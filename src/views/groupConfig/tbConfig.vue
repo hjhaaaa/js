@@ -207,8 +207,8 @@ export default {
   methods: {
     getConfig(){
       taobaoconfig().then(res => {
-        this.conData = res.Data
-        this.conp.DomainType = this.conData.DomainType == 1
+        this.con = res.Data
+        this.conp.DomainType = this.con.DomainType == 1;
         this.saveDisabled = false
       }).catch(err => {
         
