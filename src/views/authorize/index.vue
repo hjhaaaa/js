@@ -108,7 +108,11 @@ export default {
         returnUrl: location.href
       }).then(res => {
         let resState = res.Data
-
+        location.href = 'https://oauth.taobao.com/authorize' +
+          '?response_type=code' +
+          '&client_id=26014808' +
+          '&redirect_uri=' + location.href + 
+          '&state=' + resState
       })
     },
     addPddsq(){
