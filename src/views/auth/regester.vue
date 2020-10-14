@@ -180,7 +180,7 @@ export default {
 				if(!err){
 					this.fasongLoading = true
 					this.fasongDisabled = true
-					RegesterCode({phone: data.Mobile}).then((res) => {
+					RegesterCode({mobile: data.Mobile}).then((res) => {
 						this.fasongLoading = false
 						if(res.IsSuccess){
 							this.fasongText = '重新发送（60）'
