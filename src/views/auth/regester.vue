@@ -97,14 +97,14 @@
 						>{{fasongText}}</a-button>
           </a-col>
 				</a-form-item>
-
+<!-- { required: true, message: '请输入邀请码' } -->
 				<a-form-item>
 					<a-input
 						v-decorator="[
 							'InviteCode',
 							{
 								rules: [
-									{ required: true, message: '请输入邀请码' }
+									
 								],
 								validateTrigger: 'blur'
 							}
@@ -180,7 +180,7 @@ export default {
 				if(!err){
 					this.fasongLoading = true
 					this.fasongDisabled = true
-					RegesterCode({phone: data.Mobile}).then((res) => {
+					RegesterCode({mobile: data.Mobile}).then((res) => {
 						this.fasongLoading = false
 						if(res.IsSuccess){
 							this.fasongText = '重新发送（60）'
