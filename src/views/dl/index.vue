@@ -115,8 +115,18 @@ export default {
         this.username = res.Data.UserName
         this.gwList = res.Data.WorkstationList
         this.gwSelect = this.gwList[0]
+        this.getQunList()
       })
-    }
+    },
+    getQunList(){
+      sendGroupList({
+        PageNum: 1,
+        PageSize: 500,
+        WorkstationId: this.gwSelect.Id
+      }).then(res => {
+        
+      })
+    },
   },
 }
 </script>
