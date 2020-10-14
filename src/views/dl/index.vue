@@ -43,14 +43,36 @@
         <h3 class="card-h3">
           <span class="h3-span">发单群</span>
         </h3>
-        <ul class="c3-ul">
+        <!-- <ul class="c3-ul">
           <li>
             
           </li>
-        </ul>
+        </ul> -->
+        <table class="c3-table">
+          <tr>
+            <td>
+              <div class="td1">
+                妈妈群
+                <a-icon type="close-circle" style="vertical-align: -2px" />
+              </div>
+            </td>
+            <td style="width: 42%">
+              <input class="td-input" type="text" placeholder="备注">
+            </td>
+            <td style="width: 56px">
+              <a-switch checked-children="开" un-checked-children="关" />
+            </td>
+          </tr>
+        </table>
       </a-card>
       <a-card class="card4">
-
+        <h3 class="card-h3">
+          <span class="h3-span">朋友圈</span>
+        </h3>
+        <div>
+          跟发朋友圈
+          <a-switch checked-children="开" un-checked-children="关" />
+        </div>
       </a-card>
     </div>
     <div class="shade" v-if="gwIsAll"></div>
@@ -159,6 +181,33 @@ export default {
           line-height: 50px;
         }
       }
+      .c3-table{
+        margin-top: 0.1rem;
+        width: 100%;
+        .td1{
+          // white-space: nowrap;
+          overflow: hidden;
+          width: 100%;
+        }
+        td{
+          background-color: rgba(245,108,108, .5);
+          padding: 5px;
+          .td-input{
+            width: 100%;
+            border: 0;
+            padding: 1px 5px;
+            text-align: center;
+            border-radius: 5px;
+            outline: none;
+          }
+          .td-input{
+
+          }
+        }
+      }
+    }
+    .card4{
+      margin-top: 0.2rem;
     }
   }
   .shade{
