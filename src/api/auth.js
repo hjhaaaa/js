@@ -45,7 +45,7 @@ export function authorizeList(params) {
 
 // 淘客授权前取state
 export function authorizeOauthcheck(params) {
-  return request.post('/usertaobaooauth/oauthcheck', params)
+  return request.get('/usertaobaooauth/oauthcheck', {params})
 }
 
 // 全局配置信息
