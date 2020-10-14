@@ -66,6 +66,7 @@ const user = {
         userLogin(userInfo).then(res => {
           if(res.IsSuccess){
             commit('SET_USER', { username: userInfo.UserName })
+            commit('SET_TOKEN', res.Data.Token)
           }
           resolve(res)
         }).catch(err => {
@@ -76,7 +77,6 @@ const user = {
     Logout({ commit, state }) {
       return new Promise(async resolve => {
         await userLogout()
-        console.log(1111111111111111111)
         commit('SET_USER', { username: '' })
         Vue.ss.set(EVENSET, 0)
         resolve()

@@ -2,11 +2,13 @@
   <div class="dl-box">
     <div class="dl">
       <a-card class="card1" :class="gwIsAll ? 'all' : ''">
-        我的账号：13012341234<br/>
+        我的账号：{{username}}<br/>
         我的工位：
-        <a-button class="gw-btn">123123</a-button>
-        <a-button class="gw-btn">123123</a-button>
-        <a-button class="gw-btn">123123</a-button>
+        <a-button 
+          class="gw-btn" 
+          :type="item.Id == gwSelect.Id ? 'primary' : ''"
+          v-for="(item, index) in gwList" 
+          :key="index">{{item.Id}}</a-button>
 
         <a href="javascript:;" class="card1-more" @click="gwIsAll = !gwIsAll">
           <a-icon v-if="!gwIsAll" type="down" />
@@ -64,14 +66,19 @@
             </td>
           </tr>
         </table>
+        <div style="margin-top: 0.3rem">
+          发单群绑定说明<br/>
+          1. 登录发单的微信，并保持在线登录（在此登录之后不可以在别的电脑等设备上登录）；<br/>
+          2. 在需要发单的微信群发送绑定口令：绑定，系统会自动回复：绑定成功，若未回复，请清理此手机微信数据，重新登录并在此操作；
+        </div>
       </a-card>
       <a-card class="card4">
         <h3 class="card-h3">
           <span class="h3-span">朋友圈</span>
         </h3>
-        <div>
+        <div style="line-height: 50px">
           跟发朋友圈
-          <a-switch checked-children="开" un-checked-children="关" />
+          <a-switch style="float: right;margin: 14px 5px" checked-children="开" un-checked-children="关" />
         </div>
       </a-card>
     </div>
@@ -80,19 +87,36 @@
 </template>
 
 <script>
+import { 
+  agentList,
+  sendGroupList,
+  editRemark,
+  editStatus,
+  sendGroupDelete,
+  updateSendQuan,
+} from '@/api/dl';
+
 export default {
   name: 'dl-index',
   data() {
     return {
       gwIsAll: false,
-
+      gwList: [],
+      username: '',
+      gwSelect: {},
     }
   },
   created() {
-    
+    this.getGwList()
   },
   methods: {
-    
+    getGwList(){
+      agentList().then(res => {
+        this.username = res.Data.UserName
+        this.gwList = res.Data.WorkstationList
+        this.gwSelect = this.gwList[0]
+      })
+    }
   },
 }
 </script>
@@ -169,7 +193,7 @@ export default {
       .c2-div3{
         font-size: 0.28rem;
         line-height: 0.42rem;
-        margin-top: 0.5rem;
+        margin-top: 0.3rem;
       }
     }
     .card3{
