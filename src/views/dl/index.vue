@@ -56,7 +56,7 @@
             <td>
               <div class="td1">
                 {{item.GroupName}}
-                <a-icon type="close-circle" style="vertical-align: -2px" />
+                <a-icon type="close-circle" @click="qunDelete(item)" style="vertical-align: -2px" />
               </div>
             </td>
             <td style="width: 42%">
@@ -214,6 +214,15 @@ export default {
 
         })
       }
+    },
+    qunDelete(row){
+      sendGroupDelete({
+        id: row.Id
+      }).then(res => {
+        this.getQunList()
+      }).catch(err => {
+
+      })
     },
     // 所选工位移动到第一
     gwListMoveFirst(){
