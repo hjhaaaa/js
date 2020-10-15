@@ -7,6 +7,7 @@
         <a-button 
           class="gw-btn" 
           :type="item.Id == gwSelect.Id ? 'primary' : ''"
+          @click="selectGw(item)"
           v-for="(item, index) in gwList" 
           :key="index">{{item.Id}}</a-button>
 
@@ -20,12 +21,17 @@
       <a-card class="card2">
         <div class="c2-div1">
           <div class="div1-img">
-            <img class="img" src="http://wx.qlogo.cn/mmhead/ver_1/k7348sJ6IlXNphZiaqGicFXvHgjaytQrzquC8X0yYIhfEHasYxwiaPIV3DPleevxWSVO0qpBoT4wnT8b5kN9nlB7VWFV2Vyia31UhIJkoPHkVC8/0" alt="">
+            <img class="img" :src="gwSelect.WXAvatar || require('@/assets/images/dl_tx.png')" alt="">
           </div>
           <div class="div1-r">
-            <p class="p">[在线]微信昵称</p>
-            <p class="p">最近登录时间：2020-09-09 09:09:09</p>
-            <p class="p">发单位有效期：2020-09-09 09:09:09</p>
+            <p class="p">
+              <span :style="'color: ' + (gwSelect.WxLogStatus == 1 ? '#52c41a' : '#ff4d4f')">
+                [{{gwSelect.WxLogStatus == 1 ? '在线' : '离线'}}]
+              </span>
+              {{gwSelect.WXNickname || '---'}}
+            </p>
+            <p class="p">最近登录时间：{{gwSelect.OnLineTime}}</p>
+            <p class="p">发单位有效期：{{gwSelect.EndTime}}</p>
           </div>
         </div>
         <div class="c2-div2">
@@ -45,24 +51,30 @@
         <h3 class="card-h3">
           <span class="h3-span">发单群</span>
         </h3>
-        <!-- <ul class="c3-ul">
-          <li>
-            
-          </li>
-        </ul> -->
         <table class="c3-table">
-          <tr>
+          <tr v-for="(item, index) in fdGroupList" :key="index">
             <td>
               <div class="td1">
-                妈妈群
+                {{item.GroupName}}
                 <a-icon type="close-circle" style="vertical-align: -2px" />
               </div>
             </td>
             <td style="width: 42%">
-              <input class="td-input" type="text" placeholder="备注">
+              <input 
+                class="td-input" 
+                type="text" 
+                @focus="qunFocus(item)" 
+                @blur="qunBlur(item)" 
+                v-model="item.Remarks" placeholder="备注"
+              >
             </td>
             <td style="width: 56px">
-              <a-switch checked-children="开" un-checked-children="关" />
+              <a-switch 
+                v-model="item.IsEnable"
+                @change="qunChange(item)" 
+                checked-children="开" 
+                un-checked-children="关" 
+              />
             </td>
           </tr>
         </table>
@@ -78,7 +90,13 @@
         </h3>
         <div style="line-height: 50px">
           跟发朋友圈
-          <a-switch style="float: right;margin: 14px 5px" checked-children="开" un-checked-children="关" />
+          <a-switch 
+            v-model="SendQuanConfig"
+            @change="quanChange" 
+            style="float: right;margin: 14px 5px" 
+            checked-children="开" 
+            un-checked-children="关" 
+          />
         </div>
       </a-card>
     </div>
@@ -95,6 +113,7 @@ import {
   sendGroupDelete,
   updateSendQuan,
 } from '@/api/dl';
+import Vue from 'vue'
 
 export default {
   name: 'dl-index',
@@ -104,19 +123,45 @@ export default {
       gwList: [],
       username: '',
       gwSelect: {},
+      SendQuanConfig: false,
+      fdGroupList: [],
+      localGwId: 0,
+      qunInputText: ''
     }
   },
   created() {
     this.getGwList()
+    this.localGwId = Vue.ss.get('GwId') || 0
+    console.log('localGwId', this.localGwId)
   },
   methods: {
     getGwList(){
       agentList().then(res => {
         this.username = res.Data.UserName
         this.gwList = res.Data.WorkstationList
-        this.gwSelect = this.gwList[0]
-        this.getQunList()
+
+        this.getGwDetail()
       })
+    },
+    getGwDetail(){
+      if(this.localGwId){
+        let idHas = false
+        this.gwList.forEach((value, index) => {
+          if(value.Id == this.localGwId){
+            idHas = true
+            this.gwSelect = Object.assign({}, value)
+          }
+        })
+        if(!idHas){
+          this.gwSelect = Object.assign({}, this.gwList[0])
+        }
+      }else{
+        this.gwSelect = Object.assign({}, this.gwList[0])
+      }
+
+      // this.gwListMoveFirst() 
+      this.SendQuanConfig = this.gwSelect.SendQuanConfig == 1;
+      this.getQunList()
     },
     getQunList(){
       sendGroupList({
@@ -124,9 +169,68 @@ export default {
         PageSize: 500,
         WorkstationId: this.gwSelect.Id
       }).then(res => {
-        
+        this.fdGroupList = res.Data
       })
     },
+    selectGw(row){
+      if(row.Id !== this.gwSelect.Id){
+        this.localGwId = row.Id
+        Vue.ss.set('GwId', row.Id)
+        this.getGwDetail()
+        this.gwIsAll = false
+      }
+    },
+    quanChange(){
+      updateSendQuan({
+        id: this.gwSelect.Id,
+        status: this.SendQuanConfig
+      }).then(res => {
+
+      }).catch(err => {
+        this.SendQuanConfig = !this.SendQuanConfig
+      })
+    },
+    qunChange(row){
+      editStatus({
+        id: row.Id,
+        status: row.IsEnable
+      }).then(res => {
+
+      }).catch(err => {
+        row.IsEnable = !row.IsEnable
+      })
+    },
+    qunFocus(row){
+      this.qunInputText = row.Remarks || '';
+    },
+    qunBlur(row){
+      if(this.qunInputText != (row.Remarks || '')){
+        editRemark({
+          id: row.Id,
+          remark: row.Remarks,
+        }).then(res => {
+
+        }).catch(err => {
+
+        })
+      }
+    },
+    // 所选工位移动到第一
+    gwListMoveFirst(){
+      let _gwIndex
+      let _gwList = JSON.parse(JSON.stringify(this.gwList));
+      _gwList.forEach((value, index) => {
+        if(value.Id == this.gwSelect.Id){
+          _gwIndex = index
+        }
+      })
+      
+      if(_gwIndex && _gwIndex > 0){
+        let _gwsp = _gwList.splice(_gwIndex, 1)
+        _gwList.unshift(_gwsp[0])
+        this.gwList = _gwList
+      }
+    }
   },
 }
 </script>
@@ -208,13 +312,6 @@ export default {
     }
     .card3{
       margin-top: 0.2rem;
-      .c3-ul{
-        margin-top: 10px;
-        li{
-          height: 50px;
-          line-height: 50px;
-        }
-      }
       .c3-table{
         margin-top: 0.1rem;
         width: 100%;
