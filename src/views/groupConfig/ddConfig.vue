@@ -23,7 +23,6 @@
         <a-button class="g-btn" type="primary" @click="insertText('#商品标题#')">商品标题</a-button>
         <a-button class="g-btn" type="primary" @click="insertText('#推荐文案#')">推荐文案</a-button>
         <a-button class="g-btn" type="primary" @click="insertText('#短链接#')">短链接</a-button>
-        <a-button class="g-btn" type="primary" @click="insertText('#淘口令#')">淘口令</a-button>
         <a-button class="g-btn" type="primary" @click="insertText('#原价#')">原价</a-button>
         <a-button class="g-btn" type="primary" @click="insertText('#券后价#')">券后价</a-button>
         <a-button class="g-btn" type="primary" @click="insertText('#券值#')">券值</a-button>
@@ -79,7 +78,6 @@
       <a-col :span="24" style="margin-top: 10px">
         <a-button class="g-btn" type="primary" @click="insertText('#券后价#')">券后价</a-button>
         <a-button class="g-btn" type="primary" @click="insertText('#券值#')">券值</a-button>
-        <a-button class="g-btn" type="primary" @click="insertText('#淘口令#')">淘口令</a-button>
         <a-button class="g-btn" type="primary" @click="insertText('#短链接#')">短链接</a-button>
         <a-button class="g-btn" type="primary" @click="insertText('#随机表情#')">随机表情</a-button>
         <a-button class="g-btn" type="primary" @click="insertText('#原价#')">原价</a-button>
@@ -131,7 +129,6 @@
       <a-col :span="24" style="margin-top: 10px">
         <a-button class="g-btn" type="primary" @click="insertText('#券后价#')">券后价</a-button>
         <a-button class="g-btn" type="primary" @click="insertText('#券值#')">券值</a-button>
-        <a-button class="g-btn" type="primary" @click="insertText('#淘口令#')">淘口令</a-button>
         <a-button class="g-btn" type="primary" @click="insertText('#短链接#')">短链接</a-button>
         <a-button class="g-btn" type="primary" @click="insertText('#随机表情#')">随机表情</a-button>
         <a-button class="g-btn" type="primary" @click="insertText('#原价#')">原价</a-button>
