@@ -3,7 +3,7 @@ import request from '@/utils/request'
 
 // 登出
 export function logout() {
-  return request.get('/d/aduser/loginout')
+  // return request.post('/UserLogin/Logout')
 }
 
 
