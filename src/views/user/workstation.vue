@@ -3,27 +3,38 @@
 		<a-card title="工位列表" :bordered="false">
 			<a-form layout="inline" :form="form" style="margin-bottom: 10px">
 				<!-- <div class="searchrow"> -->
-					<a-form-item label="工位Id">
-						<a-input  v-model="form.Id" placeholder="请输入工位Id" />
-					</a-form-item>
-					<a-form-item label="用户名">
-						<a-input v-model="form.UserName" placeholder="请输入用户名" />
-					</a-form-item>
-					<a-form-item label="工位备注">
-						<a-input v-model="form.Remark" placeholder="请输入关键词" />
-					</a-form-item>
-					<a-form-item label="工位状态">
-						<a-select style="width: 150px" v-model="form.Status" :options="statusOptions"></a-select>
-					</a-form-item>
-					<a-form-item label="微信状态">
-						<a-select v-model="form.WxStatus" :options="wxStatusOptions"></a-select>
-					</a-form-item>
-					<a-form-item label="充值类型">
-						<a-select style="width: 120px" v-model="form.RechageType" :options="rechageTypeOptions"></a-select>
-					</a-form-item>
-					<a-form-item>
-						<a-button icon="search" @click="handleSearch">查询</a-button>
-					</a-form-item>
+				<a-form-item label="工位Id">
+					<a-input v-model="form.Id" placeholder="请输入工位Id" />
+				</a-form-item>
+				<a-form-item label="用户名">
+					<a-input v-model="form.UserName" placeholder="请输入用户名" />
+				</a-form-item>
+				<a-form-item label="工位备注">
+					<a-input v-model="form.Remark" placeholder="请输入关键词" />
+				</a-form-item>
+				<a-form-item label="工位状态">
+					<a-select
+						style="width: 150px"
+						v-model="form.Status"
+						:options="statusOptions"
+					></a-select>
+				</a-form-item>
+				<a-form-item label="微信状态">
+					<a-select
+						v-model="form.WxStatus"
+						:options="wxStatusOptions"
+					></a-select>
+				</a-form-item>
+				<a-form-item label="充值类型">
+					<a-select
+						style="width: 120px"
+						v-model="form.RechageType"
+						:options="rechageTypeOptions"
+					></a-select>
+				</a-form-item>
+				<a-form-item>
+					<a-button icon="search" @click="handleSearch">查询</a-button>
+				</a-form-item>
 				<!-- </div> -->
 			</a-form>
 			<a-table
@@ -35,15 +46,23 @@
 				:scroll="{ x: 1000 }"
 			>
 				<template slot="editRemarks" slot-scope="text, row">
-					<editable-cell :text="text" @change="remarksChange(row, 'Remarks', $event)" editTitle="编辑备注" />
+					<editable-cell
+						:text="text"
+						@change="remarksChange(row, 'Remarks', $event)"
+						editTitle="编辑备注"
+					/>
 				</template>
 				<!-- v-if="row.StationRechageType==2" -->
 				<div slot="Status" slot-scope="row">
-					<a-tag v-if="row.StationRechageType==2" color="purple">增强版</a-tag>
-					<a-tag v-else-if="row.StationRechageType==1" color="blue">普通版</a-tag>
+					<a-tag v-if="row.StationRechageType == 2" color="purple"
+						>增强版</a-tag
+					>
+					<a-tag v-else-if="row.StationRechageType == 1" color="blue"
+						>普通版</a-tag
+					>
 					<a-tag v-if="isShowExpireTag(row)" color="red">即将到期</a-tag>
-					<p>状态:{{row.WorkStatus==2?'启用':'禁用'}}</p>
-					<p>到期时间:{{ formatEndDate(row)}}</p>
+					<p>状态:{{ row.WorkStatus == 2 ? '启用' : '禁用' }}</p>
+					<p>到期时间:{{ formatEndDate(row) }}</p>
 					<!-- <p></p> -->
 				</div>
 				<div slot="showWXAvatar" slot-scope="row">
@@ -55,15 +74,15 @@
 					<a-button type="primary" @click="wxLogout(row)">退出微信</a-button>
 				</div>
 				<div slot="wxStatus" slot-scope="row">
-					<div v-if="row.WxLogStatus==1">
+					<div v-if="row.WxLogStatus == 1">
 						<a-tag color="#87d068">在线</a-tag>
 						<p>最近登录：</p>
-						<p>{{row.OnLineTime||' '}}</p>
+						<p>{{ row.OnLineTime || ' ' }}</p>
 					</div>
 					<div v-else>
 						<a-tag>离线</a-tag>
 						<p>最近离线：</p>
-						<p>{{row.OffLineTime||' '}}</p>
+						<p>{{ row.OffLineTime || ' ' }}</p>
 					</div>
 				</div>
 				<div slot="opSwitchStatus" class="wxOp" slot-scope="row">
@@ -73,15 +92,26 @@
 						:checked="!!row.SwitchStatus"
 						@change="editSwitchStatus(row)"
 					/>
-				</div>primary
+				</div>
+				primary
 				<div class="table operation" slot="opti" slot-scope="row">
-					<a-button type="primary" @click="showRecharge(row)" size="small">充值工位</a-button>
-					<a-button type="primary" @click="showSendGroup(row)" size="small">发单群</a-button>
+					<a-button type="primary" @click="showRecharge(row)" size="small"
+						>充值工位</a-button
+					>
+					<a-button type="primary" @click="showSendGroup(row)" size="small"
+						>发单群</a-button
+					>
 					<br />
-					<a-button type="primary" @click="setConfig(row)" size="small">指定配置</a-button>
-					<a-button type="primary" @click="setGroup(row)" size="small">指定分组</a-button>
+					<a-button type="primary" @click="setConfig(row)" size="small"
+						>指定配置</a-button
+					>
+					<a-button type="primary" @click="setGroup(row)" size="small"
+						>指定分组</a-button
+					>
 					<br />
-					<a-button type="primary" @click="removeWorkstation(row)" size="small">删除工位</a-button>
+					<a-button type="primary" @click="removeWorkstation(row)" size="small"
+						>删除工位</a-button
+					>
 				</div>
 			</a-table>
 			<div style="margin-top: 15px">
@@ -92,13 +122,17 @@
 					@change="pageChange"
 					:total="total"
 					showQuickJumper
-					:showTotal="total => `共${total}条`"
+					:showTotal="(total) => `共${total}条`"
 				/>
 			</div>
 		</a-card>
 
 		<!--充值弹窗-->
-		<a-modal :title="rechargeTitle" :visible="rechargeVisible" :closable="false">
+		<a-modal
+			:title="rechargeTitle"
+			:visible="rechargeVisible"
+			:closable="false"
+		>
 			<template slot="footer">
 				<a-button key="back" @click="rechargeHandleCancel">取消</a-button>
 				<a-button
@@ -107,21 +141,35 @@
 					:loading="rechargeButtonLoading"
 					@click="rechargeHandleOk"
 					:disabled="rechargeButtonDisabled"
-				>确定</a-button>
+					>确定</a-button
+				>
 			</template>
 			<a-form :form="rechargeForm" :model="rechargeInfo" ref="rechargeForm">
 				<!-- <p v-bind="formItemLayout">工位类型设置后将不能修改</p> -->
-				<a-form-item v-bind="formItemLayout" label="工位类型" prop="RechageType">
-					<a-radio-group v-model="rechargeInfo.RechageType" @change="rechageTypeChange">
+				<a-form-item
+					v-bind="formItemLayout"
+					label="工位类型"
+					prop="RechageType"
+				>
+					<a-radio-group
+						v-model="rechargeInfo.RechageType"
+						@change="rechageTypeChange"
+					>
 						<a-radio :value="1">基础版 有效期30天 10个发单群</a-radio>
 						<a-radio :value="2">增强版 有效期30天 60个发单群</a-radio>
 					</a-radio-group>
 				</a-form-item>
 				<a-form-item v-bind="formItemLayout" label="需要卡密数">
-					<a-input v-model="rechargeInfo.NeedCardCodeCount" autocomplete="off" read-only />
+					<a-input
+						v-model="rechargeInfo.NeedCardCodeCount"
+						autocomplete="off"
+						read-only
+					/>
 					<!-- <span>剩余卡密数：{{rechargeInfo.CardCodeCount}}</span> -->
 				</a-form-item>
-				<a-form-item v-bind="formItemLayout" label="剩余卡密数：">{{rechargeInfo.CardCodeCount}}</a-form-item>
+				<a-form-item v-bind="formItemLayout" label="剩余卡密数：">{{
+					rechargeInfo.CardCodeCount
+				}}</a-form-item>
 			</a-form>
 		</a-modal>
 
@@ -138,9 +186,10 @@
 				<div id="divQrcode" ref="qrCodeUrl"></div>
 			</div>
 			<div>
-				<p style="text-align: center;">
+				<p style="text-align: center">
 					请在
-					<span data-v-6e0de69a style="color: red;">{{canloginSecond}}</span>秒以内扫码登录微信
+					<span data-v-6e0de69a style="color: red">{{ canloginSecond }}</span
+					>秒以内扫码登录微信
 				</p>
 				<p>登录方式</p>
 				<p>1.将二维码截图发送给他们</p>
@@ -172,18 +221,18 @@ import {
 	WorkstationList,
 	DeleteWorkstation,
 	UpdateWorkstationStatus,
-	UpdateWorkstationRemark
+	UpdateWorkstationRemark,
 } from '@/api/workstatusApi.js'
 import {
 	WechatQRLogin,
 	WechatLogout,
-	WechatPushLogin
+	WechatPushLogin,
 } from '@/api/wechatApi.js'
 import {
 	SendGroupList,
 	DeleteSendGroup,
 	UpdateSendGroupStatus,
-	UpdateSendGroupRemark
+	UpdateSendGroupRemark,
 } from '@/api/sendGroupApi.js'
 import { GetRechargeCode, RechargeWorkstation } from '@/api/cardCodeApi.js'
 import { constants } from 'zlib'
@@ -199,28 +248,28 @@ export default {
 				{ label: '全部', value: -1 },
 				{ label: '启用', value: 1 },
 				{ label: '禁用', value: 0 },
-				{ label: '三天内到期', value: 2 }
+				{ label: '三天内到期', value: 2 },
 			],
 			wxStatusOptions: [
 				{ label: '全部', value: -1 },
 				{ label: '在线', value: 1 },
-				{ label: '离线', value: 0 }
+				{ label: '离线', value: 0 },
 			],
 			rechageTypeOptions: [
 				{ label: '全部', value: -1 },
 				{ label: '未充值', value: 0 },
 				{ label: '普通版', value: 1 },
-				{ label: '增强版', value: 2 }
+				{ label: '增强版', value: 2 },
 			],
 			aform: this.$form.createForm(this),
 			rechargeForm: this.$form.createForm(this),
 			formItemLayout: {
 				labelCol: {
-					sm: { span: 7 }
+					sm: { span: 7 },
 				},
 				wrapperCol: {
-					sm: { span: 12 }
-				}
+					sm: { span: 12 },
+				},
 			},
 			form: {
 				Id: '',
@@ -230,71 +279,71 @@ export default {
 				pageSize: 10,
 				pageNum: 1,
 				WxStatus: -1,
-				RechageType: -1
+				RechageType: -1,
 			},
 			columns: [
 				{
 					title: '工位Id',
 					width: '80px',
-					dataIndex: 'Id'
+					dataIndex: 'Id',
 				},
 				{
 					title: '用户名',
 					Key: 'UserName',
 					width: '130px',
-					dataIndex: 'UserName'
+					dataIndex: 'UserName',
 				},
 				{
 					title: '备注',
 					Key: 'Remarks',
 					width: '20%',
 					dataIndex: 'Remarks',
-					scopedSlots: { customRender: 'editRemarks' }
+					scopedSlots: { customRender: 'editRemarks' },
 				},
 				{
 					title: '微信用户',
 					Key: '',
 					width: '120px',
 					dataIndex: '',
-					scopedSlots: { customRender: 'showWXAvatar' }
+					scopedSlots: { customRender: 'showWXAvatar' },
 				},
 				{
 					title: '微信操作',
 					Key: '',
 					width: '120px',
 					dataIndex: '',
-					scopedSlots: { customRender: 'wxOp' }
+					scopedSlots: { customRender: 'wxOp' },
 				},
 				{
 					title: '微信状态',
 					Key: '',
 					width: '100px',
 					dataIndex: '',
-					scopedSlots: { customRender: 'wxStatus' }
+					scopedSlots: { customRender: 'wxStatus' },
 				},
 				{
 					title: '工位状态',
 					key: 'Status',
 					// width: '100px',
-					scopedSlots: { customRender: 'Status' }
+					scopedSlots: { customRender: 'Status' },
 				},
 				{
 					title: '发单状态',
 					key: 'SwitchStatus',
 					width: '100px',
-					scopedSlots: { customRender: 'opSwitchStatus' }
+					scopedSlots: { customRender: 'opSwitchStatus' },
 				},
 				{
 					title: '创建时间',
 					Key: 'CTime',
 					width: '200px',
-					dataIndex: 'CTime'
+					dataIndex: 'CTime',
 				},
 				{
 					title: '操作',
 					width: '200px',
-					scopedSlots: { customRender: 'opti' }
-				}
+					scopedSlots: { customRender: 'opti' },
+				},
 			],
 			visible: false, //添加用户
 			data: [],
@@ -308,7 +357,7 @@ export default {
 				WorkstationId: 0,
 				RechageType: 1,
 				CardCodeCount: 0,
-				NeedCardCodeCount: 1
+				NeedCardCodeCount: 1,
 			},
 
 			signalRconnection: undefined, //signalR对象
@@ -316,7 +365,7 @@ export default {
 			wxloginVisible: false,
 			timer: null,
 			canloginSecond: 200,
-			wxloginType: 'qrcode'
+			wxloginType: 'qrcode',
 		}
 	},
 	mounted() {
@@ -326,7 +375,7 @@ export default {
 		query() {
 			this.tableLoading = true
 			WorkstationList(this.form)
-				.then(res => {
+				.then((res) => {
 					this.data = res.Data
 					this.total = res.TotalCount
 					this.tableLoading = false
@@ -346,7 +395,7 @@ export default {
 		remarksChange(row, key, value) {
 			if (!value) return
 			UpdateWorkstationRemark(row.Id, value)
-				.then(res => {
+				.then((res) => {
 					if (res.IsSuccess) {
 						tipMessage.success('保存成功')
 					} else {
@@ -376,7 +425,7 @@ export default {
 		},
 		wxLogout(row) {
 			WechatLogout(row.Id)
-				.then(res => {
+				.then((res) => {
 					if (res.IsSuccess) {
 						tipMessage.success('退出成功')
 						this.query()
@@ -387,20 +436,20 @@ export default {
 				.catch(() => {})
 		},
 		editSwitchStatus(row) {
-			let nowRow = this.data.find(item => {
+			let nowRow = this.data.find((item) => {
 				return item.Id == row.Id
 			})
 
 			var newValue = !row.SwitchStatus
 			UpdateWorkstationStatus(row.Id, newValue)
-				.then(res => {
+				.then((res) => {
 					nowRow.SwitchStatus = newValue
 					tipMessage.success('操作成功')
 				})
 				.catch(() => {
 					notification.error({
 						message: '错误',
-						description: '操作失败:' + res.Msg
+						description: '操作失败:' + res.Msg,
 					})
 					nowRow.SwitchStatus = !newValue
 				})
@@ -412,7 +461,7 @@ export default {
 			//充值弹窗充值
 			let v = this
 			GetRechargeCode()
-				.then(res => {
+				.then((res) => {
 					console.log('rechargeInfo', v.rechargeInfo)
 
 					if (res.IsSuccess) {
@@ -461,9 +510,9 @@ export default {
 					v.tableLoading = true
 					RechargeWorkstation({
 						workstationId: v.rechargeInfo.WorkstationId,
-						rechageType: v.rechargeInfo.RechageType
+						rechageType: v.rechargeInfo.RechageType,
 					})
-						.then(res => {
+						.then((res) => {
 							if (res.IsSuccess) {
 								v.query()
 								v.$message.success('充值成功')
@@ -479,7 +528,7 @@ export default {
 							v.rechargeInfo.WorkstationId = 0
 						})
 				},
-				onCancel() {}
+				onCancel() {},
 			})
 		},
 		rechargeHandleCancel() {
@@ -496,7 +545,7 @@ export default {
 				onOk() {
 					v.tableLoading = true
 					DeleteWorkstation(row.Id)
-						.then(res => {
+						.then((res) => {
 							if (res.IsSuccess) {
 								v.query()
 								tipMessage.success('删除工位成功')
@@ -509,7 +558,7 @@ export default {
 							v.tableLoading = false
 						})
 				},
-				onCancel() {}
+				onCancel() {},
 			})
 		},
 		setConfig(row) {
@@ -524,8 +573,9 @@ export default {
 		connectSignalServer() {
 			if (this.signalRconnection == null) {
 				this.signalRconnection = new signalR.HubConnectionBuilder()
-				.withUrl('http://192.168.11.129:30080/WorkstationHub')
-							//	.withUrl('http://localhost:13513/WorkstationHub')
+					//	.withUrl('http://192.168.11.129:30080/WorkstationHub')
+					//	.withUrl('http://localhost:13513/WorkstationHub')
+					.withUrl('http://47.99.153.221:30080/WorkstationHub')
 					.withAutomaticReconnect() //断线自动重连
 					.build()
 				//接收消息
@@ -558,7 +608,7 @@ export default {
 				//调用服务端设置工位Id方法
 				this.signalRconnection
 					.invoke('SetWorkstationId', this.currentLoginWorkstation.Id)
-					.catch(function(err) {
+					.catch(function (err) {
 						this.currentLoginWorkstation = undefined
 						this.wxloginType = ''
 						console.log('err：', err)
@@ -572,7 +622,7 @@ export default {
 					console.log('请求二维码登录接口')
 					//请求二维码登录接口
 					WechatQRLogin(this.currentLoginWorkstation.Id)
-						.then(res => {
+						.then((res) => {
 							if (res.IsSuccess) {
 								this.wxloginVisible = true
 								this.$nextTick(() => {
@@ -590,7 +640,7 @@ export default {
 					console.log('请求推送登录接口')
 					//推送登录
 					WechatPushLogin(this.currentLoginWorkstation.Id)
-						.then(res => {
+						.then((res) => {
 							if (res.IsSuccess) {
 								tipMessage.success('推送成功,请在手机微信上进行操作')
 								this.wxQrloginHandleCancel()
@@ -618,7 +668,7 @@ export default {
 				height: 300,
 				colorDark: '#000000',
 				colorLight: '#ffffff',
-				correctLevel: QRCode.CorrectLevel.H
+				correctLevel: QRCode.CorrectLevel.H,
 			})
 		},
 		doCountDown() {
@@ -644,8 +694,9 @@ export default {
 			}
 			var nowTime = moment()
 			var workEndTime = moment(row.EndTime)
+
 			var duration = moment.duration(workEndTime.diff(nowTime))
-			// console.log('duration', )
+			//  console.log('duration', duration)
 			return duration._data.days <= 7
 		},
 		formatEndDate(row) {
@@ -653,11 +704,11 @@ export default {
 				return ' '
 			}
 			return moment(row.EndTime).format('YYYY-MM-DD')
-		}
+		},
 	},
 	created() {
 		this.query()
-	}
+	},
 }
 </script>
 

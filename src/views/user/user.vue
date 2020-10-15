@@ -1,7 +1,9 @@
 <template>
 	<div class="user">
 		<a-card title="我的账号">
-			<p class="tip">此账号配置的信息为淘客信息，PID使用优先级：群PID>工位PID>用户PID>淘客PID</p>
+			<p class="tip">
+				此账号配置的信息为淘客信息，PID使用优先级：群PID>工位PID>用户PID>淘客PID
+			</p>
 			<a-table
 				:columns="columns"
 				:dataSource="mydata"
@@ -11,28 +13,44 @@
 				:scroll="{ x: 1000 }"
 			>
 				<template slot="editRemarks" slot-scope="text, row">
-					<editable-cell :text="text" @change="RemarksChange(row, 'Remarks', $event)" editTitle="编辑备注" />
+					<editable-cell
+						:text="text"
+						@change="RemarksChange(row, 'Remarks', $event)"
+						editTitle="编辑备注"
+					/>
 				</template>
 				<div slot="opSwitchStatus" class="wxOp" slot-scope="row">
 					<a-switch
 						checked-children="开"
 						un-checked-children="关"
-						:checked="!!row.Status==1"
-						@change="EditStatus(row,1)"
+						:checked="!!row.Status == 1"
+						@change="EditStatus(row, 1)"
 					/>
 				</div>
 				<div class="table operation" slot="opti" slot-scope="row">
-					<a-button type="primary" @click="workstationManage(row)" size="small">工位管理</a-button>
-					<a-button type="primary" @click="setConfig(row)" size="small">指定配置</a-button>
-					<a-button type="primary" @click="addWorkstation(row,1)" size="small">创建工位</a-button>
-					<a-button type="primary" @click="setGroup(row)" size="small">指定分组</a-button>
+					<a-button type="primary" @click="workstationManage(row)" size="small"
+						>工位管理</a-button
+					>
+					<a-button type="primary" @click="setConfig(row)" size="small"
+						>指定配置</a-button
+					>
+					<a-button type="primary" @click="addWorkstation(row, 1)" size="small"
+						>创建工位</a-button
+					>
+					<a-button type="primary" @click="setGroup(row)" size="small"
+						>指定分组</a-button
+					>
 					<!-- <a type="link" @click="edit(row,1)">编辑信息</a> -->
-					<a-button type="primary" @click="goAgent(row)" size="small">登录代理端</a-button>
+					<a-button type="primary" @click="goAgent(row)" size="small"
+						>登录代理端</a-button
+					>
 				</div>
 			</a-table>
 		</a-card>
-		<a-card title="用户列表"   style="margin-top: 10px">
-			<p class="tip">此账号配置的信息为用户信息，PID使用优先级：群PID>工位PID>用户PID>淘客PID</p>
+		<a-card title="用户列表" style="margin-top: 10px">
+			<p class="tip">
+				此账号配置的信息为用户信息，PID使用优先级：群PID>工位PID>用户PID>淘客PID
+			</p>
 			<a-form layout="inline" :form="form" style="margin-bottom: 10px">
 				<a-form-item label="用户名">
 					<a-input v-model="form.UserName" placeholder="请输入用户名" />
@@ -50,7 +68,13 @@
 				</a-form-item>
 				<a-form-item>
 					<a-button icon="search" @click="handleSearch">查询</a-button>
-					<a-button type="primary" style="margin-left: 15px" icon="plus-circle" @click="addUser">添加用户</a-button>
+					<a-button
+						type="primary"
+						style="margin-left: 15px"
+						icon="plus-circle"
+						@click="addUser"
+						>添加用户</a-button
+					>
 				</a-form-item>
 			</a-form>
 			<a-table
@@ -62,25 +86,39 @@
 				:scroll="{ x: 1000 }"
 			>
 				<template slot="editRemarks" slot-scope="text, row">
-					<editable-cell :text="text" @change="RemarksChange(row, 'Remarks', $event)" editTitle="编辑备注" />
+					<editable-cell
+						:text="text"
+						@change="RemarksChange(row, 'Remarks', $event)"
+						editTitle="编辑备注"
+					/>
 				</template>
 
 				<div slot="opSwitchStatus" class="wxOp" slot-scope="row">
 					<a-switch
 						checked-children="开"
 						un-checked-children="关"
-						:checked="!!row.Status==1"
-						@change="EditStatus(row,2)"
+						:checked="!!row.Status == 1"
+						@change="EditStatus(row, 2)"
 					/>
 				</div>
 				<!-- <span slot="Status" slot-scope="row"><a-switch id="row_{{row.id}}" checked='' @change="onChange" /></span> -->
 				<div class="table operation" slot="opti" slot-scope="row">
-						<a-button type="primary" @click="workstationManage(row)" size="small">工位管理</a-button>
-					<a-button type="primary" @click="setConfig(row)" size="small">指定配置</a-button>
-					<a-button type="primary" @click="addWorkstation(row,2)" size="small">创建工位</a-button>
-					<a-button type="primary" @click="setGroup(row)" size="small">指定分组</a-button>
+					<a-button type="primary" @click="workstationManage(row)" size="small"
+						>工位管理</a-button
+					>
+					<a-button type="primary" @click="setConfig(row)" size="small"
+						>指定配置</a-button
+					>
+					<a-button type="primary" @click="addWorkstation(row, 2)" size="small"
+						>创建工位</a-button
+					>
+					<a-button type="primary" @click="setGroup(row)" size="small"
+						>指定分组</a-button
+					>
 					<!-- <a type="link" @click="edit(row,1)">编辑信息</a> -->
-					<a-button type="primary" @click="goAgent(row)" size="small">登录代理端</a-button>
+					<a-button type="primary" @click="goAgent(row)" size="small"
+						>登录代理端</a-button
+					>
 				</div>
 			</a-table>
 			<div style="margin-top: 15px">
@@ -91,23 +129,44 @@
 					@change="pageChange"
 					:total="total"
 					showQuickJumper
-					:showTotal="total => `共${total}条`"
+					:showTotal="(total) => `共${total}条`"
 				/>
 			</div>
 		</a-card>
-		<a-modal title="创建用户" :visible="visible" @ok="addHandleOk" @cancel="addHandleCancel">
+		<a-modal
+			title="创建用户"
+			:visible="visible"
+			@ok="addHandleOk"
+			@cancel="addHandleCancel"
+		>
 			<a-form :form="aform" :model="addInfo" :rules="addRules" ref="aform">
 				<a-form-item v-bind="formItemLayout" label="用户名" prop="userName">
-					<a-input placeholder="登录用户名" v-decorator="addRules.userName" autocomplete="off" />
+					<a-input
+						placeholder="登录用户名"
+						v-decorator="addRules.userName"
+						autocomplete="off"
+					/>
 				</a-form-item>
 				<a-form-item v-bind="formItemLayout" label="密码" prop="pwd">
-					<a-input-password placeholder="登录密码" autocomplete="off" v-decorator="addRules.pwd" />
+					<a-input-password
+						placeholder="登录密码"
+						autocomplete="off"
+						v-decorator="addRules.pwd"
+					/>
 				</a-form-item>
 				<a-form-item v-bind="formItemLayout" label="账号状态" prop="status">
-					<a-radio-group :options="statusOptions" v-decorator="addRules.status"></a-radio-group>
+					<a-radio-group  v-decorator="addRules.status">
+						<a-radio  :value="1"> 启用</a-radio>
+						<a-radio  :value="0"> 禁用</a-radio>
+						
+					</a-radio-group>
 				</a-form-item>
 				<a-form-item v-bind="formItemLayout" label="备注" prop="remark">
-					<a-input placeholder="用户备注" autocomplete="off" v-decorator="addRules.remark" />
+					<a-input
+						placeholder="用户备注"
+						autocomplete="off"
+						v-decorator="addRules.remark"
+					/>
 				</a-form-item>
 			</a-form>
 		</a-modal>
@@ -141,7 +200,7 @@ import {
 	UserList,
 	CreatUser,
 	UpdateUserStatus,
-	UpdateUserRemark
+	UpdateUserRemark,
 } from '@/api/userApi.js'
 import { CreateWorkstation } from '@/api/workstatusApi.js'
 
@@ -156,30 +215,30 @@ export default {
 		return {
 			statusOptions: [
 				{ label: '启用', value: 1 },
-				{ label: '禁用', value: 0 }
+				{ label: '禁用', value: 0 },
 			],
 			aform: this.$form.createForm(this),
 			editform: this.$form.createForm(this),
 			formItemLayout: {
 				labelCol: {
-					sm: { span: 5 }
+					sm: { span: 5 },
 				},
 				wrapperCol: {
-					sm: { span: 12 }
-				}
+					sm: { span: 12 },
+				},
 			},
 			form: {
 				Remark: '',
 				Status: '-1',
 				UserName: '',
 				pageSize: 20,
-				pageNum: 1
+				pageNum: 1,
 			},
 			addInfo: {
 				userName: '',
 				pwd: '',
 				remark: '',
-				status: '1'
+				status: 1,
 			},
 			addRules: {
 				userName: [
@@ -188,16 +247,16 @@ export default {
 						rules: [
 							{
 								required: true,
-								message: '用户名不能为空!'
-							}
+								message: '用户名不能为空!',
+							},
 							// {
 							// 	min: 6,
 							// 	max: 30,
 							// 	message: '长度在 6 到 30 个字符',
 							// 	trigger: 'blur'
 							// }
-						]
-					}
+						],
+					},
 				],
 				pwd: [
 					'pwd',
@@ -205,16 +264,16 @@ export default {
 						rules: [
 							{
 								required: true,
-								message: '密码不能为空!'
-							}
+								message: '密码不能为空!',
+							},
 							// {
 							// 	min: 6,
 							// 	max: 30,
 							// 	message: '长度在 6 到 30 个字符',
 							// 	trigger: 'blur'
 							// }
-						]
-					}
+						],
+					},
 				],
 				status: [
 					'status',
@@ -222,10 +281,10 @@ export default {
 						rules: [
 							{
 								required: true,
-								message: '请设置账号状态!'
-							}
-						]
-					}
+								message: '请设置账号状态!',
+							},
+						],
+					},
 				],
 				remark: [
 					'remark',
@@ -235,60 +294,60 @@ export default {
 								min: 0,
 								max: 100,
 								message: '长度在不能超过100个字符',
-								trigger: 'blur'
-							}
-						]
-					}
-				]
+								trigger: 'blur',
+							},
+						],
+					},
+				],
 			},
 			editInfo: {
 				id: 0,
 				remark: '',
-				status: 1
+				status: 1,
 			},
 			columns: [
 				{
 					title: '序号',
 					Key: 'Id',
 					width: '80px',
-					dataIndex: 'Id'
+					dataIndex: 'Id',
 				},
 				{
 					title: '用户名',
 					Key: 'UserName',
 					width: '150px',
-					dataIndex: 'UserName'
+					dataIndex: 'UserName',
 				},
 				{
 					title: '备注',
 					Key: 'Remarks',
 					width: '200px',
 					dataIndex: 'Remarks',
-					scopedSlots: { customRender: 'editRemarks' }
+					scopedSlots: { customRender: 'editRemarks' },
 				},
 				{
 					title: '发单状态',
 					key: 'Status',
 					width: '100px',
-					scopedSlots: { customRender: 'opSwitchStatus' }
+					scopedSlots: { customRender: 'opSwitchStatus' },
 				},
 				{
 					title: '创建时间',
 					Key: 'CTime',
 					width: '150px',
-					dataIndex: 'CTime'
+					dataIndex: 'CTime',
 				},
 				{
 					title: '工位数',
 					Key: 'WorkstationCount',
 					width: '100px',
-					dataIndex: 'WorkstationCount'
+					dataIndex: 'WorkstationCount',
 				},
 
 				{
 					title: '操作',
-					scopedSlots: { customRender: 'opti' }
-				}
+					scopedSlots: { customRender: 'opti' },
+				},
 			],
 			visible: false, //添加用户
 			editVisible: false, //编辑信息
@@ -299,7 +358,7 @@ export default {
 			curUserId: '',
 			tableLoading: false,
 			mytableLoading: false,
-			configId: 0
+			configId: 0,
 		}
 	},
 	methods: {
@@ -310,7 +369,7 @@ export default {
 			params.Status *= 1
 
 			UserList(params)
-				.then(res => {
+				.then((res) => {
 					this.data = res.Data
 					this.total = res.TotalCount
 					this.tableLoading = false
@@ -324,9 +383,9 @@ export default {
 			UserList({
 				isSelf: true,
 				pageNum: 1,
-				pageSize: 20
+				pageSize: 20,
 			})
-				.then(res => {
+				.then((res) => {
 					this.mydata = res.Data
 					this.mytableLoading = false
 				})
@@ -345,7 +404,7 @@ export default {
 		RemarksChange(row, key, value) {
 			if (!value) return
 			UpdateUserRemark(row.Id, value)
-				.then(res => {
+				.then((res) => {
 					if (res.IsSuccess) {
 						this.query()
 						tipMessage.success('保存成功')
@@ -364,13 +423,13 @@ export default {
 			if (type == 1) {
 				nowRow = this.mydata[0]
 			} else if (type == 2) {
-				nowRow = this.data.find(item => {
+				nowRow = this.data.find((item) => {
 					return item.Id == row.Id
 				})
 			}
 			var newValue = row.Status == 1 ? 0 : 1
 			UpdateUserStatus(row.Id, newValue)
-				.then(res => {
+				.then((res) => {
 					nowRow.Status = newValue
 					tipMessage.success('操作成功')
 				})
@@ -396,7 +455,7 @@ export default {
 			}
 
 			CreateWorkstation(row.Id)
-				.then(res => {
+				.then((res) => {
 					console.log('res', res)
 					if (res.IsSuccess) {
 						if (isTk) {
@@ -437,7 +496,7 @@ export default {
 					id: row.Id,
 					userName: row.UserName,
 					status: row.Status,
-					remark: row.Remarks
+					remark: row.Remarks,
 				}
 			)
 		},
@@ -471,7 +530,7 @@ export default {
 					userName: '',
 					pwd: '',
 					status: 1,
-					remark: ''
+					remark: '',
 				}
 			)
 		},
@@ -481,8 +540,8 @@ export default {
 				if (!err) {
 					console.log('addform values: ', values)
 					CreatUser(values)
-						.then(res => {
-							if (res.code == 0) {
+						.then((res) => {
+							if (res.IsSuccess) {
 								tipMessage.success('用户创建成功')
 								this.query()
 								this.visible = false
@@ -532,12 +591,12 @@ export default {
 				// 如果通过校验，调用无参数的 `callback()` 即可
 				callback()
 			}
-		}
+		},
 	},
 	created() {
 		this.queryTk()
 		this.query()
-	}
+	},
 }
 </script>
 

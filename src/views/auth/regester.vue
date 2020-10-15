@@ -97,14 +97,14 @@
 						>{{fasongText}}</a-button>
           </a-col>
 				</a-form-item>
-
+<!-- { required: true, message: '请输入邀请码' } -->
 				<a-form-item>
 					<a-input
 						v-decorator="[
 							'InviteCode',
 							{
 								rules: [
-									{ required: true, message: '请输入邀请码' }
+									
 								],
 								validateTrigger: 'blur'
 							}
