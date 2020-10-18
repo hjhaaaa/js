@@ -573,9 +573,9 @@ export default {
 		connectSignalServer() {
 			if (this.signalRconnection == null) {
 				this.signalRconnection = new signalR.HubConnectionBuilder()
-					//	.withUrl('http://192.168.11.129:30080/WorkstationHub')
+					.withUrl('http://192.168.11.129:30080/WorkstationHub')
 					//	.withUrl('http://localhost:13513/WorkstationHub')
-					.withUrl('http://47.99.153.221:30080/WorkstationHub')
+					//.withUrl('http://47.99.153.221:30080/WorkstationHub')
 					.withAutomaticReconnect() //断线自动重连
 					.build()
 				//接收消息

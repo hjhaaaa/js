@@ -533,6 +533,7 @@ export default {
 					remark: '',
 				}
 			)
+			this.aform.resetFields();
 		},
 		addHandleOk() {
 			//e.preventDefault()
