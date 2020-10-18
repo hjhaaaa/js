@@ -35,8 +35,8 @@
           </div>
         </div>
         <div class="c2-div2">
-          <a-button class="div2-btn" type="primary">测试在线状态</a-button>
-          <a-button class="div2-btn" type="primary">推送登录</a-button>
+          <a-button class="div2-btn" type="primary" @click="tetsStatus">测试在线状态</a-button>
+          <a-button class="div2-btn" type="primary" @click="pushLogin">推送登录</a-button>
           <a-button class="div2-btn" type="primary">扫码登录</a-button>
           <a-button class="div2-btn" type="primary">退出登录</a-button>
         </div>
@@ -112,8 +112,11 @@ import {
   editStatus,
   sendGroupDelete,
   updateSendQuan,
+  wechatPushLogin,
+  wechatLoginStatus,
 } from '@/api/dl';
 import Vue from 'vue'
+import tipMessage from '@/utils/messageUtil'
 
 export default {
   name: 'dl-index',
@@ -132,7 +135,6 @@ export default {
   created() {
     this.getGwList()
     this.localGwId = Vue.ss.get('GwId') || 0
-    console.log('localGwId', this.localGwId)
   },
   methods: {
     getGwList(){
@@ -180,6 +182,19 @@ export default {
         this.gwIsAll = false
       }
     },
+    //============================================================================================================
+    // 微信登录
+    tetsStatus(){
+      wechatLoginStatus({workstationId: this.gwSelect.Id}).then(res => {
+        tipMessage.success(res.Msg)
+      })
+    },
+    pushLogin(){
+      wechatPushLogin({workstationId: this.gwSelect.Id}).then(res => {
+        tipMessage.success(res.Msg)
+      })
+    },
+    //============================================================================================================
     quanChange(){
       updateSendQuan({
         id: this.gwSelect.Id,
