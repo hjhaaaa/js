@@ -36,7 +36,7 @@
 							checked-children="开"
 							un-checked-children="关"
 							:checked="!!row.IsOpen"
-							@change="EditStatus(row,2)"
+							@change="EditStatusChange(row)"
 						/>
 					</div>
 				</a-table>
@@ -48,7 +48,7 @@
 						@change="pageChange"
 						:total="total"
 						showQuickJumper
-						:showTotal="total => `共${total}条`"
+						:showTotal="(total) => `共${total}条`"
 					/>
 				</div>
 			</div>
@@ -71,7 +71,8 @@
 						:loading="queryLogBtnLoading"
 						style="margin-bottom: 15px"
 						@click="queryLogClick"
-					>刷新</a-button>
+						>刷新</a-button
+					>
 					<a-table
 						:columns="logColumns"
 						:dataSource="logData"
@@ -81,10 +82,14 @@
 						:scroll="{ x: 800 }"
 					>
 						<div slot="messageType" slot-scope="row">
-							<a-tag v-if="row.MessageType==1">文本</a-tag>
-							<a-tag v-else-if="row.MessageType==2" color="blue">图片</a-tag>
-							<a-tag v-else-if="row.MessageType==3" color="purple">视频</a-tag>
-							<a-tag v-else-if="row.MessageType==4" color="orange">表情</a-tag>
+							<a-tag v-if="row.MessageType == 1">文本</a-tag>
+							<a-tag v-else-if="row.MessageType == 2" color="blue">图片</a-tag>
+							<a-tag v-else-if="row.MessageType == 3" color="purple"
+								>视频</a-tag
+							>
+							<a-tag v-else-if="row.MessageType == 4" color="orange"
+								>表情</a-tag
+							>
 						</div>
 					</a-table>
 				</div>
@@ -108,7 +113,8 @@ import {
 	GetCollectionGroupList,
 	GetCollectionGroupLogList,
 	DeleteCollectionGroup,
-	EditCollectionGroupName
+	EditCollectionGroupName,
+	EditCollectionGroupStatus,
 } from '@/api/collectionGroupApi.js'
 export default {
 	components: { SetCollectionGroup, EditableCell },
@@ -119,46 +125,46 @@ export default {
 				{
 					title: '工位Id',
 					width: '100px',
-					dataIndex: 'WorkstationId'
+					dataIndex: 'WorkstationId',
 				},
 
 				{
 					title: '群Id',
 					width: '180px',
-					dataIndex: 'GroupId'
+					dataIndex: 'GroupId',
 				},
 				{
 					title: '采集对象',
 					width: '180px',
-					dataIndex: 'FromWXId'
+					dataIndex: 'FromWXId',
 				},
 				{
 					title: '群名称',
 					width: '200px',
 					dataIndex: 'GroupName',
-					scopedSlots: { customRender: 'editGroupName' }
+					scopedSlots: { customRender: 'editGroupName' },
 				},
 				{
 					title: '采集对象昵称',
 					width: '200px',
 					dataIndex: 'FromNickName',
-					scopedSlots: { customRender: 'editFromNickName' }
+					scopedSlots: { customRender: 'editFromNickName' },
 				},
 				{
 					title: '采集状态',
 					key: 'IsOpen',
 					width: '150px',
-					scopedSlots: { customRender: 'opSwitchIsOpen' }
+					scopedSlots: { customRender: 'opSwitchIsOpen' },
 				},
 				{
 					title: '操作',
 					width: '200px',
-					scopedSlots: { customRender: 'action' }
-				}
+					scopedSlots: { customRender: 'action' },
+				},
 			],
 			form: {
 				pageNum: 1,
-				pageSize: 20
+				pageSize: 20,
 			},
 			data: [],
 			total: 0,
@@ -167,40 +173,45 @@ export default {
 				{
 					title: '序号',
 					width: '100px',
-					dataIndex: 'Id'
+					dataIndex: 'Id',
 				},
 				{
 					title: '工位Id',
 					width: '100px',
-					dataIndex: 'WorkstationId'
+					dataIndex: 'WorkstationId',
 				},
 				{
 					title: '采集微信',
+					width: '150px',
+					dataIndex: 'FromWXId',
+				},
+				{
+					title: '采集时间',
 					width: '180px',
-					dataIndex: 'FromWXId'
+					dataIndex: 'CTime',
 				},
 				{
 					title: '群Id',
-					width: '180px',
-					dataIndex: 'GroupId'
+					width: '150px',
+					dataIndex: 'GroupId',
 				},
 				{
 					title: '消息类型',
 					width: '80px',
-					scopedSlots: { customRender: 'messageType' }
+					scopedSlots: { customRender: 'messageType' },
 				},
 				{
 					title: '采集内容',
 					width: '200px',
-					dataIndex: 'ContentText'
-				}
+					dataIndex: 'ContentText',
+				},
 			],
 			logData: [],
 			logTableLoading: false,
 			timer: null,
 			queryLogSecond: 60,
 			queryLogBtnDisabled: false,
-			queryLogBtnLoading: false
+			queryLogBtnLoading: false,
 		}
 	},
 	created() {
@@ -211,7 +222,7 @@ export default {
 		query() {
 			this.tableLoading = true
 			GetCollectionGroupList(this.form)
-				.then(res => {
+				.then((res) => {
 					this.data = res.Data
 					this.total = res.TotalCount
 					this.tableLoading = false
@@ -231,7 +242,7 @@ export default {
 				onOk() {
 					v.tableLoading = true
 					DeleteCollectionGroup(row.Id)
-						.then(res => {
+						.then((res) => {
 							if (res.IsSuccess) {
 								v.query()
 								tipMessage.success('删除成功')
@@ -244,7 +255,7 @@ export default {
 							v.tableLoading = false
 						})
 				},
-				onCancel() {}
+				onCancel() {},
 			})
 		},
 		setGroup(row) {
@@ -255,9 +266,9 @@ export default {
 			this.logTableLoading = true
 			GetCollectionGroupLogList({
 				pageNum: 1,
-				pageSize: 10
+				pageSize: 10,
 			})
-				.then(res => {
+				.then((res) => {
 					this.logData = res.Data
 					this.logTableLoading = false
 				})
@@ -297,7 +308,7 @@ export default {
 			console.log('编辑昵称')
 			if (!value) return
 			EditCollectionGroupName(row.Id, value, 2)
-				.then(res => {
+				.then((res) => {
 					if (res.IsSuccess) {
 						tipMessage.success('保存成功')
 					} else {
@@ -310,7 +321,7 @@ export default {
 			console.log('编辑群名称')
 			if (!value) return
 			EditCollectionGroupName(row.Id, value, 1)
-				.then(res => {
+				.then((res) => {
 					if (res.IsSuccess) {
 						tipMessage.success('保存成功')
 					} else {
@@ -318,8 +329,21 @@ export default {
 					}
 				})
 				.catch(() => {})
-		}
-	}
+		},
+		EditStatusChange(row) {
+			var newStaus=!row.IsOpen
+			EditCollectionGroupStatus(row.Id, newStaus)
+				.then((res) => {
+					if (res.IsSuccess) {
+						this.query()
+						tipMessage.success('保存成功')
+					} else {
+						tipMessage.error('保存失败:' + res.Msg)
+					}
+				})
+				.catch(() => {})
+		},
+	},
 }
 </script>
 

@@ -217,6 +217,49 @@
 								]"
 							/>
 						</a-form-item>
+									<a-form-item label="订单金额">
+							<a-input
+								placeholder="订单金额"
+								autocomplete="off"
+								v-decorator="[
+									'OrderAmont',
+									{
+										rules: [
+											{ required: true, message: 'Please input your note!' },
+										],
+									},
+								]"
+							/>
+						</a-form-item>
+									<a-form-item label="订单金额">
+							<a-input
+								placeholder="订单金额"
+								autocomplete="off"
+								v-decorator="[
+									'OrderAmont',
+									{
+										rules: [
+											{ required: true, message: 'Please input your note!' },
+										],
+									},
+								]"
+							/>
+						</a-form-item>
+									<a-form-item label="订单金额">
+							<a-input
+								placeholder="订单金额"
+								autocomplete="off"
+								v-decorator="[
+									'OrderAmont',
+									{
+										rules: [
+											{ required: true, message: 'Please input your note!' },
+										],
+									},
+								]"
+							/>
+						</a-form-item>
+						
 					</a-form>
 				</div>
 				<div style="width: 50%; float: left">dsd</div>
