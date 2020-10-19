@@ -48,4 +48,16 @@ export function updateSendQuan(params) {
   })
 }
 
+// 推送登录
+export function wechatPushLogin(params) {
+  return request.get('/Wechat/PushLogin', {params})
+}
+
+// 查询登录状态
+export function wechatLoginStatus(params) {
+  return request.get('/Wechat/LoginStatus', {params})
+}
+
+
+
 
