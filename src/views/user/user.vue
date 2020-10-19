@@ -141,25 +141,93 @@
 		>
 			<a-form :form="aform" :model="addInfo" :rules="addRules" ref="aform">
 				<a-form-item v-bind="formItemLayout" label="用户名" prop="userName">
-					<a-input
-						placeholder="登录用户名"
-						v-decorator="addRules.userName"
-						autocomplete="off"
-					/>
+					<a-input placeholder="登录用户名" v-decorator="addRules.userName" />
 				</a-form-item>
 				<a-form-item v-bind="formItemLayout" label="密码" prop="pwd">
 					<a-input-password
 						placeholder="登录密码"
-						autocomplete="off"
+						autocomplete="new-password"
 						v-decorator="addRules.pwd"
 					/>
 				</a-form-item>
 				<a-form-item v-bind="formItemLayout" label="账号状态" prop="status">
-					<a-radio-group  v-decorator="addRules.status">
-						<a-radio  :value="1"> 启用</a-radio>
-						<a-radio  :value="0"> 禁用</a-radio>
-						
+					<a-radio-group v-decorator="addRules.status">
+						<a-radio :value="1"> 启用</a-radio>
+						<a-radio :value="0"> 禁用</a-radio>
 					</a-radio-group>
+				</a-form-item>
+
+				<a-form-item
+					v-bind="formItemLayout"
+					label="淘宝授权账号"
+					prop="TaoBaoSessionId"
+				>
+					<a-select
+						placeholder="请选择淘宝授权账号"
+						v-decorator="addRules.TaoBaoSessionId"
+					>
+						<a-select-option v-for="d in tbSessionData" :key="d.Id">{{
+							d.Name
+						}}</a-select-option>
+					</a-select>
+				</a-form-item>
+				<a-form-item
+					v-bind="formItemLayout"
+					label="淘宝联盟Pid"
+					prop="TaoBaoPid"
+				>
+					<a-input
+						placeholder="请输入淘宝联盟Pid"
+						autocomplete="off"
+						v-decorator="addRules.TaoBaoPid"
+					/>
+				</a-form-item>
+
+				<a-form-item
+					v-bind="formItemLayout"
+					label="淘宝联盟Rid"
+					prop="TaoBaoRid"
+				>
+					<a-input
+						placeholder="请输入淘宝联盟Rid"
+						autocomplete="off"
+						v-decorator="addRules.TaoBaoRid"
+					/>
+				</a-form-item>
+
+				<a-form-item
+					v-bind="formItemLayout"
+					label="多多进宝授权账号"
+					prop="PddSessionId"
+				>
+					<a-select
+						placeholder="请选择多多进宝账号"
+						v-decorator="addRules.PddSessionId"
+					>
+						<a-select-option v-for="d in pddSessionData" :key="d.Id">{{
+							d.Name
+						}}</a-select-option>
+					</a-select>
+				</a-form-item>
+
+				<a-form-item v-bind="formItemLayout" label="多多进宝Pid" prop="PddPid">
+					<a-input
+						placeholder="请输入多多进宝Pid"
+						autocomplete="off"
+						v-decorator="addRules.PddPid"
+					/>
+				</a-form-item>
+
+				<a-form-item
+					v-bind="formItemLayout"
+					label="拼多多自定义参数"
+					prop="PddTip"
+				>
+					<a-input
+						placeholder="请输入拼多多自定义参数"
+						v-decorator="addRules.PddTip"
+						autocomplete="off"
+					/>
 				</a-form-item>
 				<a-form-item v-bind="formItemLayout" label="备注" prop="remark">
 					<a-input
@@ -203,7 +271,7 @@ import {
 	UpdateUserRemark,
 } from '@/api/userApi.js'
 import { CreateWorkstation } from '@/api/workstatusApi.js'
-
+import { authorizeList } from '@/api/auth.js'
 import { constants } from 'zlib'
 import { callbackify } from 'util'
 import { deeppink } from 'color-name'
@@ -221,7 +289,7 @@ export default {
 			editform: this.$form.createForm(this),
 			formItemLayout: {
 				labelCol: {
-					sm: { span: 5 },
+					sm: { span: 8 },
 				},
 				wrapperCol: {
 					sm: { span: 12 },
@@ -239,6 +307,12 @@ export default {
 				pwd: '',
 				remark: '',
 				status: 1,
+				TaoBaoSessionId: undefined,
+				TaoBaoPid: '',
+				TaoBaoRid: '',
+				PddSessionId: undefined,
+				PddPid: '',
+				PddTip: '',
 			},
 			addRules: {
 				userName: [
@@ -293,8 +367,80 @@ export default {
 							{
 								min: 0,
 								max: 100,
-								message: '长度在不能超过100个字符',
+								message: '长度在不能超过300个字符',
 								trigger: 'blur',
+							},
+						],
+					},
+				],
+				TaoBaoSessionId: [
+					'TaoBaoSessionId',
+					{
+						rules: [
+							{
+								required: true,
+								message: '请选择淘宝联盟授权!',
+							},
+							// {
+							// 	min: 6,
+							// 	max: 30,
+							// 	message: '长度在 6 到 30 个字符',
+							// 	trigger: 'blur'
+							// }
+						],
+					},
+				],
+				TaoBaoPid: [
+					'TaoBaoPid',
+					{
+						rules: [
+							{
+								required: true,
+								message: '请输入淘宝联盟Pid!',
+							},
+						],
+					},
+				],
+				TaoBaoRid: [
+					'TaoBaoRid',
+					{
+						rules: [
+							{
+								required: true,
+								message: '请输入淘宝联盟Rid!',
+							},
+						],
+					},
+				],
+				PddSessionId: [
+					'PddSessionId',
+					{
+						rules: [
+							{
+								required: true,
+								message: '请选择拼多多授权',
+							},
+						],
+					},
+				],
+				PddPid: [
+					'PddPid',
+					{
+						rules: [
+							{
+								required: true,
+								message: '请输入多多进宝Pid!',
+							},
+						],
+					},
+				],
+				PddTip: [
+					'PddTip',
+					{
+						rules: [
+							{
+								required: true,
+								message: '请输入拼多多自定义参数!',
 							},
 						],
 					},
@@ -359,6 +505,14 @@ export default {
 			tableLoading: false,
 			mytableLoading: false,
 			configId: 0,
+			tbSessionData: [
+				// { Id: 1, Nick: 'nicheng1', SessionKey: 'tbSessionKeytest1' },
+				// { Id: 2, Nick: 'nicheng2', SessionKey: 'tbSessionKeytest2' }
+			],
+			pddSessionData: [
+				// { Id: 1, Nick: 'pddnk1', SessionKey: 'pddSessionKeytest1' },
+				// { Id: 2, Nick: 'pddnk2', SessionKey: 'pddSessionKeytest2' }
+			],
 		}
 	},
 	methods: {
@@ -439,6 +593,9 @@ export default {
 		},
 		workstationManage(row) {
 			//打开新标签页
+			this.$router.push({
+				path: '/user/workstation?userName=' + row.UserName,
+			})
 		},
 		setConfig(row) {
 			this.$refs.basicsConfig.openBasicsConfig(
@@ -533,7 +690,7 @@ export default {
 					remark: '',
 				}
 			)
-			this.aform.resetFields();
+			this.aform.resetFields()
 		},
 		addHandleOk() {
 			//e.preventDefault()
@@ -593,10 +750,44 @@ export default {
 				callback()
 			}
 		},
+		getTbSession() {
+			//获取淘宝授权信息
+			authorizeList({
+				PlatformType: 1,
+				PageNum: 1,
+				PageSize: 100,
+			})
+				.then((res) => {
+					if (res.IsSuccess) {
+						this.tbSessionData = res.Data
+					} else {
+						tipMessage.error(res.Msg)
+					}
+				})
+				.catch(() => {})
+		},
+		getPddSession() {
+			//获取拼多多授权信息
+			authorizeList({
+				PlatformType: 2,
+				PageNum: 1,
+				PageSize: 100,
+			})
+				.then((res) => {
+					if (res.IsSuccess) {
+						this.pddSessionData = res.Data
+					} else {
+						tipMessage.error(res.Msg)
+					}
+				})
+				.catch(() => {})
+		},
 	},
 	created() {
 		this.queryTk()
 		this.query()
+		this.getTbSession()
+		this.getPddSession()
 	},
 }
 </script>

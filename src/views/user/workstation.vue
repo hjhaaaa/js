@@ -63,7 +63,7 @@
 					<a-tag v-if="isShowExpireTag(row)" color="red">即将到期</a-tag>
 					<p>状态:{{ row.WorkStatus == 2 ? '启用' : '禁用' }}</p>
 					<p>到期时间:{{ formatEndDate(row) }}</p>
-					<!-- <p></p> -->
+					<p>设备号:{{row.Uid}}</p>
 				</div>
 				<div slot="showWXAvatar" slot-scope="row">
 					<img :src="row.WXAvatar" class="WXAvatar" />
@@ -707,6 +707,8 @@ export default {
 		},
 	},
 	created() {
+	// console.log("params:",	this.$route.query)
+	this.form.UserName=this.$route.query.userName
 		this.query()
 	},
 }

@@ -43,9 +43,12 @@ const yfdRoutes = [
                 name: '',
                 component: () => import(/* webpackChunkName: "login" */ '@/views/user/user.vue')
             }, {
-                path: 'workstation',
-                name: '',
-                component: () => import(/* webpackChunkName: "login" */ '@/views/user/workstation.vue')
+                 path: 'workstation',
+                name: 'workstation',
+                component: () => import(/* webpackChunkName: "login" */ '@/views/user/workstation.vue'),
+                params: {
+                    userName:''
+                }
             }
         ]
     }, {

@@ -1,15 +1,19 @@
 <template>
-	<div>
+	<div class="sendgourp">
 		<a-modal
 			:title="sendGroupTitle"
 			:visible="sendGroupVisible"
 			:closable="true"
 			:footer="null"
-			width="60%"
+			width="700px"
 			@cancel="sendGroupHandleCancel"
 		>
-			<p>功能提示：群Pid的优先级要高于工位绑定的Pid，所有发到群里的商品都会被优先转成群Pid；如果没有设置群Pid，则会转链成发单人的Pid</p>
-			<p>玩法建议：建议单独生成群Pid，可以将群作为跑单群，不同的团队都可以发招商品，所有的佣金都会记在群Pid上,普通版工位可以绑定10个发单群，如需更多发单群可使用增强版工位</p>
+			<p>
+				功能提示：群Pid的优先级要高于工位绑定的Pid，所有发到群里的商品都会被优先转成群Pid；如果没有设置群Pid，则会转链成发单人的Pid
+			</p>
+			<p>
+				玩法建议：建议单独生成群Pid，可以将群作为跑单群，不同的团队都可以发招商品，所有的佣金都会记在群Pid上,普通版工位可以绑定10个发单群，如需更多发单群可使用增强版工位
+			</p>
 			<p></p>
 			<p></p>
 			<p></p>
@@ -19,6 +23,7 @@
 				rowKey="Id"
 				:loading="sendGroupTableLoading"
 				:pagination="false"
+				:scroll="{ x: 600 }"
 			>
 				<template slot="editRemarks" slot-scope="text, row">
 					<editable-cell
@@ -35,10 +40,31 @@
 						@change="sendGroupEditStatus(row)"
 					/>
 				</div>
-				<div class="table operation" slot="action" slot-scope="row">
-					<a type="link" @click="semdGroupRemove(row)">删除</a>
-					<a type="link" @click="setConfig(row)">指定配置</a>
-					<a type="link" @click="setGroup(row)">指定分组</a>
+				<div class="action" slot="action" slot-scope="row">
+					<a-button
+						style="margin: 5px"
+						type="primary"
+						class="tableButton"
+						@click="semdGroupRemove(row)"
+						size="small"
+						>删除</a-button
+					>
+					<a-button
+						style="margin: 5px"
+						type="primary"
+						class="tableButton"
+						@click="setConfig(row)"
+						size="small"
+						>指定配置</a-button
+					>
+					<a-button
+						style="margin: 5px"
+						type="primary"
+						class="tableButton"
+						@click="setGroup(row)"
+						size="small"
+						>指定分组</a-button
+					>
 				</div>
 			</a-table>
 			<div style="margin-top: 15px">
@@ -49,7 +75,7 @@
 					@change="sendGroupPageChange"
 					:total="sendGroupTotal"
 					showQuickJumper
-					:showTotal="total => `共${total}条`"
+					:showTotal="(total) => `共${total}条`"
 				/>
 			</div>
 		</a-modal>
@@ -67,7 +93,7 @@ import {
 	SendGroupList,
 	DeleteSendGroup,
 	UpdateSendGroupStatus,
-	UpdateSendGroupRemark
+	UpdateSendGroupRemark,
 } from '@/api/sendGroupApi.js'
 
 export default {
@@ -81,39 +107,40 @@ export default {
 			sendGroupForm: {
 				workstationId: 0,
 				pageSize: 20,
-				pageNum: 1
+				pageNum: 1,
 			},
 			sendGroupTotal: 0,
 			sendGroupColumns: [
 				{
 					title: '群名称',
 					width: '150px',
-					dataIndex: 'GroupName'
+					dataIndex: 'GroupName',
 				},
 				{
 					title: '备注',
 					Key: 'Remarks',
 					width: '250px',
 					dataIndex: 'Remarks',
-					scopedSlots: { customRender: 'editRemarks' }
+					scopedSlots: { customRender: 'editRemarks' },
 				},
 				{
 					title: '绑定时间',
 					Key: 'CTime',
 					width: '150px',
-					dataIndex: 'CTime'
+					dataIndex: 'CTime',
 				},
 				{
 					title: '状态',
 					key: 'Status',
 					width: '100px',
-					scopedSlots: { customRender: 'opSwitchStatus' }
+					scopedSlots: { customRender: 'opSwitchStatus' },
 				},
 				{
 					title: '操作',
-					scopedSlots: { customRender: 'action' }
-				}
-			]
+					width: '150px',
+					scopedSlots: { customRender: 'action' },
+				},
+			],
 		}
 	},
 	methods: {
@@ -127,7 +154,7 @@ export default {
 		querySendGroup() {
 			this.sendGroupTableLoading = true
 			SendGroupList(this.sendGroupForm)
-				.then(res => {
+				.then((res) => {
 					this.sendGroupData = res.Data
 					this.sendGroupTotal = res.TotalCount
 					this.sendGroupTableLoading = false
@@ -147,7 +174,7 @@ export default {
 		sendGroupRemarksChange(row, key, value) {
 			if (!value) return
 			UpdateSendGroupRemark(row.Id, value)
-				.then(res => {
+				.then((res) => {
 					if (res.IsSuccess) {
 						tipMessage.success('保存成功')
 					} else {
@@ -157,13 +184,13 @@ export default {
 				.catch(() => {})
 		},
 		sendGroupEditStatus(row) {
-			let nowRow = this.sendGroupData.find(item => {
+			let nowRow = this.sendGroupData.find((item) => {
 				return item.Id == row.Id
 			})
 
 			var newValue = !row.IsEnable
 			UpdateSendGroupStatus(row.Id, newValue)
-				.then(res => {
+				.then((res) => {
 					nowRow.IsEnable = newValue
 					tipMessage.success('操作成功')
 				})
@@ -183,7 +210,7 @@ export default {
 				onOk() {
 					v.sendGroupTableLoading = true
 					DeleteSendGroup(row.Id)
-						.then(res => {
+						.then((res) => {
 							if (res.IsSuccess) {
 								v.querySendGroup()
 								tipMessage.success('删除工位成功')
@@ -196,7 +223,7 @@ export default {
 							v.sendGroupTableLoading = false
 						})
 				},
-				onCancel() {}
+				onCancel() {},
 			})
 		},
 		setConfig(row) {
@@ -207,8 +234,8 @@ export default {
 		},
 		setGroup(row) {
 			this.$refs.setClassifyGroup.openSetClassify(row)
-		}
-	}
+		},
+	},
 	// created() {
 	// 	this.querySendGroup()
 	// }
@@ -216,41 +243,22 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.setRole-content {
-	height: 400px;
-	.left-block,
-	.btnbox-block,
-	.right-block {
-		float: left;
-		width: 180px;
-		height: 400px;
+.sendgourp {
+	.ant-table-body {
+		overflow-x: auto !important;
 	}
-	.left,
-	.right {
-		width: 180px;
-		height: 400px;
-		border: 1px solid #ccc;
-		overflow: auto;
-		.ant-btn-primary {
-			margin-bottom: 10px;
-		}
+
+	.tableButton {
+		margin-left: 10px !important;
 	}
-	.btnbox-block {
-		width: 100px;
-		border: 0 none;
+	.tip {
+		margin-bottom: 10px;
 	}
-}
-.table.operation a {
-	padding-right: 10px;
-}
-.tip {
-	margin-bottom: 10px;
-}
-.WXAvatar {
-	width: 80px;
-	height: 80px;
-}
-.wxOp button:not(:last-child) {
-	margin-bottom: 4px;
+	.ant-table-row .action {
+		padding: 10px;
+	}
+	.wxOp button:not(:last-child) {
+		margin-bottom: 4px;
+	}
 }
 </style>

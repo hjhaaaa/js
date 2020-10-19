@@ -16,7 +16,10 @@ export function DeleteCollectionGroup(id) {
 export function EditCollectionGroupName(id,name,type) {
     return request.post('/CollectionGroup/EditName',{Id:id,Name:name,NameType:type})
 }
-
+//修改采集对象名称
+export function EditCollectionGroupStatus(id,status) {
+    return request.post('/CollectionGroup/EditStatus?id='+id+'&status='+status)
+}
 
 
 
