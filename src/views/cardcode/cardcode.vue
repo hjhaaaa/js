@@ -644,7 +644,8 @@ export default {
 				.then((res) => {
 					if (res.IsSuccess) {
 						this.isSupplier = res.Data.IsSupplier
-						this.isCustomerService = res.Data.IsCustomerService
+					//	this.isCustomerService = res.Data.IsCustomerService
+							this.isCustomerService =true
 						if (this.isSupplier || this.isCustomerService) {
 							this.columns.push({
 								title: '转让状态',

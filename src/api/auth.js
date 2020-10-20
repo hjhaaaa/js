@@ -34,6 +34,13 @@ export function login(params) {
     method: 'post',
     data: params
   })
+}// 客服登录
+export function customerservicelogin(params) {
+  return request({
+    url: '/UserLogin/Customerservice',
+    method: 'post',
+    data: params
+  })
 }
 
 // ===============================================================================

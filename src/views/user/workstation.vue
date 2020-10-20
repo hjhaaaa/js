@@ -53,6 +53,12 @@
 					/>
 				</template>
 				<!-- v-if="row.StationRechageType==2" -->
+				<div slot="UserNameSlot" slot-scope="row">
+					{{ row.UserName }}
+					<div>
+						<a-tag v-if="row.StationType == 1" color="blue">淘客</a-tag>
+					</div>
+				</div>
 				<div slot="Status" slot-scope="row">
 					<a-tag v-if="row.StationRechageType == 2" color="purple"
 						>增强版</a-tag
@@ -60,10 +66,11 @@
 					<a-tag v-else-if="row.StationRechageType == 1" color="blue"
 						>普通版</a-tag
 					>
+
 					<a-tag v-if="isShowExpireTag(row)" color="red">即将到期</a-tag>
 					<p>状态:{{ row.WorkStatus == 2 ? '启用' : '禁用' }}</p>
 					<p>到期时间:{{ formatEndDate(row) }}</p>
-					<p>设备号:{{row.Uid}}</p>
+					<p>设备号:{{ row.Uid }}</p>
 				</div>
 				<div slot="showWXAvatar" slot-scope="row">
 					<img :src="row.WXAvatar" class="WXAvatar" />
@@ -109,7 +116,11 @@
 						>指定分组</a-button
 					>
 					<br />
-					<a-button type="primary" @click="removeWorkstation(row)" size="small"
+					<a-button
+						type="primary"
+						@click="removeWorkstation(row)"
+						size="small"
+						:disabled="IsCanDelete(row)"
 						>删除工位</a-button
 					>
 				</div>
@@ -244,6 +255,7 @@ export default {
 	components: { EditableCell, Sendgroup, BasicsConfig, SetClassifyGroup },
 	data() {
 		return {
+			signalUrl: 'http://192.168.11.129:30080/WorkstationHub',
 			statusOptions: [
 				{ label: '全部', value: -1 },
 				{ label: '启用', value: 1 },
@@ -290,20 +302,21 @@ export default {
 				{
 					title: '用户名',
 					Key: 'UserName',
-					width: '130px',
-					dataIndex: 'UserName',
+					width: '170px',
+					// dataIndex: 'UserName',
+					scopedSlots: { customRender: 'UserNameSlot' },
 				},
 				{
 					title: '备注',
 					Key: 'Remarks',
-					width: '20%',
+					width: '200px',
 					dataIndex: 'Remarks',
 					scopedSlots: { customRender: 'editRemarks' },
 				},
 				{
 					title: '微信用户',
 					Key: '',
-					width: '120px',
+					width: '150px',
 					dataIndex: '',
 					scopedSlots: { customRender: 'showWXAvatar' },
 				},
@@ -573,7 +586,7 @@ export default {
 		connectSignalServer() {
 			if (this.signalRconnection == null) {
 				this.signalRconnection = new signalR.HubConnectionBuilder()
-					.withUrl('http://192.168.11.129:30080/WorkstationHub')
+					.withUrl(this.signalUrl)
 					//	.withUrl('http://localhost:13513/WorkstationHub')
 					//.withUrl('http://47.99.153.221:30080/WorkstationHub')
 					.withAutomaticReconnect() //断线自动重连
@@ -705,10 +718,29 @@ export default {
 			}
 			return moment(row.EndTime).format('YYYY-MM-DD')
 		},
+		IsCanDelete(row) {
+			var isCan = false
+			if (row.WxLogStatus == 1) {
+				isCan = true
+			}
+			if (!isCan) {
+				if (!row.EndTime) {
+					isCan = false
+				} else {
+					var nowTime = moment()
+					var workEndTime = moment(row.EndTime)
+					var duration = moment.duration(workEndTime.diff(nowTime))
+					console.log('duration', duration)
+					isCan = duration._data.days > 0
+				}
+				console.log('isCan', isCan)
+			}
+			return isCan
+		},
 	},
 	created() {
-	// console.log("params:",	this.$route.query)
-	this.form.UserName=this.$route.query.userName
+		// console.log("params:",	this.$route.query)
+		this.form.UserName = this.$route.query.userName
 		this.query()
 	},
 }
