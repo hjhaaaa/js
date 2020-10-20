@@ -41,7 +41,8 @@
 						>
 					</template>
 					<template slot="caozuo" slot-scope="row">
-						<a href="javascript:0;">更新授权</a>
+						<a href="javascript:0;" v-if="listQuery.PlatformType == 1" @click="addTbsq">更新授权</a>
+						<a href="javascript:0;" v-if="listQuery.PlatformType == 2" @click="addPddsq">更新授权</a>
 					</template>
 				</a-table>
 			</div>
@@ -111,6 +112,19 @@ export default {
 	},
 	created() {
 		this.query()
+	},
+	mounted() {
+		// 授权失败会有提示 以弹窗形式展现
+		if (this.$route.query.ErrorMsg) {
+			this.$error({
+				title: '授权错误',
+				content: this.$route.query.ErrorMsg,
+				onOk: () => {
+					location.replace( location.href.substr(0, location.href.indexOf('?')) )
+				}
+			})
+			
+		}
 	},
 	methods: {
 		addTbsq() {
