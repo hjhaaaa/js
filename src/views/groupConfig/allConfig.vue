@@ -24,7 +24,7 @@
         </a-col>
       </a-col>
       <a-col :span="24" style="margin-top: 10px">
-        <h3 class="left-h3">微信绑定口令设置</h3>
+        <h3 class="left-h3">采集过滤条件</h3>
         <div>
           <a-input-group compact class="all-con-group">
             <a-button disabled>触发词</a-button>
