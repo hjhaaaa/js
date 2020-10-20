@@ -29,17 +29,17 @@
 			</div>
 			<a-form layout="inline" :form="form" style="margin-bottom: 10px">
 				<a-form-item label="激活码">
-					<a-input v-model="form.CardCode" placeholder="请输入激活码" />
+					<a-input v-model="form.CardCode" placeholder="查询的激活码" />
 				</a-form-item>
 				<a-form-item label="用户名">
-					<a-input v-model="form.UserName" placeholder="请输入用户名" />
+					<a-input v-model="form.UserName" placeholder="使用的用户名" />
 				</a-form-item>
 				<a-form-item label="工位Id">
-					<a-input v-model="form.WorkstationId" placeholder="请输入工位Id" />
+					<a-input v-model="form.WorkstationId" placeholder="使用的工位Id" />
 				</a-form-item>
 				<a-form-item label="状态">
 					<a-select
-						style="width: 200px"
+						style="width: 100px"
 						v-model="form.Status"
 						default-value="-1"
 					>
@@ -58,9 +58,9 @@
 				<a-form-item label="">
 					<a-button icon="search" @click="handleSearch">查询</a-button>
 				</a-form-item>
-				<a-form-item label="" v-if="isAdmin">
+				<a-form-item label="" v-if="isCustomerService">
 					<a-button icon="plus-circle" type="primary" @click="add"
-						>添加</a-button
+						>添加激活码</a-button
 					>
 				</a-form-item>
 			</a-form>
@@ -104,13 +104,8 @@
 					<!-- <p v-if="row.UseType==2">充值中</p> -->
 					<div>
 						{{ row.CardCode }}
-						<!-- <a
-							type="text"
-							v-clipboard:copy="111111"
-							v-clipboard:success="copySuccess"
-							v-clipboard:error="copyError"
-							>复制</a -->
-						>
+						<!-- <input class="tableCode" type="text" :value="row.CardCode" /> -->
+						<a type="link" @click="doCopy(row)">复制</a>
 					</div>
 				</div>
 			</a-table>
@@ -173,15 +168,19 @@
 			</a-form>
 		</a-modal>
 
+		<!-- @cancel="addHandleCancel"
+			@ok="addHandleOk" -->
 		<a-modal
 			class="add"
 			width="900px"
 			v-model="addVisible"
-			title="创建卡密"
+			title="创建激活码"
 			:confirm-loading="addConfirmLoading"
-			@cancel="addHandleCancel"
-			@ok="addHandleOk"
-			><div style="display: inline-block;width: 100%;">
+		>
+			<template slot="footer">
+				<a-button @click="addHandleCancel">关闭</a-button>
+			</template>
+			<div style="display: inline-block; width: 100%">
 				<div style="width: 50%; float: left">
 					<a-form
 						ref="addForm"
@@ -189,6 +188,25 @@
 						:label-col="labelCol"
 						:wrapper-col="wrapperCol"
 					>
+						<a-form-item label="淘客Id">
+							<a-input
+								placeholder="淘客Id"
+								autocomplete="off"
+								v-decorator="[
+									'TkId',
+									{
+										rules: [
+											{
+												required: true,
+												message: '请输入淘客Id',
+												trigger: 'blur,change',
+											},
+											{ pattern: /^[0-9]*$/g, message: '淘客Id必须为数字' },
+										],
+									},
+								]"
+							/>
+						</a-form-item>
 						<a-form-item label="订单号">
 							<a-input
 								placeholder="订单号"
@@ -196,9 +214,7 @@
 								v-decorator="[
 									'OrderNo',
 									{
-										rules: [
-											{ required: true, message: 'Please input your note!' },
-										],
+										rules: [{ required: true, message: '充值的单号' }],
 									},
 								]"
 							/>
@@ -208,76 +224,194 @@
 								placeholder="订单金额"
 								autocomplete="off"
 								v-decorator="[
-									'OrderAmont',
+									'OrderAmout',
 									{
 										rules: [
-											{ required: true, message: 'Please input your note!' },
+											{ required: true, message: '订单的金额' },
+											{ pattern: /^[0-9]*$/g, message: '金额必须为数字' },
 										],
 									},
 								]"
 							/>
 						</a-form-item>
-									<a-form-item label="订单金额">
+
+						<a-form-item label="激活码数量">
 							<a-input
-								placeholder="订单金额"
+								placeholder="激活码数量"
 								autocomplete="off"
 								v-decorator="[
-									'OrderAmont',
+									'CodeCount',
 									{
 										rules: [
-											{ required: true, message: 'Please input your note!' },
+											{ required: true, message: '请输入激活码数量' },
+											{ pattern: /^[0-9]*$/g, message: '数量必须为数字' },
 										],
 									},
 								]"
 							/>
 						</a-form-item>
-									<a-form-item label="订单金额">
-							<a-input
-								placeholder="订单金额"
-								autocomplete="off"
+						<a-form-item label="激活码类型">
+							<a-select
 								v-decorator="[
-									'OrderAmont',
+									'CardCodeType',
 									{
-										rules: [
-											{ required: true, message: 'Please input your note!' },
-										],
+										rules: [{ required: true, message: '请选择激活码类型' }],
 									},
 								]"
-							/>
+								placeholder="请选择激活码类型"
+							>
+								<a-select-option value="1"> 月卡 </a-select-option>
+							</a-select>
 						</a-form-item>
-									<a-form-item label="订单金额">
-							<a-input
-								placeholder="订单金额"
-								autocomplete="off"
+						<a-form-item label="返佣类型">
+							<a-select
 								v-decorator="[
-									'OrderAmont',
+									'RebateType',
 									{
-										rules: [
-											{ required: true, message: 'Please input your note!' },
-										],
+										rules: [{ required: true, message: '请选择返佣类型' }],
+									},
+								]"
+								placeholder="请选择返佣类型"
+							>
+								<a-select-option value="1"> 1~20个(24元/个) </a-select-option>
+								<a-select-option value="2"> 21~100个(22元/个) </a-select-option>
+								<a-select-option value="3">
+									101-1999个(20元/个
+								</a-select-option>
+								<a-select-option value="4">
+									2000个以上(19元/个)
+								</a-select-option>
+							</a-select>
+						</a-form-item>
+
+						<a-form-item label="来源类型">
+							<a-select
+								v-decorator="[
+									'SourceType',
+									{
+										rules: [{ required: true, message: '请选择来源类型' }],
+									},
+								]"
+								placeholder="请选择来源类型"
+							>
+								<a-select-option value="1"> 用户购买 </a-select-option>
+								<a-select-option value="2"> 赠送 </a-select-option>
+								<a-select-option value="3"> 公司自用 </a-select-option>
+							</a-select>
+						</a-form-item>
+						<a-form-item label="订单截图">
+							<!-- style="display: none;" -->
+							<a-input
+								placeholder="订单截图"
+								autocomplete="off"
+								style="display: none"
+								v-decorator="[
+									'ImgUrl',
+									{
+										rules: [{ required: true, message: '请上传订单截图' }],
+									},
+								]"
+							/>
+							<img
+								v-if="addFormModel.ImgUrl"
+								:src="addFormModel.ImgUrl"
+								alt="订单截图"
+								style="width: 100px; height: 100px; float: left"
+								@click="openPreview"
+							/>
+							<a-upload
+								:action="uploadAction"
+								list-type="picture"
+								:showUploadList="false"
+								class="upload-list-inline"
+								@change="handleChange"
+								:before-upload="beforeUpload"
+								style="
+									float: left;
+									display: inline-block;
+									margin-left: 10px;
+									margin-top: -5px;
+								"
+							>
+								<a-button type="primary" :loading="uploadLoading">
+									<a-icon type="upload" />上传截图</a-button
+								>
+							</a-upload>
+						</a-form-item>
+						<a-form-item label="备注">
+							<a-textarea
+								placeholder="备注"
+								autocomplete="off"
+								:rows="3"
+								v-decorator="[
+									'Remarks',
+									{
+										rules: [],
 									},
 								]"
 							/>
 						</a-form-item>
-						
+						<a-form-item label=" ">
+							<a-button
+								:disabled="addDisabled"
+								type="primary"
+								:loading="addLoading"
+								@click="addHandleOk"
+								size="large"
+								>生成
+							</a-button>
+							<a-button @click="addReset" size="large" style="margin-left: 10px"
+								>清空
+							</a-button>
+						</a-form-item>
 					</a-form>
 				</div>
-				<div style="width: 50%; float: left">dsd</div>
+				<div
+					style="width: 50%; float: left; padding-left: 15px; padding-top: 4px"
+				>
+					<div>生成结果：</div>
+					<a-textarea
+						style="background-color: #ebebeb; margin-top: 5px"
+						placeholder="生成激活码结果,点击复制"
+						:rows="8"
+						read-only=""
+						v-model="creteCodeStr"
+						@click="copyCodeList"
+					/>
+					<p style="color: rgb(64, 158, 255)">提示：点击输入框，即可复制</p>
+				</div>
 			</div>
+		</a-modal>
+
+		<a-modal
+			:visible="previewVisible"
+			:footer="null"
+			@cancel="previewHandleCancel"
+		>
+			<img alt="example" style="width: 100%" :src="previewImage" />
 		</a-modal>
 	</div>
 </template>
 
 <script>
+function getBase64(img, callback) {
+	const reader = new FileReader()
+	reader.addEventListener('load', () => callback(reader.result))
+	reader.readAsDataURL(img)
+}
+import Vue from 'vue'
+import VueClipboard from 'vue-clipboard2'
+VueClipboard.config.autoSetContainer = true
+Vue.use(VueClipboard)
 import moment from 'moment'
-// import VueClipboard from 'vue-clipboard2'
 import tipMessage from '@/utils/messageUtil.js'
 import {
 	CardCodeList,
 	GetRechargeCode,
 	BatchTransferCardCode,
 } from '@/api/cardCodeApi.js'
-import { UserList } from '@/api/userApi.js'
+import { UserList, GetLoginUserInfo } from '@/api/userApi.js'
+import { CreateCardCodeOrder } from '@/api/cardCodeOrderApi.js'
 export default {
 	name: 'cardcode',
 	components: {},
@@ -286,20 +420,21 @@ export default {
 		let checkCardCode = (rule, value, callback) => {
 			clearTimeout(checkPending)
 			if (!value) {
-				return callback(new Error('请输入卡密数量'))
+				return callback(new Error('请输入激活码数量'))
 			}
 			checkPending = setTimeout(() => {
 				if (!Number.isInteger(value)) {
 					callback(new Error('请输入数字'))
 				} else {
 					if (value <= 0) {
-						callback(new Error('卡密数量不能小于等于0'))
+						callback(new Error('激活码数量不能小于等于0'))
 					} else {
 						callback()
 					}
 				}
 			}, 1000)
 		}
+
 		return {
 			labelCol: { span: 9 },
 			wrapperCol: { span: 15 },
@@ -367,7 +502,7 @@ export default {
 			data: [],
 			total: 0,
 			isSupplier: false, //是否供应商
-			isAdmin: true,
+			isCustomerService: false,//是否客服
 			tableLoading: false,
 			transferList: [], //选中的行数据
 			transferLoading: false,
@@ -385,8 +520,16 @@ export default {
 			addVisible: false,
 			addLoading: false,
 			addConfirmLoading: false,
+			addDisabled: false,
 			addFormModel: {
+				ImgUrl: '',
+				TkId: '',
 				OrderNo: '',
+				OrderAmout: '',
+				CodeCount: '',
+				CardCodeType: '1',
+				SourceType: '1',
+				RebateType: '1',
 			},
 			addRules: {
 				OrderNo: [
@@ -429,6 +572,11 @@ export default {
 					},
 				],
 			},
+			creteCodeStr: '',
+			uploadAction: 'http://192.168.11.129:30080/api/UploadFile/Image',
+			uploadLoading: false,
+			previewVisible: false,
+			previewImage: '',
 		}
 	},
 	computed: {
@@ -477,6 +625,7 @@ export default {
 		},
 		add() {
 			this.addVisible = true
+			this.addReset()
 		},
 		pageChange(p, s) {
 			this.form.pageNum = p
@@ -489,6 +638,26 @@ export default {
 		closeKfQr() {
 			this.qrVisible = false
 		},
+		getLoginUserInfo() {
+			let v = this
+			GetLoginUserInfo()
+				.then((res) => {
+					if (res.IsSuccess) {
+						this.isSupplier = res.Data.IsSupplier
+						this.isCustomerService = res.Data.IsCustomerService
+						if (this.isSupplier || this.isCustomerService) {
+							this.columns.push({
+								title: '转让状态',
+								width: '150px',
+								dataIndex: 'TransferString',
+							})
+						}
+					} else {
+						tipMessage.error('获取激活码失败')
+					}
+				})
+				.catch(() => {})
+		},
 		getCardCode() {
 			let v = this
 			GetRechargeCode()
@@ -496,9 +665,10 @@ export default {
 					if (res.IsSuccess) {
 						this.myCardCodeCount = res.Data.CardCodeCount
 						this.currentUserName = res.Data.UserName
-						this.isSupplier = res.Data.isSupplier
+						this.isSupplier = res.Data.IsSupplier
+						this.isAdmin = res.Data.IsAdmin
 					} else {
-						tipMessage.error('获取卡密失败')
+						tipMessage.error('获取激活码失败')
 					}
 				})
 				.catch(() => {})
@@ -523,7 +693,7 @@ export default {
 			let v = this //保存外层this对象
 			this.$confirm({
 				title: '提示',
-				content: `确定将【${v.transferInfo.transferCount}】个卡密转让给用户【${v.transferInfo.tkInfo.label}】?`,
+				content: `确定将【${v.transferInfo.transferCount}】个激活码转让给用户【${v.transferInfo.tkInfo.label}】?`,
 				okText: '确定',
 				onOk() {
 					v.transferConfirmLoading = true
@@ -556,7 +726,7 @@ export default {
 		getUserList() {
 			var params = {
 				pageNum: 1,
-				pageSize: 1000,
+				pageSize: 10000,
 				IsHasSelf: true,
 			}
 			UserList(params)
@@ -582,38 +752,145 @@ export default {
 					.indexOf(input.toLowerCase()) >= 0
 			)
 		},
-		addHandleOk() {},
+		addHandleOk() {
+			this.addForm.validateFieldsAndScroll((err, values) => {
+				if (!err) {
+					values.TkId *= 1
+					values.SourceType *= 1
+					values.RebateType *= 1
+					values.CardCodeType *= 1
+					values.CodeCount *= 1
+					values.OrderAmout *= 1
+					console.log('addForm values: ', values)
+					this.addLoading = true
+					CreateCardCodeOrder(values)
+						.then((res) => {
+							if (res.IsSuccess) {
+								this.query()
+								//	this.addVisible = false
+								var str = ''
+								res.Data.forEach((code) => {
+									str += code + '\r\n'
+								})
+
+								this.creteCodeStr = str
+								this.addDisabled = true
+								tipMessage.success('创建卡密成功')
+							} else {
+								tipMessage.error(res.Msg)
+							}
+							this.addLoading = false
+						})
+						.catch(() => {
+							this.addLoading = false
+						})
+				}
+			})
+		},
 		addHandleCancel() {
 			this.addVisible = false
 		},
 		doCopy(row) {
-			console.log(row)
+			console.log('复制对象', row) //row.CardCode
 			this.$copyText(row.CardCode).then(
 				function (e) {
-					alert('Copied')
-					console.log(e)
+					tipMessage.success('复制激活码成功')
 				},
 				function (e) {
-					alert('Can not copy')
-					console.log(e)
+					tipMessage.error('复制激活码失败,可能是浏览器不支持')
 				}
 			)
 		},
-		copySuccess() {
-			alert('copySuccess')
+		copyCodeList() {
+			console.log('复制生成结果')
+
+			this.$copyText(this.creteCodeStr).then(
+				function (e) {
+					// alert('Copied')
+					tipMessage.success('复制结果成功')
+				},
+				function (e) {
+					// alert('Can not copy')
+					// console.log(e)
+					tipMessage.error('复制结果失败,可能是浏览器不支持')
+				}
+			)
 		},
-		copyError() {
-			alert('copyError')
+		handleChange(info) {
+			if (info.file.status === 'uploading') {
+				this.uploadLoading = true
+				return
+			}
+			if (info.file.status === 'done') {
+				if (info.fileList.length > 0) {
+					var imageUrl =
+						info.fileList[info.fileList.length - 1].response.Data.Url
+					this.addFormModel.ImgUrl = imageUrl
+					this.uploadLoading = false
+					this.addForm.setFieldsValue({
+						ImgUrl: imageUrl,
+					})
+					info.fileList.length = 0
+				} else {
+					tipMessage.error('上传截图失败,请稍后再试')
+				}
+			}
+		},
+		beforeUpload(file) {
+			const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
+			if (!isJpgOrPng) {
+				this.$message.error('请上传png或jpg图片!')
+			}
+			const isLt2M = file.size / 1024 / 1024 < 2
+			if (!isLt2M) {
+				tipMessage.error('图片必须小于2M')
+			}
+
+			var res = isJpgOrPng && isLt2M
+			// if (res) {
+			// 	this.addFormModel.ImgUrl = ''
+			// 	this.addForm.setFieldsValue({
+			// 		ImgUrl: '',
+			// 	})
+			// }
+			return res
+		},
+		previewHandleCancel() {
+			this.previewVisible = false
+		},
+		openPreview() {
+			if (this.addFormModel.ImgUrl) {
+				this.previewImage = this.addFormModel.ImgUrl
+				this.previewVisible = true
+			}
+		},
+		addReset() {
+			this.$nextTick(() => {
+				this.creteCodeStr = ''
+				this.addForm.setFieldsValue({
+					ImgUrl: '',
+					TkId: '',
+					OrderNo: '',
+					OrderAmout: '',
+					CodeCount: '',
+					CardCodeType: '1',
+					SourceType: '1',
+					RebateType: '1',
+				})
+				this.addFormModel.ImgUrl = ''
+				this.addDisabled = false
+			})
+		},
+		handleConfirmPass(rule, value, callback) {
+			if (this.password && this.password !== value) {
+				callback('两次密码输入不一致！')
+			}
+			// Note: 必须总是返回一个 callback，否则 validateFieldsAndScroll 无法响应
+			callback()
 		},
 	},
 	created() {
-		if (this.isSupplier) {
-			this.columns.push({
-				title: '转让状态',
-				width: '150px',
-				dataIndex: 'TransferString',
-			})
-		}
+		this.getLoginUserInfo()
 
 		this.query()
 		this.getCardCode()
@@ -652,8 +929,7 @@ export default {
 	.mycradtable td button:last-child {
 		margin-bottom: 0px;
 	}
-	.add {
-	}
+
 	.leftbox {
 		width: 50%;
 	}

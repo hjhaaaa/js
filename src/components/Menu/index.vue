@@ -5,7 +5,7 @@ import { generateOpenKeys } from '@/utils'
 import menuData from './menus.js'
 import Vue from 'vue'
 import { ROUTER } from '@/store/mutation-types'
- 
+import { GetCurrentLoginMenu } from '@/api/policyMenuApi.js'
 export default {
   mixins: [appStoreMixin, deviceMixin],
   props: {
@@ -83,14 +83,25 @@ export default {
         return unescape(arr[2]);
       else
         return null;
+    },GetCurrentLoginMenu(){
+      	GetCurrentLoginMenu()
+				.then((res) => {
+			 this.menus= res.Data
+					// this.total = res.TotalCount
+					// this.tableLoading = false
+				})
+				.catch(() => {
+					// this.tableLoading = false
+				})
     }
   },
   created () {
     this.updateMenu()
     let _name = this.getCookie('_tkdataadmin_nick')
-    let _menuArr = [...menuData]
-    
-    this.menus = _menuArr
+   
+    this.GetCurrentLoginMenu();
+     // let _menuArr = [...menuData]
+    // this.menus = _menuArr
   },
   render () {
     const {

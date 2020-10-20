@@ -237,6 +237,11 @@
 					/>
 				</a-form-item>
 			</a-form>
+			 <template slot="footer">
+        <a-button key="back" @click="handleCancel">
+          Return
+        </a-button>
+      </template>
 		</a-modal>
 		<!-- <a-modal title="编辑信息" :visible="editVisible" @ok="editHandleOk" @cancel="editHandleCancel">
 			<a-form :form="editform" :model="editInfo">
@@ -378,7 +383,7 @@ export default {
 					{
 						rules: [
 							{
-								required: true,
+								required: false,
 								message: '请选择淘宝联盟授权!',
 							},
 							// {
@@ -395,7 +400,7 @@ export default {
 					{
 						rules: [
 							{
-								required: true,
+								required: false,
 								message: '请输入淘宝联盟Pid!',
 							},
 						],
@@ -406,7 +411,7 @@ export default {
 					{
 						rules: [
 							{
-								required: true,
+								required: false,
 								message: '请输入淘宝联盟Rid!',
 							},
 						],
@@ -417,7 +422,7 @@ export default {
 					{
 						rules: [
 							{
-								required: true,
+								required: false,
 								message: '请选择拼多多授权',
 							},
 						],
@@ -428,7 +433,7 @@ export default {
 					{
 						rules: [
 							{
-								required: true,
+								required: false,
 								message: '请输入多多进宝Pid!',
 							},
 						],
@@ -439,7 +444,7 @@ export default {
 					{
 						rules: [
 							{
-								required: true,
+								required: false,
 								message: '请输入拼多多自定义参数!',
 							},
 						],
@@ -704,7 +709,7 @@ export default {
 								this.query()
 								this.visible = false
 							} else {
-								tipMessage.error(res.msg)
+								tipMessage.error(res.Msg)
 							}
 						})
 						.catch(() => {
