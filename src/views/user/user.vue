@@ -237,11 +237,6 @@
 					/>
 				</a-form-item>
 			</a-form>
-			 <template slot="footer">
-        <a-button key="back" @click="handleCancel">
-          Return
-        </a-button>
-      </template>
 		</a-modal>
 		<!-- <a-modal title="编辑信息" :visible="editVisible" @ok="editHandleOk" @cancel="editHandleCancel">
 			<a-form :form="editform" :model="editInfo">
