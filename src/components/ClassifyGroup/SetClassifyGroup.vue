@@ -30,7 +30,7 @@ import {
 	ClassifyGroupList,
 	GetTargetClassify,
 	SetTargetClassify
-} from '@/api/classGroupApi.js'
+} from '@/api/tk/classGroupApi.js'
 export default {
 	name: 'component-SetClassifyGroup',
 	props: {

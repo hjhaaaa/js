@@ -115,7 +115,7 @@ import {
 	DeleteCollectionGroup,
 	EditCollectionGroupName,
 	EditCollectionGroupStatus,
-} from '@/api/collectionGroupApi.js'
+} from '@/api/tk/collectionGroupApi.js'
 export default {
 	components: { SetCollectionGroup, EditableCell },
 	data() {

@@ -94,7 +94,7 @@ import {
 	DeleteSendGroup,
 	UpdateSendGroupStatus,
 	UpdateSendGroupRemark,
-} from '@/api/sendGroupApi.js'
+} from '@/api/tk/sendGroupApi.js'
 
 export default {
 	components: { EditableCell, BasicsConfig, SetClassifyGroup },

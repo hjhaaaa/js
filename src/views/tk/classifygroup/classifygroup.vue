@@ -78,14 +78,14 @@
 <script>
 import moment from 'moment'
 import tipMessage from '@/utils/messageUtil.js'
-import { GetLoginUserInfo } from '@/api/userApi.js'
+import { GetLoginUserInfo } from '@/api/tk/userApi.js'
 import {
 	SendGroupList,
 	DeleteSendGroup,
 	UpdateSendGroupStatus,
 	UpdateSendGroupRemark
-} from '@/api/sendGroupApi.js'
-import { GetRechargeCode, RechargeWorkstation } from '@/api/cardCodeApi.js'
+} from '@/api/tk/sendGroupApi.js'
+import { GetRechargeCode, RechargeWorkstation } from '@/api/tk/cardCodeApi.js'
 import { constants } from 'zlib'
 import { callbackify, log } from 'util'
 import { deeppink } from 'color-name'
@@ -94,7 +94,7 @@ import {
 	EditClassifyGroup,
 	DeleteClassifyGroup,
 	OpenCollectionGroupClassify
-} from '@/api/classGroupApi.js'
+} from '@/api/tk/classGroupApi.js'
 
 export default {
 	name: 'classifygroup',

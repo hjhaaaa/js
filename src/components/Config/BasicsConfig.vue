@@ -98,8 +98,8 @@ import {
 	SetUserBasicsConfig,
 	SetWorkstationConfig,
 	GetBasicsConfig,
-} from '@/api/basicsConfigApi.js'
-import { authorizeList } from '@/api/auth.js'
+} from '@/api/tk/basicsConfigApi.js'
+import { authorizeList } from '@/api/tk/authorizeApi.js'
 export default {
 	name: 'component-BasicsConfig',
 	props: {

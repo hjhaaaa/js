@@ -12,7 +12,7 @@ import {
 	UserList,
 	UpdateUserStatus,
 	UpdateUserRemark
-} from '@/api/userApi.js'
+} from '@/api/dl/userApi.js'
 
 export default {
 	name: 'user',

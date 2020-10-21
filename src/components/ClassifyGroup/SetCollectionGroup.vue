@@ -49,7 +49,7 @@ import {
 	GetTargetClassify,
 	SetCollectionGroupClassify,
 	GetCollectionGroupClassify
-} from '@/api/classGroupApi.js'
+} from '@/api/tk/classGroupApi.js'
 export default {
 	name: 'component-SetCollectionGroup', //设置采集分组组件
 	props: {},

@@ -35,9 +35,24 @@ const otherRoutes = [
                 component: () => import(/* webpackChunkName: "404" */ '@/views/error/404')
             }
         ]
-    }
+    },
+  
 ]
-const yfdRoutes = [
+const tkRoutes = [
+    {
+        path: '/',
+        name: 'index',
+        redirect: '/index',
+        component: AppLayout,
+        children: [
+            {
+                path: '/home',
+                name: 'home',
+                component: () => import(/* webpackChunkName: "login" */ '@/views/tk/home')
+            },
+            
+        ]
+    },
     {
         path: '/user',
         name: 'userManage',
@@ -46,11 +61,11 @@ const yfdRoutes = [
             {
                 path: 'manage',
                 name: '',
-                component: () => import(/* webpackChunkName: "login" */ '@/views/user/user.vue')
+                component: () => import(/* webpackChunkName: "login" */ '@/views/tk/user/user.vue')
             }, {
                 path: 'workstation',
                 name: 'workstation',
-                component: () => import(/* webpackChunkName: "login" */ '@/views/user/workstation.vue'),
+                component: () => import(/* webpackChunkName: "login" */ '@/views/tk/user/workstation.vue'),
                 params: {
                     userName: ''
                 }
@@ -64,7 +79,7 @@ const yfdRoutes = [
             {
                 path: 'manage',
                 name: '',
-                component: () => import(/* webpackChunkName: "login" */ '@/views/cardcode/cardcode.vue')
+                component: () => import(/* webpackChunkName: "login" */ '@/views/tk/cardcode/cardcode.vue')
             },
         ]
     },
@@ -78,7 +93,7 @@ const yfdRoutes = [
             {
                 path: 'index',
                 name: '',
-                component: () => import(/* webpackChunkName: "login" */ '@/views/collection/index.vue')
+                component: () => import(/* webpackChunkName: "login" */ '@/views/tk/collection/index.vue')
             },
         ]
     },
@@ -90,7 +105,7 @@ const yfdRoutes = [
             {
                 path: 'manage',
                 name: '',
-                component: () => import(/* webpackChunkName: "login" */ '@/views/authorize/index.vue')
+                component: () => import(/* webpackChunkName: "login" */ '@/views/tk/authorize/index.vue')
             },
         ]
 
@@ -103,7 +118,7 @@ const yfdRoutes = [
             {
                 path: 'manage',
                 name: '',
-                component: () => import(/* webpackChunkName: "login" */ '@/views/groupConfig/index.vue')
+                component: () => import(/* webpackChunkName: "login" */ '@/views/tk/groupConfig/index.vue')
             },
         ]
 
@@ -116,7 +131,7 @@ const yfdRoutes = [
             {
                 path: 'manage',
                 name: '',
-                component: () => import(/* webpackChunkName: "login" */ '@/views/classifygroup/classifygroup.vue')
+                component: () => import(/* webpackChunkName: "login" */ '@/views/tk/classifygroup/classifygroup.vue')
             },
         ]
     },
@@ -143,7 +158,7 @@ const kefuRoutes = [
         children: [{
             path: 'index',
             name: '',
-            component: () => import(/* webpackChunkName: "login" */ '@/views/kefu/cardcode.vue')
+            component: () => import(/* webpackChunkName: "login" */ '@/views/kefu/cardcode/index.vue')
         },
         ]
     }, {
@@ -152,7 +167,7 @@ const kefuRoutes = [
         component: AppLayout,
         children: [ {
                 path: 'index',
-                component: () => import(/* webpackChunkName: "login" */ '@/views/kefu/workstation.vue'),
+                component: () => import(/* webpackChunkName: "login" */ '@/views/kefu/workstation/index.vue'),
     
             }
         ]
@@ -162,41 +177,18 @@ const kefuRoutes = [
         component: AppLayout,
         children: [ {
                 path: 'index',
-                component: () => import(/* webpackChunkName: "login" */ '@/views/kefu/user.vue'),
+                component: () => import(/* webpackChunkName: "login" */ '@/views/kefu/user/index.vue'),
     
             }
         ]
     }, 
 ]
 
-const TkRoutes = [
-    {
-        path: '/',
-        name: 'index',
-        redirect: '/login',
-        component: AppLayout,
-        children: [
-            {
-                path: '/home',
-                name: 'home',
-                component: () => import(/* webpackChunkName: "login" */ '@/views/tk/home')
-            },
-            {
-                path: '/tk/data',
-                name: '',
-                meta: {
-                    title: '淘客全盘数据',
-                    icon: ''
-                },
-                component: () => import(/* webpackChunkName: "table" */ '@/views/tk/data')
-            },
-        ]
-    }
-]
 
 
 
-const routes = [...otherRoutes, ...TkRoutes, ...yfdRoutes,...kefuRoutes]
+
+const routes = [...otherRoutes,  ...tkRoutes,...kefuRoutes]
 
 
 // Vue.use(Router)

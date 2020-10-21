@@ -233,19 +233,19 @@ import {
 	DeleteWorkstation,
 	UpdateWorkstationStatus,
 	UpdateWorkstationRemark,
-} from '@/api/workstatusApi.js'
+} from '@/api/tk/workstationApi.js'
 import {
 	WechatQRLogin,
 	WechatLogout,
 	WechatPushLogin,
-} from '@/api/wechatApi.js'
+} from '@/api/tk/wechatApi.js'
 import {
 	SendGroupList,
 	DeleteSendGroup,
 	UpdateSendGroupStatus,
 	UpdateSendGroupRemark,
-} from '@/api/sendGroupApi.js'
-import { GetRechargeCode, RechargeWorkstation } from '@/api/cardCodeApi.js'
+} from '@/api/tk/sendGroupApi.js'
+import { GetRechargeCode, RechargeWorkstation } from '@/api/tk/cardCodeApi.js'
 import { constants } from 'zlib'
 import { callbackify, log } from 'util'
 import { deeppink } from 'color-name'

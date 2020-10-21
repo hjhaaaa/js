@@ -100,14 +100,12 @@
 <script>
 import moment from 'moment'
 import tipMessage from '@/utils/messageUtil.js'
-import $ from 'jquery'
-import '@/assets/js/signalr.min.js'
-import { WorkstationList } from '@/api/workstatusApi.js'
+import { WorkstationList } from '@/api/kefu/workstationApi.js'
 import { constants } from 'zlib'
 import { callbackify, log } from 'util'
 import { deeppink } from 'color-name'
 export default {
-	name: 'user-workstation',
+	name: 'kefu-workstation',
 	components: {},
 	data() {
 		return {

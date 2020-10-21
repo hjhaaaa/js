@@ -181,9 +181,8 @@ import {
 	CardCodeList,
 	GetRechargeCode,
 	BatchTransferCardCode,
-} from '@/api/cardCodeApi.js'
-import { UserList, GetLoginUserInfo } from '@/api/userApi.js'
-import { CreateCardCodeOrder } from '@/api/cardCodeOrderApi.js'
+} from '@/api/tk/cardCodeApi.js'
+import { UserList, GetLoginUserInfo } from '@/api/tk/userApi.js'
 export default {
 	name: 'cardcode',
 	components: {},

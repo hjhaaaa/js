@@ -1,14 +1,64 @@
 <template>
 	<div class="user">
-		<a-card title="用户列表">
+		<a-card title="我的账号">
+			<p class="tip">
+				此账号配置的信息为淘客信息，PID使用优先级：群PID>工位PID>用户PID>淘客PID
+			</p>
+			<a-table
+				:columns="columns"
+				:dataSource="mydata"
+				rowKey="Id"
+				:loading="mytableLoading"
+				:pagination="false"
+				:scroll="{ x: 1000 }"
+			>
+				<template slot="editRemarks" slot-scope="text, row">
+					<editable-cell
+						:text="text"
+						@change="RemarksChange(row, 'Remarks', $event)"
+						editTitle="编辑备注"
+					/>
+				</template>
+				<div slot="opSwitchStatus" class="wxOp" slot-scope="row">
+					<a-switch
+						checked-children="开"
+						un-checked-children="关"
+						:checked="!!row.Status == 1"
+						@change="EditStatus(row, 1)"
+					/>
+				</div>
+				<div class="table operation" slot="opti" slot-scope="row">
+					<a-button type="primary" @click="workstationManage(row)" size="small"
+						>工位管理</a-button
+					>
+					<a-button type="primary" @click="setConfig(row)" size="small"
+						>指定配置</a-button
+					>
+					<a-button type="primary" @click="addWorkstation(row, 1)" size="small"
+						>创建工位</a-button
+					>
+					<a-button type="primary" @click="setGroup(row)" size="small"
+						>指定分组</a-button
+					>
+					<!-- <a type="link" @click="edit(row,1)">编辑信息</a> -->
+					<a-button type="primary" @click="goAgent(row)" size="small"
+						>登录代理端</a-button
+					>
+				</div>
+			</a-table>
+		</a-card>
+		<a-card title="用户列表" style="margin-top: 10px">
+			<p class="tip">
+				此账号配置的信息为用户信息，PID使用优先级：群PID>工位PID>用户PID>淘客PID
+			</p>
 			<a-form layout="inline" :form="form" style="margin-bottom: 10px">
 				<a-form-item label="用户名">
 					<a-input v-model="form.UserName" placeholder="请输入用户名" />
 				</a-form-item>
 
-				<!-- <a-form-item label="备注">
+				<a-form-item label="备注">
 					<a-input v-model="form.Remark" placeholder="请输入关键词" />
-				</a-form-item> -->
+				</a-form-item>
 				<a-form-item label="发单状态">
 					<a-select style="width: 120px" v-model="form.Status">
 						<a-select-option value="-1">全部</a-select-option>
@@ -18,6 +68,13 @@
 				</a-form-item>
 				<a-form-item>
 					<a-button icon="search" @click="handleSearch">查询</a-button>
+					<a-button
+						type="primary"
+						style="margin-left: 15px"
+						icon="plus-circle"
+						@click="addUser"
+						>添加用户</a-button
+					>
 				</a-form-item>
 			</a-form>
 			<a-table
@@ -28,18 +85,40 @@
 				:pagination="false"
 				:scroll="{ x: 1000 }"
 			>
-				<div slot="StationTypeSlot" class="wxOp" slot-scope="row">
-					<!-- <a-tag v-if="row.UserLevel == 1" color="blue">淘客</a-tag>
-					<a-tag v-else color="blue">代理</a-tag> -->
+				<template slot="editRemarks" slot-scope="text, row">
+					<editable-cell
+						:text="text"
+						@change="RemarksChange(row, 'Remarks', $event)"
+						editTitle="编辑备注"
+					/>
+				</template>
 
-					{{ !!row.UserLevel == 1 ? '淘客' : '代理' }}
-				</div>
 				<div slot="opSwitchStatus" class="wxOp" slot-scope="row">
-					{{ !!row.Status == 1 ? '开启' : '关闭' }}
+					<a-switch
+						checked-children="开"
+						un-checked-children="关"
+						:checked="!!row.Status == 1"
+						@change="EditStatus(row, 2)"
+					/>
 				</div>
-				<div slot="action" class="wxOp" slot-scope="row">
-					<a-button type="primary" size="small">修改密码</a-button>
-					<a-button type="primary" size="small">设置供应商</a-button>
+				<!-- <span slot="Status" slot-scope="row"><a-switch id="row_{{row.id}}" checked='' @change="onChange" /></span> -->
+				<div class="table operation" slot="opti" slot-scope="row">
+					<a-button type="primary" @click="workstationManage(row)" size="small"
+						>工位管理</a-button
+					>
+					<a-button type="primary" @click="setConfig(row)" size="small"
+						>指定配置</a-button
+					>
+					<a-button type="primary" @click="addWorkstation(row, 2)" size="small"
+						>创建工位</a-button
+					>
+					<a-button type="primary" @click="setGroup(row)" size="small"
+						>指定分组</a-button
+					>
+					<!-- <a type="link" @click="edit(row,1)">编辑信息</a> -->
+					<a-button type="primary" @click="goAgent(row)" size="small"
+						>登录代理端</a-button
+					>
 				</div>
 			</a-table>
 			<div style="margin-top: 15px">
@@ -54,6 +133,128 @@
 				/>
 			</div>
 		</a-card>
+		<a-modal
+			title="创建用户"
+			:visible="visible"
+			@ok="addHandleOk"
+			@cancel="addHandleCancel"
+		>
+			<a-form :form="aform" :model="addInfo" :rules="addRules" ref="aform">
+				<a-form-item v-bind="formItemLayout" label="用户名" prop="userName">
+					<a-input placeholder="登录用户名" v-decorator="addRules.userName" />
+				</a-form-item>
+				<a-form-item v-bind="formItemLayout" label="密码" prop="pwd">
+					<a-input-password
+						placeholder="登录密码"
+						autocomplete="new-password"
+						v-decorator="addRules.pwd"
+					/>
+				</a-form-item>
+				<a-form-item v-bind="formItemLayout" label="账号状态" prop="status">
+					<a-radio-group v-decorator="addRules.status">
+						<a-radio :value="1"> 启用</a-radio>
+						<a-radio :value="0"> 禁用</a-radio>
+					</a-radio-group>
+				</a-form-item>
+
+				<a-form-item
+					v-bind="formItemLayout"
+					label="淘宝授权账号"
+					prop="TaoBaoSessionId"
+				>
+					<a-select
+						placeholder="请选择淘宝授权账号"
+						v-decorator="addRules.TaoBaoSessionId"
+					>
+						<a-select-option v-for="d in tbSessionData" :key="d.Id">{{
+							d.Name
+						}}</a-select-option>
+					</a-select>
+				</a-form-item>
+				<a-form-item
+					v-bind="formItemLayout"
+					label="淘宝联盟Pid"
+					prop="TaoBaoPid"
+				>
+					<a-input
+						placeholder="请输入淘宝联盟Pid"
+						autocomplete="off"
+						v-decorator="addRules.TaoBaoPid"
+					/>
+				</a-form-item>
+
+				<a-form-item
+					v-bind="formItemLayout"
+					label="淘宝联盟Rid"
+					prop="TaoBaoRid"
+				>
+					<a-input
+						placeholder="请输入淘宝联盟Rid"
+						autocomplete="off"
+						v-decorator="addRules.TaoBaoRid"
+					/>
+				</a-form-item>
+
+				<a-form-item
+					v-bind="formItemLayout"
+					label="多多进宝授权账号"
+					prop="PddSessionId"
+				>
+					<a-select
+						placeholder="请选择多多进宝账号"
+						v-decorator="addRules.PddSessionId"
+					>
+						<a-select-option v-for="d in pddSessionData" :key="d.Id">{{
+							d.Name
+						}}</a-select-option>
+					</a-select>
+				</a-form-item>
+
+				<a-form-item v-bind="formItemLayout" label="多多进宝Pid" prop="PddPid">
+					<a-input
+						placeholder="请输入多多进宝Pid"
+						autocomplete="off"
+						v-decorator="addRules.PddPid"
+					/>
+				</a-form-item>
+
+				<a-form-item
+					v-bind="formItemLayout"
+					label="拼多多自定义参数"
+					prop="PddTip"
+				>
+					<a-input
+						placeholder="请输入拼多多自定义参数"
+						v-decorator="addRules.PddTip"
+						autocomplete="off"
+					/>
+				</a-form-item>
+				<a-form-item v-bind="formItemLayout" label="备注" prop="remark">
+					<a-input
+						placeholder="用户备注"
+						autocomplete="off"
+						v-decorator="addRules.remark"
+					/>
+				</a-form-item>
+			</a-form>
+		</a-modal>
+		<!-- <a-modal title="编辑信息" :visible="editVisible" @ok="editHandleOk" @cancel="editHandleCancel">
+			<a-form :form="editform" :model="editInfo">
+				<a-form-item label="用户名" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
+					<a-input v-model="editInfo.userName" read-only />
+				</a-form-item>
+				<a-form-item label="账号状态" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
+					<a-radio-group v-model="editInfo.status" :options="statusOptions"></a-radio-group>
+				</a-form-item>
+				<a-form-item label="备注" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
+					<a-input v-model="editInfo.remark" placeholder="用户备注" autocomplete="off" />
+				
+				</a-form-item>
+			</a-form>
+		</a-modal>-->
+
+		<BasicsConfig :configType="1" ref="basicsConfig"></BasicsConfig>
+		<SetClassifyGroup :targetType="1" ref="setClassifyGroup"></SetClassifyGroup>
 	</div>
 </template>
 
@@ -68,9 +269,9 @@ import {
 	CreatUser,
 	UpdateUserStatus,
 	UpdateUserRemark,
-} from '@/api/userApi.js'
-import { CreateWorkstation } from '@/api/workstatusApi.js'
-import { authorizeList } from '@/api/auth.js'
+} from '@/api/tk/userApi.js'
+import { CreateWorkstation } from '@/api/tk/workstationApi.js'
+import { authorizeList } from '@/api/tk/authorizeApi.js'
 import { constants } from 'zlib'
 import { callbackify } from 'util'
 import { deeppink } from 'color-name'
@@ -95,11 +296,10 @@ export default {
 				},
 			},
 			form: {
-				IsHasSelf: true,
 				Remark: '',
 				Status: '-1',
 				UserName: '',
-				pageSize: 10,
+				pageSize: 20,
 				pageNum: 1,
 			},
 			addInfo: {
@@ -255,7 +455,7 @@ export default {
 				{
 					title: '序号',
 					Key: 'Id',
-					width: '100px',
+					width: '80px',
 					dataIndex: 'Id',
 				},
 				{
@@ -265,33 +465,34 @@ export default {
 					dataIndex: 'UserName',
 				},
 				{
-					title: '用户类型',
-					width: '150px',
-					scopedSlots: { customRender: 'StationTypeSlot' },
+					title: '备注',
+					Key: 'Remarks',
+					width: '200px',
+					dataIndex: 'Remarks',
+					scopedSlots: { customRender: 'editRemarks' },
 				},
 				{
 					title: '发单状态',
 					key: 'Status',
-					width: '150px',
+					width: '100px',
 					scopedSlots: { customRender: 'opSwitchStatus' },
 				},
 				{
 					title: '创建时间',
 					Key: 'CTime',
-					width: '180px',
+					width: '150px',
 					dataIndex: 'CTime',
 				},
 				{
 					title: '工位数',
 					Key: 'WorkstationCount',
-					width: '150px',
+					width: '100px',
 					dataIndex: 'WorkstationCount',
 				},
 
 				{
 					title: '操作',
-					width: '150px',
-					scopedSlots: { customRender: 'action' },
+					scopedSlots: { customRender: 'opti' },
 				},
 			],
 			visible: false, //添加用户
@@ -304,6 +505,14 @@ export default {
 			tableLoading: false,
 			mytableLoading: false,
 			configId: 0,
+			tbSessionData: [
+				// { Id: 1, Nick: 'nicheng1', SessionKey: 'tbSessionKeytest1' },
+				// { Id: 2, Nick: 'nicheng2', SessionKey: 'tbSessionKeytest2' }
+			],
+			pddSessionData: [
+				// { Id: 1, Nick: 'pddnk1', SessionKey: 'pddSessionKeytest1' },
+				// { Id: 2, Nick: 'pddnk2', SessionKey: 'pddSessionKeytest2' }
+			],
 		}
 	},
 	methods: {
@@ -575,7 +784,10 @@ export default {
 		},
 	},
 	created() {
+		this.queryTk()
 		this.query()
+		this.getTbSession()
+		this.getPddSession()
 	},
 }
 </script>
