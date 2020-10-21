@@ -83,7 +83,7 @@ export default {
         return unescape(arr[2]);
       else
         return null;
-    },GetCurrentLoginMenu(){
+    },getCurrentLoginMenu(){
       	GetCurrentLoginMenu()
 				.then((res) => {
 			 this.menus= res.Data
@@ -99,7 +99,7 @@ export default {
     this.updateMenu()
     let _name = this.getCookie('_tkdataadmin_nick')
    
-    this.GetCurrentLoginMenu();
+    this.getCurrentLoginMenu();
      // let _menuArr = [...menuData]
     // this.menus = _menuArr
   },
