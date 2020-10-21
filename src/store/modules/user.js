@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { login as userLogin, logout as userLogout, getuserrouter } from '@/api/auth'
+import { login as userLogin, logout as userLogout, getuserrouter,customerserviceLogin } from '@/api/auth'
 import { ACCESS_TOKEN, USER, ROUTER, EVENSET } from '@/store/mutation-types'
 import { AppLayout } from '@/components/Layout'
 
@@ -130,6 +130,20 @@ const user = {
         // console.log('t', t)
         commit('SET_Router', TkRoutes)
         resolve()
+      })
+    
+    },
+    CustomerServiceLogin({ commit, dispatch }, userInfo){
+      return new Promise(async (resolve, reject) => {
+        customerserviceLogin(userInfo).then(res => {
+          if(res.IsSuccess){
+            commit('SET_USER', { username: userInfo.UserName })
+            commit('SET_TOKEN', res.Data.Token)
+          }
+          resolve(res)
+        }).catch(err => {
+          reject(err)
+        })
       })
     }
   }

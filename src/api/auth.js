@@ -35,7 +35,7 @@ export function login(params) {
     data: params
   })
 }// 客服登录
-export function customerservicelogin(params) {
+export function customerserviceLogin(params) {
   return request({
     url: '/UserLogin/Customerservice',
     method: 'post',

@@ -58,11 +58,6 @@
 				<a-form-item label="">
 					<a-button icon="search" @click="handleSearch">查询</a-button>
 				</a-form-item>
-				<a-form-item label="" v-if="isCustomerService">
-					<a-button icon="plus-circle" type="primary" @click="add"
-						>添加激活码</a-button
-					>
-				</a-form-item>
 			</a-form>
 
 			<div v-if="isSupplier" style="margin-bottom: 16px">
@@ -167,229 +162,6 @@
 				</a-form-item>
 			</a-form>
 		</a-modal>
-
-		<!-- @cancel="addHandleCancel"
-			@ok="addHandleOk" -->
-		<a-modal
-			class="add"
-			width="900px"
-			v-model="addVisible"
-			title="创建激活码"
-			:confirm-loading="addConfirmLoading"
-		>
-			<template slot="footer">
-				<a-button @click="addHandleCancel">关闭</a-button>
-			</template>
-			<div style="display: inline-block; width: 100%">
-				<div style="width: 50%; float: left">
-					<a-form
-						ref="addForm"
-						:form="addForm"
-						:label-col="labelCol"
-						:wrapper-col="wrapperCol"
-					>
-						<a-form-item label="淘客Id">
-							<a-input
-								placeholder="淘客Id"
-								autocomplete="off"
-								v-decorator="[
-									'TkId',
-									{
-										rules: [
-											{
-												required: true,
-												message: '请输入淘客Id',
-												trigger: 'blur,change',
-											},
-											{ pattern: /^[0-9]*$/g, message: '淘客Id必须为数字' },
-										],
-									},
-								]"
-							/>
-						</a-form-item>
-						<a-form-item label="订单号">
-							<a-input
-								placeholder="订单号"
-								autocomplete="off"
-								v-decorator="[
-									'OrderNo',
-									{
-										rules: [{ required: true, message: '充值的单号' }],
-									},
-								]"
-							/>
-						</a-form-item>
-						<a-form-item label="订单金额">
-							<a-input
-								placeholder="订单金额"
-								autocomplete="off"
-								v-decorator="[
-									'OrderAmout',
-									{
-										rules: [
-											{ required: true, message: '订单的金额' },
-											{ pattern: /^[0-9]*$/g, message: '金额必须为数字' },
-										],
-									},
-								]"
-							/>
-						</a-form-item>
-
-						<a-form-item label="激活码数量">
-							<a-input
-								placeholder="激活码数量"
-								autocomplete="off"
-								v-decorator="[
-									'CodeCount',
-									{
-										rules: [
-											{ required: true, message: '请输入激活码数量' },
-											{ pattern: /^[0-9]*$/g, message: '数量必须为数字' },
-										],
-									},
-								]"
-							/>
-						</a-form-item>
-						<a-form-item label="激活码类型">
-							<a-select
-								v-decorator="[
-									'CardCodeType',
-									{
-										rules: [{ required: true, message: '请选择激活码类型' }],
-									},
-								]"
-								placeholder="请选择激活码类型"
-							>
-								<a-select-option value="1"> 月卡 </a-select-option>
-							</a-select>
-						</a-form-item>
-						<a-form-item label="返佣类型">
-							<a-select
-								v-decorator="[
-									'RebateType',
-									{
-										rules: [{ required: true, message: '请选择返佣类型' }],
-									},
-								]"
-								placeholder="请选择返佣类型"
-							>
-								<a-select-option value="1"> 1~20个(24元/个) </a-select-option>
-								<a-select-option value="2"> 21~100个(22元/个) </a-select-option>
-								<a-select-option value="3">
-									101-1999个(20元/个
-								</a-select-option>
-								<a-select-option value="4">
-									2000个以上(19元/个)
-								</a-select-option>
-							</a-select>
-						</a-form-item>
-
-						<a-form-item label="来源类型">
-							<a-select
-								v-decorator="[
-									'SourceType',
-									{
-										rules: [{ required: true, message: '请选择来源类型' }],
-									},
-								]"
-								placeholder="请选择来源类型"
-							>
-								<a-select-option value="1"> 用户购买 </a-select-option>
-								<a-select-option value="2"> 赠送 </a-select-option>
-								<a-select-option value="3"> 公司自用 </a-select-option>
-							</a-select>
-						</a-form-item>
-						<a-form-item label="订单截图">
-							<!-- style="display: none;" -->
-							<a-input
-								placeholder="订单截图"
-								autocomplete="off"
-								style="display: none"
-								v-decorator="[
-									'ImgUrl',
-									{
-										rules: [{ required: true, message: '请上传订单截图' }],
-									},
-								]"
-							/>
-							<img
-								v-if="addFormModel.ImgUrl"
-								:src="addFormModel.ImgUrl"
-								alt="订单截图"
-								style="width: 100px; height: 100px; float: left"
-								@click="openPreview"
-							/>
-							<a-upload
-								:action="uploadAction"
-								list-type="picture"
-								:showUploadList="false"
-								class="upload-list-inline"
-								@change="handleChange"
-								:before-upload="beforeUpload"
-								style="
-									float: left;
-									display: inline-block;
-									margin-left: 10px;
-									margin-top: -5px;
-								"
-							>
-								<a-button type="primary" :loading="uploadLoading">
-									<a-icon type="upload" />上传截图</a-button
-								>
-							</a-upload>
-						</a-form-item>
-						<a-form-item label="备注">
-							<a-textarea
-								placeholder="备注"
-								autocomplete="off"
-								:rows="3"
-								v-decorator="[
-									'Remarks',
-									{
-										rules: [],
-									},
-								]"
-							/>
-						</a-form-item>
-						<a-form-item label=" ">
-							<a-button
-								:disabled="addDisabled"
-								type="primary"
-								:loading="addLoading"
-								@click="addHandleOk"
-								size="large"
-								>生成
-							</a-button>
-							<a-button @click="addReset" size="large" style="margin-left: 10px"
-								>清空
-							</a-button>
-						</a-form-item>
-					</a-form>
-				</div>
-				<div
-					style="width: 50%; float: left; padding-left: 15px; padding-top: 4px"
-				>
-					<div>生成结果：</div>
-					<a-textarea
-						style="background-color: #ebebeb; margin-top: 5px"
-						placeholder="生成激活码结果,点击复制"
-						:rows="8"
-						read-only=""
-						v-model="creteCodeStr"
-						@click="copyCodeList"
-					/>
-					<p style="color: rgb(64, 158, 255)">提示：点击输入框，即可复制</p>
-				</div>
-			</div>
-		</a-modal>
-
-		<a-modal
-			:visible="previewVisible"
-			:footer="null"
-			@cancel="previewHandleCancel"
-		>
-			<img alt="example" style="width: 100%" :src="previewImage" />
-		</a-modal>
 	</div>
 </template>
 
@@ -439,7 +211,6 @@ export default {
 			labelCol: { span: 9 },
 			wrapperCol: { span: 15 },
 			transferForm: this.$form.createForm(this),
-			addForm: this.$form.createForm(this),
 			formItemLayout: {
 				labelCol: {
 					sm: { span: 7 },
@@ -466,7 +237,6 @@ export default {
 					title: '激活码',
 					Key: 'CardCode',
 					width: '300px',
-					//dataIndex: 'CardCode',
 					scopedSlots: { customRender: 'CardCode' },
 				},
 				{
@@ -476,17 +246,18 @@ export default {
 					dataIndex: 'CTime',
 				},
 				{
-					title: '使用时间',
-					Key: 'UseTime',
-					width: '180px	',
-					dataIndex: 'UseTime',
-				},
-				{
 					title: '使用状态',
 					key: 'UseStatus',
-					width: '150px',
+					width: '100px',
 					scopedSlots: { customRender: 'UseStatus' },
 				},
+				{
+					title: '使用时间',
+					Key: 'UseTime',
+					width: '180px',
+					dataIndex: 'UseTime',
+				},
+
 				{
 					title: '使用项目',
 					key: 'UseType',
@@ -495,14 +266,13 @@ export default {
 				},
 				{
 					title: '使用对象',
-					width: '250px',
+					width: '200px',
 					scopedSlots: { customRender: 'UseObject' },
 				},
 			],
 			data: [],
 			total: 0,
 			isSupplier: false, //是否供应商
-			isCustomerService: false,//是否客服
 			tableLoading: false,
 			transferList: [], //选中的行数据
 			transferLoading: false,
@@ -517,66 +287,6 @@ export default {
 			myCardCodeCount: 0,
 			currentUserName: '',
 			selectedRowKeys: [],
-			addVisible: false,
-			addLoading: false,
-			addConfirmLoading: false,
-			addDisabled: false,
-			addFormModel: {
-				ImgUrl: '',
-				TkId: '',
-				OrderNo: '',
-				OrderAmout: '',
-				CodeCount: '',
-				CardCodeType: '1',
-				SourceType: '1',
-				RebateType: '1',
-			},
-			addRules: {
-				OrderNo: [
-					{
-						required: true,
-						message: '请输入订单号',
-						trigger: 'blur',
-					},
-				],
-				region: [
-					{
-						required: true,
-						message: 'Please select Activity zone',
-						trigger: 'change',
-					},
-				],
-				date1: [
-					{ required: true, message: 'Please pick a date', trigger: 'change' },
-				],
-				type: [
-					{
-						type: 'array',
-						required: true,
-						message: 'Please select at least one activity type',
-						trigger: 'change',
-					},
-				],
-				resource: [
-					{
-						required: true,
-						message: 'Please select activity resource',
-						trigger: 'change',
-					},
-				],
-				desc: [
-					{
-						required: true,
-						message: 'Please input activity form',
-						trigger: 'blur',
-					},
-				],
-			},
-			creteCodeStr: '',
-			uploadAction: 'http://192.168.11.129:30080/api/UploadFile/Image',
-			uploadLoading: false,
-			previewVisible: false,
-			previewImage: '',
 		}
 	},
 	computed: {
@@ -623,10 +333,6 @@ export default {
 			this.form.pageNum = 1
 			this.query()
 		},
-		add() {
-			this.addVisible = true
-			this.addReset()
-		},
 		pageChange(p, s) {
 			this.form.pageNum = p
 			this.query()
@@ -644,9 +350,8 @@ export default {
 				.then((res) => {
 					if (res.IsSuccess) {
 						this.isSupplier = res.Data.IsSupplier
-					//	this.isCustomerService = res.Data.IsCustomerService
-							this.isCustomerService =true
-						if (this.isSupplier || this.isCustomerService) {
+						this.isCustomerService = true
+						if (this.isSupplier) {
 							this.columns.push({
 								title: '转让状态',
 								width: '150px',
@@ -753,44 +458,7 @@ export default {
 					.indexOf(input.toLowerCase()) >= 0
 			)
 		},
-		addHandleOk() {
-			this.addForm.validateFieldsAndScroll((err, values) => {
-				if (!err) {
-					values.TkId *= 1
-					values.SourceType *= 1
-					values.RebateType *= 1
-					values.CardCodeType *= 1
-					values.CodeCount *= 1
-					values.OrderAmout *= 1
-					console.log('addForm values: ', values)
-					this.addLoading = true
-					CreateCardCodeOrder(values)
-						.then((res) => {
-							if (res.IsSuccess) {
-								this.query()
-								//	this.addVisible = false
-								var str = ''
-								res.Data.forEach((code) => {
-									str += code + '\r\n'
-								})
 
-								this.creteCodeStr = str
-								this.addDisabled = true
-								tipMessage.success('创建卡密成功')
-							} else {
-								tipMessage.error(res.Msg)
-							}
-							this.addLoading = false
-						})
-						.catch(() => {
-							this.addLoading = false
-						})
-				}
-			})
-		},
-		addHandleCancel() {
-			this.addVisible = false
-		},
 		doCopy(row) {
 			console.log('复制对象', row) //row.CardCode
 			this.$copyText(row.CardCode).then(
@@ -801,93 +469,6 @@ export default {
 					tipMessage.error('复制激活码失败,可能是浏览器不支持')
 				}
 			)
-		},
-		copyCodeList() {
-			console.log('复制生成结果')
-
-			this.$copyText(this.creteCodeStr).then(
-				function (e) {
-					// alert('Copied')
-					tipMessage.success('复制结果成功')
-				},
-				function (e) {
-					// alert('Can not copy')
-					// console.log(e)
-					tipMessage.error('复制结果失败,可能是浏览器不支持')
-				}
-			)
-		},
-		handleChange(info) {
-			if (info.file.status === 'uploading') {
-				this.uploadLoading = true
-				return
-			}
-			if (info.file.status === 'done') {
-				if (info.fileList.length > 0) {
-					var imageUrl =
-						info.fileList[info.fileList.length - 1].response.Data.Url
-					this.addFormModel.ImgUrl = imageUrl
-					this.uploadLoading = false
-					this.addForm.setFieldsValue({
-						ImgUrl: imageUrl,
-					})
-					info.fileList.length = 0
-				} else {
-					tipMessage.error('上传截图失败,请稍后再试')
-				}
-			}
-		},
-		beforeUpload(file) {
-			const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
-			if (!isJpgOrPng) {
-				this.$message.error('请上传png或jpg图片!')
-			}
-			const isLt2M = file.size / 1024 / 1024 < 2
-			if (!isLt2M) {
-				tipMessage.error('图片必须小于2M')
-			}
-
-			var res = isJpgOrPng && isLt2M
-			// if (res) {
-			// 	this.addFormModel.ImgUrl = ''
-			// 	this.addForm.setFieldsValue({
-			// 		ImgUrl: '',
-			// 	})
-			// }
-			return res
-		},
-		previewHandleCancel() {
-			this.previewVisible = false
-		},
-		openPreview() {
-			if (this.addFormModel.ImgUrl) {
-				this.previewImage = this.addFormModel.ImgUrl
-				this.previewVisible = true
-			}
-		},
-		addReset() {
-			this.$nextTick(() => {
-				this.creteCodeStr = ''
-				this.addForm.setFieldsValue({
-					ImgUrl: '',
-					TkId: '',
-					OrderNo: '',
-					OrderAmout: '',
-					CodeCount: '',
-					CardCodeType: '1',
-					SourceType: '1',
-					RebateType: '1',
-				})
-				this.addFormModel.ImgUrl = ''
-				this.addDisabled = false
-			})
-		},
-		handleConfirmPass(rule, value, callback) {
-			if (this.password && this.password !== value) {
-				callback('两次密码输入不一致！')
-			}
-			// Note: 必须总是返回一个 callback，否则 validateFieldsAndScroll 无法响应
-			callback()
 		},
 	},
 	created() {

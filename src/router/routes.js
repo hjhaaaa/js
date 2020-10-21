@@ -9,6 +9,11 @@ const otherRoutes = [
         component: () => import(/* webpackChunkName: "login" */ '@/views/auth/login')
     },
     {
+        path: '/customerservicelogin',
+        name: 'customerservicelogin',
+        component: () => import(/* webpackChunkName: "login" */ '@/views/auth/customerservicelogin')
+    },
+    {
         path: '/regester',
         name: 'regester',
         component: () => import(/* webpackChunkName: "login" */ '@/views/auth/regester')
@@ -43,11 +48,11 @@ const yfdRoutes = [
                 name: '',
                 component: () => import(/* webpackChunkName: "login" */ '@/views/user/user.vue')
             }, {
-                 path: 'workstation',
+                path: 'workstation',
                 name: 'workstation',
                 component: () => import(/* webpackChunkName: "login" */ '@/views/user/workstation.vue'),
                 params: {
-                    userName:''
+                    userName: ''
                 }
             }
         ]
@@ -88,7 +93,7 @@ const yfdRoutes = [
                 component: () => import(/* webpackChunkName: "login" */ '@/views/authorize/index.vue')
             },
         ]
-        
+
     },
     {
         path: '/groupConfig',
@@ -101,7 +106,7 @@ const yfdRoutes = [
                 component: () => import(/* webpackChunkName: "login" */ '@/views/groupConfig/index.vue')
             },
         ]
-        
+
     },
     {
         path: '/classifygroup',
@@ -130,7 +135,39 @@ const agentRoutes = [
         ]
     }
 ]
-
+const kefuRoutes = [
+    {
+        path: '/cardcode',
+        name: 'cardcodeManage',
+        component: AppLayout,
+        children: [{
+            path: 'index',
+            name: '',
+            component: () => import(/* webpackChunkName: "login" */ '@/views/kefu/cardcode.vue')
+        },
+        ]
+    }, {
+        path: '/workstation',
+        name: 'workstationManage',
+        component: AppLayout,
+        children: [ {
+                path: 'index',
+                component: () => import(/* webpackChunkName: "login" */ '@/views/kefu/workstation.vue'),
+    
+            }
+        ]
+    }, {
+        path: '/user',
+        name: 'userManage',
+        component: AppLayout,
+        children: [ {
+                path: 'index',
+                component: () => import(/* webpackChunkName: "login" */ '@/views/kefu/user.vue'),
+    
+            }
+        ]
+    }, 
+]
 
 const TkRoutes = [
     {
@@ -157,7 +194,9 @@ const TkRoutes = [
     }
 ]
 
-const routes = [...otherRoutes, ...TkRoutes, ...yfdRoutes]
+
+
+const routes = [...otherRoutes, ...TkRoutes, ...yfdRoutes,...kefuRoutes]
 
 
 // Vue.use(Router)

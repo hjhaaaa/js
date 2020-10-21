@@ -3,7 +3,7 @@
 		<a-card style="width: 460px;" :body-style="{padding: '60px'}">
 			<div class="logo-wrapper">
 				<img src="../../assets/images/logo.png" class="logo" alt="背景图" />
-				<span class="title">后台管理-客服登录</span>
+				<span class="title">客服登录</span>
 			</div>
 
 			<a-form :form="form" class="login-form">
@@ -103,7 +103,7 @@ export default {
 		}
 	},
 	methods: {
-		...mapActions('user', ['Login']),
+		...mapActions('user', ['CustomerServiceLogin']),
 		handleLogin() {
 			this.loading = true
 			this.form.validateFields((err, { username, password }) => {
@@ -113,7 +113,7 @@ export default {
 					}, 600)
 					return
 				}
-				this.Login({
+				this.CustomerServiceLogin({
 					UserName: username,
 					Pwd: password
 				})
@@ -152,9 +152,7 @@ export default {
 			}
 			callback()
 		},
-		showRegesterModal() {
-			this.$router.push('/regester');
-		}
+
 	}
 }
 </script>
@@ -166,7 +164,8 @@ export default {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	background: #f0f2f5 url('../../assets/images/login_bg.jpg');
+	// background: #f0f2f5 url('../../assets/images/login_bg.jpg');
+	background: #fff ;
 	background-size: cover;
 	background-repeat: no-repeat;
 
