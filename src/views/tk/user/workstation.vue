@@ -255,7 +255,7 @@ export default {
 	components: { EditableCell, Sendgroup, BasicsConfig, SetClassifyGroup },
 	data() {
 		return {
-			signalUrl: 'http://192.168.11.129:30080/WorkstationHub',
+			signalUrl: 'https://yfdcallbacktest.comzt.cn/WorkstationHub',
 			statusOptions: [
 				{ label: '全部', value: -1 },
 				{ label: '启用', value: 1 },
@@ -298,6 +298,7 @@ export default {
 					title: '工位Id',
 					width: '80px',
 					dataIndex: 'Id',
+						fixed: 'left'
 				},
 				{
 					title: '用户名',

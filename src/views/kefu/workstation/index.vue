@@ -148,12 +148,13 @@ export default {
 			columns: [
 				{
 					title: '工位Id',
-					width: '100px',
+					width: '70px',
 					dataIndex: 'Id',
+					fixed: 'left'
 				},
 				{
 					title: '用户名',
-					width: '200px',
+					width: '180px',
 					scopedSlots: { customRender: 'UserNameSlot' },
 				},
 				{
@@ -166,25 +167,30 @@ export default {
 					width: '180px',
 					scopedSlots: { customRender: 'wxStatus' },
 				},
-				{
-					title: '充值类型',
-					width: '200px',
-					scopedSlots: { customRender: 'StationRechageTypeSlot' },
-				},
+				
 				{
 					title: '工位状态',
-					width: '150px',
+					width: '100px',
 					scopedSlots: { customRender: 'Status' },
 				},
 
 				{
 					title: '发单状态',
-					width: '200px',
+					width: '100px',
 					scopedSlots: { customRender: 'opSwitchStatus' },
 				},
 				{
+					title: '所在服务器',
+					width: '150px',
+					dataIndex: 'Ip',
+				},{
+					title: '充值类型',
+					width: '150px',
+					scopedSlots: { customRender: 'StationRechageTypeSlot' },
+				},
+				{
 					title: '创建时间',
-					width: '200px',
+					width: '180px',
 					dataIndex: 'CTime',
 				},
 				// {

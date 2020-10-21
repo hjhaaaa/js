@@ -3,19 +3,11 @@ import request from '@/utils/request'
 export function UserList(params) {
     return request.post('/user/list', params)
 }
-//创建代理
-export function CreatUser(params) {
-    return request.post('/user/create', params)
+//设置用户为供应商
+export function SetUserSupplier(id) {
+    return request.post('/user/setSupplier?id='+id)
 }
-//修改用户状态
-export function UpdateUserStatus(id, status) {
-    return request.post('/user/EditStatus', { Id: id, status: status })
-}
-//修改用户信息
-export function UpdateUserRemark(id, remark) {
-    return request.post('/user/EditRemark', { Id: id, remark: remark })
-}
-//获取登录用户信息
-export function GetLoginUserInfo() {
-    return request.post('/user/LoginInfo')
+//设置用户密码
+export function SetUserPassword(id, pwd) {
+    return request.post('/user/SetUserPassword', { Id: id, Password: pwd })
 }

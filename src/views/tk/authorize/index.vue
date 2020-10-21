@@ -41,8 +41,18 @@
 						>
 					</template>
 					<template slot="caozuo" slot-scope="row">
-						<a href="javascript:0;" v-if="listQuery.PlatformType == 1" @click="addTbsq">更新授权</a>
-						<a href="javascript:0;" v-if="listQuery.PlatformType == 2" @click="addPddsq">更新授权</a>
+						<a
+							href="javascript:0;"
+							v-if="listQuery.PlatformType == 1"
+							@click="addTbsq"
+							>更新授权</a
+						>
+						<a
+							href="javascript:0;"
+							v-if="listQuery.PlatformType == 2"
+							@click="addPddsq"
+							>更新授权</a
+						>
 					</template>
 				</a-table>
 			</div>
@@ -120,10 +130,9 @@ export default {
 				title: '授权错误',
 				content: this.$route.query.ErrorMsg,
 				onOk: () => {
-					location.replace( location.href.substr(0, location.href.indexOf('?')) )
-				}
+					location.replace(location.href.substr(0, location.href.indexOf('?')))
+				},
 			})
-			
 		}
 	},
 	methods: {
@@ -131,7 +140,7 @@ export default {
 			authorizeOauthcheck({
 				returnUrl: location.href,
 			}).then((res) => {
-				let resState = res.Data
+			
 				// window.open(
 				// 'https://oauth.taobao.com/authorize' +
 				// 	'?response_type=code' +
@@ -140,14 +149,15 @@ export default {
 				// 	'&state=' +
 				// 	resState
 				// )
-
-				location.href =
-					'https://oauth.taobao.com/authorize' +
-					'?response_type=code' +
-					'&client_id=26014808' +
-					'&redirect_uri=yfdoauth.sitezt.cn/api/wyfd/tk/newoauthcallback' +
-					'&state=' +
-					resState
+				location.href = res.Data;
+		
+				// location.href =
+				// 	'https://oauth.taobao.com/authorize' +
+				// 	'?response_type=code' +
+				// 	'&client_id=26014808' +
+				// 	'&redirect_uri=yfdoauth.sitezt.cn/api/wyfd/tk/newoauthcallback' +
+				// 	'&state=' +
+				// 	resState
 			})
 		},
 		addPddsq() {

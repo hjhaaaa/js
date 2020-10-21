@@ -471,7 +471,7 @@ export default {
 				],
 			},
 			creteCodeStr: '',
-			uploadAction: 'http://192.168.11.129:30080/api/UploadFile/Image',
+			uploadAction: 'https://yfdcallbacktest.comzt.cn/api/UploadFile/Image',
 			uploadLoading: false,
 			previewVisible: false,
 			previewImage: '',

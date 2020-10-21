@@ -16,6 +16,7 @@
 						<a-select-option value="0">关闭</a-select-option>
 					</a-select>
 				</a-form-item>
+
 				<a-form-item>
 					<a-button icon="search" @click="handleSearch">查询</a-button>
 				</a-form-item>
@@ -29,17 +30,25 @@
 				:scroll="{ x: 1000 }"
 			>
 				<div slot="StationTypeSlot" class="wxOp" slot-scope="row">
-					<!-- <a-tag v-if="row.UserLevel == 1" color="blue">淘客</a-tag>
-					<a-tag v-else color="blue">代理</a-tag> -->
-
 					{{ !!row.UserLevel == 1 ? '淘客' : '代理' }}
 				</div>
 				<div slot="opSwitchStatus" class="wxOp" slot-scope="row">
 					{{ !!row.Status == 1 ? '开启' : '关闭' }}
 				</div>
-				<div slot="action" class="wxOp" slot-scope="row">
-					<a-button type="primary" size="small" @click="updatePwd(row)">修改密码</a-button>
-					<a-button type="primary" size="small" @click="setSupplier(row)">设置供应商</a-button>
+				<div slot="IsSupplierSlot" class="wxOp" slot-scope="row">
+					{{ !!row.IsSupplier ? '是' : '否' }}
+				</div>
+				<div slot="action" class="table operation" slot-scope="row">
+					<a-button type="primary" size="small" @click="updatePwd(row)"
+						>修改密码</a-button
+					>
+					<a-button
+						type="primary"
+						size="small"
+						@click="setSupplier(row)"
+						:disabled="row.IsSupplier"
+						>成为供应商</a-button
+					>
 				</div>
 			</a-table>
 			<div style="margin-top: 15px">
@@ -53,6 +62,10 @@
 					:showTotal="(total) => `共${total}条`"
 				/>
 			</div>
+
+			<a-modal v-model="setPwdVisible" title="设置密码" @ok="setPwdHandleOk">
+			
+			</a-modal>
 		</a-card>
 	</div>
 </template>
@@ -60,19 +73,14 @@
 <script>
 import moment from 'moment'
 import tipMessage from '@/utils/messageUtil.js'
-import {
-	UserList,
-	CreatUser,
-	UpdateUserStatus,
-	UpdateUserRemark,
-} from '@/api/kefu/userApi.js'
+import { UserList, SetUserSupplier } from '@/api/kefu/userApi.js'
 import { constants } from 'zlib'
 import { callbackify } from 'util'
 import { deeppink } from 'color-name'
 
 export default {
 	name: 'kefuUserList',
-	components: {  },
+	components: {},
 	data() {
 		return {
 			statusOptions: [
@@ -80,7 +88,6 @@ export default {
 				{ label: '禁用', value: 0 },
 			],
 			aform: this.$form.createForm(this),
-			editform: this.$form.createForm(this),
 			formItemLayout: {
 				labelCol: {
 					sm: { span: 8 },
@@ -96,155 +103,6 @@ export default {
 				UserName: '',
 				pageSize: 10,
 				pageNum: 1,
-			},
-			addInfo: {
-				userName: '',
-				pwd: '',
-				remark: '',
-				status: 1,
-				TaoBaoSessionId: undefined,
-				TaoBaoPid: '',
-				TaoBaoRid: '',
-				PddSessionId: undefined,
-				PddPid: '',
-				PddTip: '',
-			},
-			addRules: {
-				userName: [
-					'userName',
-					{
-						rules: [
-							{
-								required: true,
-								message: '用户名不能为空!',
-							},
-							// {
-							// 	min: 6,
-							// 	max: 30,
-							// 	message: '长度在 6 到 30 个字符',
-							// 	trigger: 'blur'
-							// }
-						],
-					},
-				],
-				pwd: [
-					'pwd',
-					{
-						rules: [
-							{
-								required: true,
-								message: '密码不能为空!',
-							},
-							// {
-							// 	min: 6,
-							// 	max: 30,
-							// 	message: '长度在 6 到 30 个字符',
-							// 	trigger: 'blur'
-							// }
-						],
-					},
-				],
-				status: [
-					'status',
-					{
-						rules: [
-							{
-								required: true,
-								message: '请设置账号状态!',
-							},
-						],
-					},
-				],
-				remark: [
-					'remark',
-					{
-						rules: [
-							{
-								min: 0,
-								max: 100,
-								message: '长度在不能超过300个字符',
-								trigger: 'blur',
-							},
-						],
-					},
-				],
-				TaoBaoSessionId: [
-					'TaoBaoSessionId',
-					{
-						rules: [
-							{
-								required: false,
-								message: '请选择淘宝联盟授权!',
-							},
-							// {
-							// 	min: 6,
-							// 	max: 30,
-							// 	message: '长度在 6 到 30 个字符',
-							// 	trigger: 'blur'
-							// }
-						],
-					},
-				],
-				TaoBaoPid: [
-					'TaoBaoPid',
-					{
-						rules: [
-							{
-								required: false,
-								message: '请输入淘宝联盟Pid!',
-							},
-						],
-					},
-				],
-				TaoBaoRid: [
-					'TaoBaoRid',
-					{
-						rules: [
-							{
-								required: false,
-								message: '请输入淘宝联盟Rid!',
-							},
-						],
-					},
-				],
-				PddSessionId: [
-					'PddSessionId',
-					{
-						rules: [
-							{
-								required: false,
-								message: '请选择拼多多授权',
-							},
-						],
-					},
-				],
-				PddPid: [
-					'PddPid',
-					{
-						rules: [
-							{
-								required: false,
-								message: '请输入多多进宝Pid!',
-							},
-						],
-					},
-				],
-				PddTip: [
-					'PddTip',
-					{
-						rules: [
-							{
-								required: false,
-								message: '请输入拼多多自定义参数!',
-							},
-						],
-					},
-				],
-			},
-			editInfo: {
-				id: 0,
-				remark: '',
-				status: 1,
 			},
 			columns: [
 				{
@@ -263,6 +121,11 @@ export default {
 					title: '用户类型',
 					width: '150px',
 					scopedSlots: { customRender: 'StationTypeSlot' },
+				},
+				{
+					title: '是否供应商',
+					width: '150px',
+					scopedSlots: { customRender: 'IsSupplierSlot' },
 				},
 				{
 					title: '发单状态',
@@ -289,23 +152,32 @@ export default {
 					scopedSlots: { customRender: 'action' },
 				},
 			],
-			visible: false, //添加用户
-			editVisible: false, //编辑信息
-			editType: 0, //编辑信息
 			data: [],
 			mydata: [],
 			total: 0,
 			curUserId: '',
 			tableLoading: false,
+			setPwdVisible: false,
+			labelCol: { span: 4 },
+			wrapperCol: { span: 14 },
+			other: '',
+			setPwdForm: {
+				name: '',
+				region: undefined,
+				date1: undefined,
+				delivery: false,
+				type: [],
+				resource: '',
+				desc: '',
+			},
+			
 		}
 	},
 	methods: {
 		query() {
 			this.tableLoading = true
-
 			let params = Object.assign({}, this.form)
 			params.Status *= 1
-
 			UserList(params)
 				.then((res) => {
 					this.data = res.Data
@@ -341,11 +213,37 @@ export default {
 		},
 
 		updatePwd(row) {
-			
+			this.setPwdVisible = true
 		},
+		setPwdHandleOk() {},
 		setSupplier(row) {
-			
+			let v = this //保存外层this对象
+			//删除工位
+			this.$confirm({
+				title: '提示',
+				content: `确定将用户【${row.Id}】设置为供应商?`,
+				okText: '确定',
+				okType: 'danger',
+				onOk() {
+					v.tableLoading = true
+					SetUserSupplier(row.Id)
+						.then((res) => {
+							if (res.IsSuccess) {
+								v.query()
+								tipMessage.success('设置成功')
+							} else {
+								tipMessage.error(res.Msg)
+							}
+							v.tableLoading = false
+						})
+						.catch(() => {
+							v.tableLoading = false
+						})
+				},
+				onCancel() {},
+			})
 		},
+	
 	},
 	created() {
 		this.query()
