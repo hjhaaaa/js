@@ -6,6 +6,7 @@ const otherRoutes = [
     {
         path: '/login',
         name: 'login',
+        type: 1,
         component: () => import(/* webpackChunkName: "login" */ '@/views/auth/login')
     },
     {
@@ -36,7 +37,6 @@ const otherRoutes = [
             }
         ]
     },
-  
 ]
 const tkRoutes = [
     {
@@ -185,7 +185,6 @@ const kefuRoutes = [
 ]
 
 const routes = [...otherRoutes,  ...tkRoutes,...kefuRoutes]
-
 
 // Vue.use(Router)
 

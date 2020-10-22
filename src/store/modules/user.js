@@ -42,7 +42,7 @@ const user = {
 
   mutations: {
     SET_TOKEN: (state, token) => {
-      Vue.ss.set(ACCESS_TOKEN, token, 7 * 24 * 60 * 60 * 1000)
+      Vue.ls.set(ACCESS_TOKEN, token, 7 * 24 * 60 * 60 * 1000)
       state.token = token
     },
     SET_USER: (state, user) => {

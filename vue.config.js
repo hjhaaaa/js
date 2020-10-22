@@ -22,6 +22,21 @@ module.exports = {
     lintOnSave: false,
     transpileDependencies: ['resize-detector', 'ant-design-vue'],
 
+    pages: {//配置多页面入口
+        index: {
+            entry: 'src/views/tk/tk.js',
+            template: 'public/index.html',
+        },
+        dl: {
+            entry: 'src/views/dl/dl.js',
+            template: 'public/dl.html',
+        },
+        kefu: {
+            entry: 'src/views/kefu/kefu.js',
+            template: 'public/kefu.html',
+        },
+    },
+
     // configureWebpack: {
     //   plugins: [
     //     // Ignore all locale files of moment.js
