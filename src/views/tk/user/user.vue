@@ -15,7 +15,7 @@
 				<template slot="editRemarks" slot-scope="text, row">
 					<editable-cell
 						:text="text"
-						@change="RemarksChange(row, 'Remarks', $event)"
+						@change="remarksChange(row, 'Remarks', $event)"
 						editTitle="编辑备注"
 					/>
 				</template>
@@ -24,7 +24,7 @@
 						checked-children="开"
 						un-checked-children="关"
 						:checked="!!row.Status == 1"
-						@change="EditStatus(row, 1)"
+						@change="editStatus(row, 1)"
 					/>
 				</div>
 				<div class="table operation" slot="opti" slot-scope="row">
@@ -88,7 +88,7 @@
 				<template slot="editRemarks" slot-scope="text, row">
 					<editable-cell
 						:text="text"
-						@change="RemarksChange(row, 'Remarks', $event)"
+						@change="remarksChange(row, 'Remarks', $event)"
 						editTitle="编辑备注"
 					/>
 				</template>
@@ -98,7 +98,7 @@
 						checked-children="开"
 						un-checked-children="关"
 						:checked="!!row.Status == 1"
-						@change="EditStatus(row, 2)"
+						@change="editStatus(row, 2)"
 					/>
 				</div>
 				<!-- <span slot="Status" slot-scope="row"><a-switch id="row_{{row.id}}" checked='' @change="onChange" /></span> -->
@@ -340,12 +340,10 @@ export default {
 								required: true,
 								message: '密码不能为空!',
 							},
-							// {
-							// 	min: 6,
-							// 	max: 30,
-							// 	message: '长度在 6 到 30 个字符',
-							// 	trigger: 'blur'
-							// }
+							{
+								pattern: /^[a-zA-Z0-9]{4,16}$/g,
+								message: '密码必须为4-16位的字母数字',
+							},
 						],
 					},
 				],
@@ -555,8 +553,13 @@ export default {
 			this.form.pageNum = p
 			this.query()
 		},
-		RemarksChange(row, key, value) {
+		remarksChange(row, key, value) {
 			if (!value) return
+			if (value.length > 50) {
+				tipMessage.error('备注不能超过50个字')
+				//this.$refs.SurveyForm.callApi()
+				return
+			}
 			UpdateUserRemark(row.Id, value)
 				.then((res) => {
 					if (res.IsSuccess) {
@@ -564,14 +567,14 @@ export default {
 						tipMessage.success('保存成功')
 						//	tipMessage.success
 					} else {
-						tipMessage.error(res.msg)
+						tipMessage.error(res.Msg)
 					}
 				})
 				.catch(() => {
 					this.tableLoading = false
 				})
 		},
-		EditStatus(row, type) {
+		editStatus(row, type) {
 			//let aa = row
 			let nowRow = {}
 			if (type == 1) {
