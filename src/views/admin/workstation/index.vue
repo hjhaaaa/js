@@ -100,12 +100,12 @@
 <script>
 import moment from 'moment'
 import tipMessage from '@/utils/messageUtil.js'
-import { WorkstationList } from '@/api/kefu/workstationApi.js'
+import { WorkstationList } from '@/api/admin/workstationApi.js'
 import { constants } from 'zlib'
 import { callbackify, log } from 'util'
 import { deeppink } from 'color-name'
 export default {
-	name: 'kefu-workstation',
+	name: 'admin-workstation',
 	components: {},
 	data() {
 		return {

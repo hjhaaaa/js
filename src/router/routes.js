@@ -9,9 +9,9 @@ const otherRoutes = [
         component: () => import(/* webpackChunkName: "login" */ '@/views/auth/login')
     },
     {
-        path: '/customerservicelogin',
-        name: 'customerservicelogin',
-        component: () => import(/* webpackChunkName: "login" */ '@/views/auth/customerservicelogin')
+        path: '/adminlogin',
+        name: 'adminlogin',
+        component: () => import(/* webpackChunkName: "login" */ '@/views/auth/adminlogin')
     },
     {
         path: '/regester',
@@ -36,7 +36,7 @@ const otherRoutes = [
             }
         ]
     },
-  
+
 ]
 const tkRoutes = [
     {
@@ -50,7 +50,7 @@ const tkRoutes = [
                 name: 'home',
                 component: () => import(/* webpackChunkName: "login" */ '@/views/tk/home')
             },
-            
+
         ]
     },
     {
@@ -150,7 +150,8 @@ const agentRoutes = [
         ]
     }
 ]
-const kefuRoutes = [
+const adminRoutes = [
+
     {
         path: '/cardcode',
         name: 'cardcodeManage',
@@ -158,33 +159,35 @@ const kefuRoutes = [
         children: [{
             path: 'index',
             name: '',
-            component: () => import(/* webpackChunkName: "login" */ '@/views/kefu/cardcode/index.vue')
+            component: () => import(/* webpackChunkName: "login" */ '@/views/admin/cardcode/index.vue')
         },
         ]
     }, {
         path: '/workstation',
         name: 'workstationManage',
         component: AppLayout,
-        children: [ {
-                path: 'index',
-                component: () => import(/* webpackChunkName: "login" */ '@/views/kefu/workstation/index.vue'),
-    
-            }
+        children: [{
+            path: 'index',
+            component: () => import(/* webpackChunkName: "login" */ '@/views/admin/workstation/index.vue'),
+
+        }
         ]
     }, {
         path: '/user',
         name: 'userManage',
         component: AppLayout,
-        children: [ {
-                path: 'index',
-                component: () => import(/* webpackChunkName: "login" */ '@/views/kefu/user/index.vue'),
-    
-            }
+        children: [{
+            path: 'index',
+            component: () => import(/* webpackChunkName: "login" */ '@/views/admin/user/index.vue'),
+
+        }
         ]
-    }, 
+    },
+
+
 ]
 
-const routes = [...otherRoutes,  ...tkRoutes,...kefuRoutes]
+const routes = [...otherRoutes, ...tkRoutes, ...adminRoutes]
 
 
 // Vue.use(Router)

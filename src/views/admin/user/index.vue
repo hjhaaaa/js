@@ -97,13 +97,13 @@ import {
 	UserList,
 	SetUserSupplier,
 	SetUserPassword,
-} from '@/api/kefu/userApi.js'
+} from '@/api/admin/userApi.js'
 import { constants } from 'zlib'
 import { callbackify } from 'util'
 import { deeppink } from 'color-name'
 
 export default {
-	name: 'kefuUserList',
+	name: 'adminUserList',
 	components: {},
 	data() {
 		return {
