@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="classifygroup">
 		<a-card title="分组管理" :bordered="false">
 			<a-form layout="inline" style="margin-bottom: 10px">
 				<a-form-item label="开启分组">
@@ -32,6 +32,7 @@
 				rowKey="Id"
 				:loading="tableLoading"
 				:pagination="false"
+				:scroll="{ x: 1000 }"
 			>
 				<div class="table operation" slot="action" slot-scope="row">
 					<a type="link" @click="edit(row)">编辑</a>
@@ -163,7 +164,7 @@ export default {
 				{
 					title: '创建时间',
 					Key: 'CTime',
-					width: '200px',
+					width: '150px',
 					dataIndex: 'CTime',
 				},
 				// ],
@@ -333,13 +334,14 @@ export default {
 		isCanDel(row) {
 			//console.log(row)
 			var isCanDel = false
-			if (row.CollectionCount > 0 ||
+			if (
+				row.CollectionCount > 0 ||
 				row.UserCount > 0 ||
 				row.WorkstationCount > 0 ||
-				row.SendGroupCount > 0) {
-				isCanDel=true;
+				row.SendGroupCount > 0
+			) {
+				isCanDel = true
 			}
-				
 
 			return isCanDel
 		},
@@ -352,41 +354,46 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.setRole-content {
-	height: 400px;
-	.left-block,
-	.btnbox-block,
-	.right-block {
-		float: left;
-		width: 180px;
-		height: 400px;
+.classifygroup {
+	.ant-table-body {
+		overflow-x: auto !important;
 	}
-	.left,
-	.right {
-		width: 180px;
+	.setRole-content {
 		height: 400px;
-		border: 1px solid #ccc;
-		overflow: auto;
-		.ant-btn-primary {
-			margin-bottom: 10px;
+		.left-block,
+		.btnbox-block,
+		.right-block {
+			float: left;
+			width: 180px;
+			height: 400px;
+		}
+		.left,
+		.right {
+			width: 180px;
+			height: 400px;
+			border: 1px solid #ccc;
+			overflow: auto;
+			.ant-btn-primary {
+				margin-bottom: 10px;
+			}
+		}
+		.btnbox-block {
+			width: 100px;
+			border: 0 none;
 		}
 	}
-	.btnbox-block {
-		width: 100px;
-		border: 0 none;
+	.table.operation a {
+		padding-right: 10px;
 	}
-}
-.table.operation a {
-	padding-right: 10px;
-}
-.tip {
-	margin-bottom: 10px;
-}
-.WXAvatar {
-	width: 80px;
-	height: 80px;
-}
-.wxOp button:not(:last-child) {
-	margin-bottom: 4px;
+	.tip {
+		margin-bottom: 10px;
+	}
+	.WXAvatar {
+		width: 80px;
+		height: 80px;
+	}
+	.wxOp button:not(:last-child) {
+		margin-bottom: 4px;
+	}
 }
 </style>
