@@ -4,7 +4,7 @@ import Router from 'vue-router'
 
 const whiteRoutes = [
   {
-    path: '/adminlogin',
+    path: '/admin/login',
     name: 'adminlogin',
     component: () => import(/* webpackChunkName: "login" */ '@/views/auth/adminlogin')
   }
@@ -12,7 +12,7 @@ const whiteRoutes = [
 
 const routes = [
   {
-    path: '/cardcode',
+    path: '/admin/cardcode',
     name: 'cardcodeManage',
     component: AppLayout,
     children: [
@@ -24,7 +24,7 @@ const routes = [
     ]
   },
   {
-    path: '/workstation',
+    path: '/admin/workstation',
     name: 'workstationManage',
     component: AppLayout,
     children: [
@@ -35,7 +35,7 @@ const routes = [
     ]
   },
   {
-    path: '/user',
+    path: '/admin/user',
     name: 'userManage',
     component: AppLayout,
     children: [
