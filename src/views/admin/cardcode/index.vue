@@ -320,8 +320,8 @@ VueClipboard.config.autoSetContainer = true
 Vue.use(VueClipboard)
 import moment from 'moment'
 import tipMessage from '@/utils/messageUtil.js'
-import { CardCodeList } from '@/api/kefu/cardCodeApi.js'
-import { CreateCardCodeOrder } from '@/api/kefu/cardCodeOrderApi.js'
+import { CardCodeList } from '@/api/admin/cardCodeApi.js'
+import { CreateCardCodeOrder } from '@/api/admin/cardCodeOrderApi.js'
 export default {
 	name: 'cardcode',
 	components: {},

@@ -296,9 +296,9 @@ export default {
 			columns: [
 				{
 					title: '工位Id',
-					width: '80px',
+					width: '70px',
 					dataIndex: 'Id',
-						fixed: 'left'
+					fixed: 'left',
 				},
 				{
 					title: '用户名',
@@ -338,7 +338,7 @@ export default {
 				{
 					title: '工位状态',
 					key: 'Status',
-					// width: '100px',
+					width: '120px',
 					scopedSlots: { customRender: 'Status' },
 				},
 				{

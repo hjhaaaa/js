@@ -32,12 +32,12 @@ const whiteRoutes = [
 const routes = [
   {
     path: '/',
-    name: 'index',
-    redirect: '/index',
+    name: '',
+    redirect: '/home',
     component: AppLayout,
     children: [
       {
-        path: '/home',
+        path: 'home',
         name: 'home',
         component: () => import(/* webpackChunkName: "login" */ '@/views/tk/home')
       },

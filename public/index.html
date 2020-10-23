@@ -6,40 +6,6 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title>云发单后台管理</title>
-    <!-- <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
-    <script src="<%= BASE_URL %>signalr.min.js"></script> -->
-    <script type="text/javascript">
-      (function () {
-          function o() { 
-              var fontSize = 16
-              var user_webset_font // 实际字体大小
-              if(document.documentElement.clientWidth > 500){
-                  fontSize = 500/7.5 + 'px'
-              }else if(document.documentElement.clientWidth > 320){
-                  fontSize = document.documentElement.clientWidth/7.5 + 'px'
-              }else{
-                  fontSize = 320/7.5 + 'px'
-              }
-              document.documentElement.style.fontSize = fontSize
-              // 处理手机设置了字体大小
-              if(document.documentElement.currentStyle) {
-                  user_webset_font = document.documentElement.currentStyle['fontSize'];
-              }else {
-                  user_webset_font = getComputedStyle(document.documentElement,false)['fontSize'];
-              }
-              user_webset_font = parseFloat(user_webset_font)
-              fontSize = parseFloat(fontSize)
-              // 等于 1 为标准字体 不处理
-              if((user_webset_font / fontSize).toFixed(2) != 1){ 
-                  var finalFontSize = fontSize * fontSize / user_webset_font
-                  finalFontSize = parseInt(finalFontSize * 10000) / 10000 
-                  document.documentElement.style.fontSize = finalFontSize + 'px'
-              }
-          }
-          var e = null;
-          window.addEventListener("resize", function () { clearTimeout(e), e = setTimeout(o, 300) }, !1), o()
-      })(window);
-    </script>
   </head>
   <body>
     <noscript>

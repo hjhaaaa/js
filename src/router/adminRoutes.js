@@ -4,9 +4,9 @@ import Router from 'vue-router'
 
 const whiteRoutes = [
   {
-    path: '/customerservicelogin',
-    name: 'customerservicelogin',
-    component: () => import(/* webpackChunkName: "login" */ '@/views/auth/customerservicelogin')
+    path: '/adminlogin',
+    name: 'adminlogin',
+    component: () => import(/* webpackChunkName: "login" */ '@/views/auth/adminlogin')
   }
 ]
 
@@ -19,8 +19,8 @@ const routes = [
       {
         path: 'index',
         name: '',
-        component: () => import(/* webpackChunkName: "login" */ '@/views/kefu/cardcode/index.vue')
-      }
+        component: () => import(/* webpackChunkName: "login" */ '@/views/admin/cardcode/index.vue')
+      },
     ]
   },
   {
@@ -30,7 +30,7 @@ const routes = [
     children: [
       {
         path: 'index',
-        component: () => import(/* webpackChunkName: "login" */ '@/views/kefu/workstation/index.vue')
+        component: () => import(/* webpackChunkName: "login" */ '@/views/admin/workstation/index.vue'),
       }
     ]
   },
@@ -41,12 +41,12 @@ const routes = [
     children: [
       {
         path: 'index',
-        component: () => import(/* webpackChunkName: "login" */ '@/views/kefu/user/index.vue'),
+        component: () => import(/* webpackChunkName: "login" */ '@/views/admin/user/index.vue'),
       }
     ]
-  }, 
+  },
 ]
 
-const kefuRoutes = [...whiteRoutes, ...routes]
+const adminRoutes = [...whiteRoutes, ...routes]
 
-export default kefuRoutes
+export default adminRoutes

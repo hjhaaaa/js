@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="classifygroup">
 		<a-card title="分组管理" :bordered="false">
 			<a-form layout="inline" style="margin-bottom: 10px">
 				<a-form-item label="开启分组">
@@ -19,20 +19,24 @@
 					<a-button icon="search" @click="handleSearch">查询</a-button>
 				</a-form-item>
 				<a-form-item>
-					<a-button type="primary" icon="plus-circle" @click="add">添加分组</a-button>
+					<a-button type="primary" icon="plus-circle" @click="add"
+						>添加分组</a-button
+					>
 				</a-form-item>
 			</a-form>
 
 			<a-table
+				:bordered="true"
 				:columns="columns"
 				:dataSource="data"
 				rowKey="Id"
 				:loading="tableLoading"
 				:pagination="false"
+				:scroll="{ x: 1000 }"
 			>
 				<div class="table operation" slot="action" slot-scope="row">
 					<a type="link" @click="edit(row)">编辑</a>
-					<a type="link" @click="remove(row)">删除</a>
+					<a type="link" :disabled="isCanDel(row)" @click="remove(row)">删除</a>
 				</div>
 			</a-table>
 			<div style="margin-top: 15px">
@@ -43,7 +47,7 @@
 					@change="pageChange"
 					:total="total"
 					showQuickJumper
-					:showTotal="total => `共${total}条`"
+					:showTotal="(total) => `共${total}条`"
 				/>
 			</div>
 		</a-card>
@@ -59,7 +63,11 @@
 		>
 			<a-form :form="editForm" :model="editInfo" ref="editForm">
 				<a-form-item v-bind="formItemLayout" label="分组名称">
-					<a-input placeholder="请输入分组名称" v-model="editInfo.Name" autocomplete="off" />
+					<a-input
+						placeholder="请输入分组名称"
+						v-model="editInfo.Name"
+						autocomplete="off"
+					/>
 				</a-form-item>
 				<a-form-item v-bind="formItemLayout" label="是否转链">
 					<a-radio-group v-model="editInfo.IsNeedTLinkValue">
@@ -68,7 +76,12 @@
 					</a-radio-group>
 				</a-form-item>
 				<a-form-item v-bind="formItemLayout" label="分组介绍">
-					<a-textarea placeholder="分组介绍" v-model="editInfo.GroupInfo" autocomplete="off" :rows="3" />
+					<a-textarea
+						placeholder="分组介绍"
+						v-model="editInfo.GroupInfo"
+						autocomplete="off"
+						:rows="3"
+					/>
 				</a-form-item>
 			</a-form>
 		</a-modal>
@@ -83,7 +96,7 @@ import {
 	SendGroupList,
 	DeleteSendGroup,
 	UpdateSendGroupStatus,
-	UpdateSendGroupRemark
+	UpdateSendGroupRemark,
 } from '@/api/tk/sendGroupApi.js'
 import { GetRechargeCode, RechargeWorkstation } from '@/api/tk/cardCodeApi.js'
 import { constants } from 'zlib'
@@ -93,7 +106,7 @@ import {
 	ClassifyGroupList,
 	EditClassifyGroup,
 	DeleteClassifyGroup,
-	OpenCollectionGroupClassify
+	OpenCollectionGroupClassify,
 } from '@/api/tk/classGroupApi.js'
 
 export default {
@@ -105,57 +118,87 @@ export default {
 				{ label: '全部', value: 'all' },
 				{ label: '启用', value: '1' },
 				{ label: '禁用', value: '0' },
-				{ label: '三天内到期', value: '2' }
+				{ label: '三天内到期', value: '2' },
 			],
 			wxStatusOptions: [
 				{ label: '全部', value: 'all' },
 				{ label: '在线', value: '1' },
-				{ label: '离线', value: '0' }
+				{ label: '离线', value: '0' },
 			],
 			aform: this.$form.createForm(this),
 			editForm: this.$form.createForm(this),
 			formItemLayout: {
 				labelCol: {
-					sm: { span: 7 }
+					sm: { span: 7 },
 				},
 				wrapperCol: {
-					sm: { span: 12 }
-				}
+					sm: { span: 12 },
+				},
 			},
 			form: {
 				Name: '',
 				pageSize: 20,
-				pageNum: 1
+				pageNum: 1,
 			},
 			columns: [
+				// {
+				// 	title: '分组信息',
+				// 	children: [
 				{
 					title: '序号',
-					width: '150px',
-					dataIndex: 'Id'
+					width: '80px',
+					dataIndex: 'Id',
 				},
 				{
 					title: '分组名称',
 					Key: 'Name',
 					width: '200px',
-					dataIndex: 'Name'
+					dataIndex: 'Name',
 				},
 				{
 					title: '分组介绍',
 					Key: 'GroupInfo',
-					width: '30%',
-					dataIndex: 'GroupInfo'
+					width: '200px',
+					dataIndex: 'GroupInfo',
 				},
-
 				{
 					title: '创建时间',
 					Key: 'CTime',
-					width: '200px',
-					dataIndex: 'CTime'
+					width: '150px',
+					dataIndex: 'CTime',
 				},
+				// ],
+				// },
+				{
+					title: '使用数量',
+					children: [
+						{
+							title: '采集对象',
+							width: '100px',
+							dataIndex: 'CollectionCount',
+						},
+						{
+							title: '用户',
+							width: '100px',
+							dataIndex: 'UserCount',
+						},
+						{
+							title: '工位',
+							width: '100px',
+							dataIndex: 'WorkstationCount',
+						},
+						{
+							title: '发送群',
+							width: '100px',
+							dataIndex: 'SendGroupCount',
+						},
+					],
+				},
+
 				{
 					title: '操作',
-					scopedSlots: { customRender: 'action' }
-				}
+					scopedSlots: { customRender: 'action' },
+				},
 			],
 			visible: false, //添加用户
 			data: [],
@@ -169,17 +212,17 @@ export default {
 				Id: 0,
 				IsNeedTLinkValue: 1,
 				GroupInfo: '',
-				Name: ''
+				Name: '',
 			},
 			classifyGroupStatus: false,
-			editConfirmLoading: false
+			editConfirmLoading: false,
 		}
 	},
 	methods: {
 		query() {
 			this.tableLoading = true
 			ClassifyGroupList(this.form)
-				.then(res => {
+				.then((res) => {
 					this.data = res.Data
 					this.total = res.TotalCount
 					this.tableLoading = false
@@ -198,7 +241,7 @@ export default {
 		},
 		classifyGroupStatusChange(checked) {
 			OpenCollectionGroupClassify(checked)
-				.then(res => {
+				.then((res) => {
 					if (res.IsSuccess) {
 						tipMessage.success('操作成功')
 						this.classifyGroupStatus = checked
@@ -231,18 +274,30 @@ export default {
 			// tipMessage.confirmDelete(undefined, function() {
 			// 	tipMessage.success('ok')
 			// })
-
+			this.tableLoading = true
 			this.$confirm({
 				title: '提示',
-				content: '确定删除？',
+				content: '删除后不可恢复,确定删除？',
 				okText: '确定',
 				okType: 'danger',
 				onOk() {
-					tipMessage.success('操作成功')
+					DeleteClassifyGroup(row.Id)
+						.then((res) => {
+							if (res.IsSuccess) {
+								tipMessage.success('操作成功')
+								$this.query()
+								$this.tableLoading = false
+							} else {
+								tipMessage.error(res.Msg)
+								$this.tableLoading = false
+							}
+						})
+						.catch(() => {})
 				},
 				onCancel() {
 					//tipMessage.error('ok')
-				}
+					this.tableLoading = false
+				},
 			})
 		},
 		editHandleCancel() {
@@ -253,11 +308,11 @@ export default {
 				ClassifyName: this.editInfo.Name,
 				IsNeedTLink: this.editInfo.IsNeedTLinkValue == 1,
 				GroupInfo: this.editInfo.GroupInfo,
-				Id: this.editInfo.Id
+				Id: this.editInfo.Id,
 			}
 			this.editConfirmLoading = true
 			EditClassifyGroup(pram)
-				.then(res => {
+				.then((res) => {
 					if (res.IsSuccess) {
 						tipMessage.success('操作成功')
 						this.query()
@@ -271,55 +326,74 @@ export default {
 		},
 		getLoginUserInfo() {
 			GetLoginUserInfo()
-				.then(res => {
+				.then((res) => {
 					this.classifyGroupStatus = res.Data.IsUseGroup
 				})
 				.catch(() => {})
-		}
+		},
+		isCanDel(row) {
+			//console.log(row)
+			var isCanDel = false
+			if (
+				row.CollectionCount > 0 ||
+				row.UserCount > 0 ||
+				row.WorkstationCount > 0 ||
+				row.SendGroupCount > 0
+			) {
+				isCanDel = true
+			}
+
+			return isCanDel
+		},
 	},
 	created() {
 		this.getLoginUserInfo()
 		this.query()
-	}
+	},
 }
 </script>
 
 <style lang="scss" scoped>
-.setRole-content {
-	height: 400px;
-	.left-block,
-	.btnbox-block,
-	.right-block {
-		float: left;
-		width: 180px;
-		height: 400px;
+.classifygroup {
+	.ant-table-body {
+		overflow-x: auto !important;
 	}
-	.left,
-	.right {
-		width: 180px;
+	.setRole-content {
 		height: 400px;
-		border: 1px solid #ccc;
-		overflow: auto;
-		.ant-btn-primary {
-			margin-bottom: 10px;
+		.left-block,
+		.btnbox-block,
+		.right-block {
+			float: left;
+			width: 180px;
+			height: 400px;
+		}
+		.left,
+		.right {
+			width: 180px;
+			height: 400px;
+			border: 1px solid #ccc;
+			overflow: auto;
+			.ant-btn-primary {
+				margin-bottom: 10px;
+			}
+		}
+		.btnbox-block {
+			width: 100px;
+			border: 0 none;
 		}
 	}
-	.btnbox-block {
-		width: 100px;
-		border: 0 none;
+	.table.operation a {
+		padding-right: 10px;
 	}
-}
-.table.operation a {
-	padding-right: 10px;
-}
-.tip {
-	margin-bottom: 10px;
-}
-.WXAvatar {
-	width: 80px;
-	height: 80px;
-}
-.wxOp button:not(:last-child) {
-	margin-bottom: 4px;
+	.tip {
+		margin-bottom: 10px;
+	}
+	.WXAvatar {
+		width: 80px;
+		height: 80px;
+	}
+	.wxOp button:not(:last-child) {
+		margin-bottom: 4px;
+	}
 }
 </style>

@@ -3,7 +3,7 @@
 		<a-card style="width: 460px;" :body-style="{padding: '60px'}">
 			<div class="logo-wrapper">
 				<img src="../../assets/images/logo.png" class="logo" alt="背景图" />
-				<span class="title">客服登录</span>
+				<span class="title">管理员登录</span>
 			</div>
 
 			<a-form :form="form" class="login-form">
@@ -103,7 +103,7 @@ export default {
 		}
 	},
 	methods: {
-		...mapActions('user', ['CustomerServiceLogin']),
+		...mapActions('user', ['AdminLogin']),
 		handleLogin() {
 			this.loading = true
 			this.form.validateFields((err, { username, password }) => {
@@ -113,7 +113,7 @@ export default {
 					}, 600)
 					return
 				}
-				this.CustomerServiceLogin({
+				this.AdminLogin({
 					UserName: username,
 					Pwd: password
 				})

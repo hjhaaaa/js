@@ -11,20 +11,20 @@
 				</a-form-item>
 				<a-form-item label="工位状态">
 					<a-select
-						style="width: 150px"
+						style="width: 100px"
 						v-model="form.Status"
 						:options="statusOptions"
 					></a-select>
 				</a-form-item>
 				<a-form-item label="微信状态">
-					<a-select
+					<a-select style="width: 100px"
 						v-model="form.WxStatus"
 						:options="wxStatusOptions"
 					></a-select>
 				</a-form-item>
 				<a-form-item label="充值类型">
 					<a-select
-						style="width: 120px"
+						style="width: 100px"
 						v-model="form.RechageType"
 						:options="rechageTypeOptions"
 					></a-select>
@@ -100,12 +100,12 @@
 <script>
 import moment from 'moment'
 import tipMessage from '@/utils/messageUtil.js'
-import { WorkstationList } from '@/api/kefu/workstationApi.js'
+import { WorkstationList } from '@/api/admin/workstationApi.js'
 import { constants } from 'zlib'
 import { callbackify, log } from 'util'
 import { deeppink } from 'color-name'
 export default {
-	name: 'kefu-workstation',
+	name: 'admin-workstation',
 	components: {},
 	data() {
 		return {

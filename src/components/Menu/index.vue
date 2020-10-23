@@ -1,10 +1,7 @@
 <script lang="jsx">
-import { mapState } from 'vuex'
 import { appStoreMixin, deviceMixin } from '@/mixins'
 import { generateOpenKeys } from '@/utils'
-import menuData from './menus.js'
-import Vue from 'vue'
-import { ROUTER } from '@/store/mutation-types'
+// import menuData from './menus.js'
 import { GetCurrentLoginMenu } from '@/api/policyMenuApi.js'
 export default {
   mixins: [appStoreMixin, deviceMixin],
@@ -27,7 +24,6 @@ export default {
     }
   },
   computed: {
-    // ...mapState('permission', ['menus']),
     isSide () {
       return (
         this.layoutMode === 'side' ||
@@ -77,31 +73,20 @@ export default {
         ? (this.cacheOpenKeys = openKeys)
         : (this.openKeys = openKeys)
     },
-    getCookie(name){
-      var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
-      if(arr=document.cookie.match(reg))
-        return unescape(arr[2]);
-      else
-        return null;
-    },getCurrentLoginMenu(){
-      	GetCurrentLoginMenu()
-				.then((res) => {
-			 this.menus= res.Data
-					// this.total = res.TotalCount
-					// this.tableLoading = false
-				})
-				.catch(() => {
-					// this.tableLoading = false
-				})
+    getCurrentLoginMenu(){
+      GetCurrentLoginMenu().then((res) => {
+			 this.menus = res.Data
+      }).catch((err) => {
+        console.log(err)
+      })
     }
   },
   created () {
     this.updateMenu()
-    let _name = this.getCookie('_tkdataadmin_nick')
-   
-    this.getCurrentLoginMenu();
-     // let _menuArr = [...menuData]
+
+    // let _menuArr = [...menuData]
     // this.menus = _menuArr
+    this.getCurrentLoginMenu();
   },
   render () {
     const {

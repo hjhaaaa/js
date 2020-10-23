@@ -19,3 +19,13 @@ export function UpdateUserRemark(id, remark) {
 export function GetLoginUserInfo() {
     return request.post('/user/LoginInfo')
 }
+
+// 登录代理
+export function dlLogin(params) {
+    return request.post('/UserLogin/Proxy', params)
+    // return request({
+    //     url: '/UserLogin/RegesterCode',
+    //     method: 'post',
+    //     params
+    // })
+}

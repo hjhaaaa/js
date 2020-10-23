@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { login as userLogin, logout as userLogout, getuserrouter,customerserviceLogin } from '@/api/auth'
+import { login as userLogin, logout as userLogout, getuserrouter,adminLogin } from '@/api/auth'
 import { ACCESS_TOKEN, USER, ROUTER, EVENSET } from '@/store/mutation-types'
 import { AppLayout } from '@/components/Layout'
 
@@ -133,9 +133,9 @@ const user = {
       })
     
     },
-    CustomerServiceLogin({ commit, dispatch }, userInfo){
+    AdminLogin({ commit, dispatch }, userInfo){
       return new Promise(async (resolve, reject) => {
-        customerserviceLogin(userInfo).then(res => {
+        adminLogin(userInfo).then(res => {
           if(res.IsSuccess){
             commit('SET_USER', { username: userInfo.UserName })
             commit('SET_TOKEN', res.Data.Token)

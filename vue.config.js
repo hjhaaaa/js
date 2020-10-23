@@ -31,9 +31,9 @@ module.exports = {
             entry: 'src/views/dl/dl.js',
             template: 'public/dl.html',
         },
-        kefu: {
-            entry: 'src/views/kefu/kefu.js',
-            template: 'public/kefu.html',
+        admin: {
+            entry: 'src/views/admin/admin.js',
+            template: 'public/admin.html',
         },
     },
 

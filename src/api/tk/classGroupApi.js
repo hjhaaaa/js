@@ -9,7 +9,7 @@ export function EditClassifyGroup(params) {
 }
 //删除分组
 export function DeleteClassifyGroup(id) {
-    return request.post('/ClassifyGroup/Delete?Id=' + id)
+    return request.post('/ClassifyGroup/Delete', { Id: id })
 }
 //设置目标分组
 export function SetTargetClassify(type, id, classifyId) {

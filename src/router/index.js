@@ -3,10 +3,9 @@ import Router from 'vue-router'
 import NProgress from 'nprogress'
 import store from '../store'
 import 'nprogress/nprogress.css' // progress bar style
-// import routes from './routes'
 import tkRoutes from './tkRoutes'
 import dlRoutes from './dlRoutes'
-import kefuRoutes from './kefuRoutes'
+import adminRoutes from './adminRoutes'
 import { USER, ROUTER, EVENSET, ACCESS_TOKEN } from '@/store/mutation-types'
 import { AppLayout } from '@/components/Layout'
 
@@ -25,7 +24,7 @@ export const createRouter = (routes) =>
 const router = {
   tkRouter: createRouter(tkRoutes),
   dlRouter: createRouter(dlRoutes),
-  kefuRouter: createRouter(kefuRoutes)
+  adminRoutes: createRouter(adminRoutes)
 }
 
 Object.keys(router).forEach((value) => {
@@ -47,30 +46,5 @@ Object.keys(router).forEach((value) => {
     NProgress.done() // finish progress bar
   })
 })
-
-// router.beforeEach((to, from, next) => {
-//   NProgress.start()
-//   const token = Vue.ls.get(ACCESS_TOKEN);
-//   if (token) {
-//     if (to.name === 'login') {
-//       next()
-//     } else {
-//       next()
-//     }
-//   } else {
-//     next()
-//     // if (whiteList.includes(to.name)) {
-//     //   next()
-//     // } else {
-//     //   next({ path: '/login' })
-//     // }
-//   }
-// })
-
-// router.afterEach(() => {
-//   NProgress.done() // finish progress bar
-// })
-
-
 
 export default router
