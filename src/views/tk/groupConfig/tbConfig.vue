@@ -166,7 +166,7 @@
 </template>
 
 <script>
-import { taobaoconfig, saveTaobaoconfig } from '@/api/auth.js'
+import { taobaoconfig, saveTaobaoconfig } from '@/api/tk/userConfigApi.js'
 export default {
   name: 'tbConfig',
   data() {

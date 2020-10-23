@@ -1,7 +1,7 @@
 import axios from 'axios'
 import onError from './index'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
-
+import tipMessage from '@/utils/messageUtil.js'
 const request = axios.create({
   baseURL: '/api',
   timeout: 30000,
@@ -28,10 +28,11 @@ request.interceptors.response.use(res => {
   if(res.data.IsSuccess){
     return res.data
   }else{
-    notification.error({
-      message: '错误',
-      description: res.data.Msg
-    })
+    // notification.error({
+    //   message: '错误',
+    //   description: res.data.Msg
+    // })
+    tipMessage.error(res.data.Msg)
     return Promise.reject(res.data)
   }
 }, onError)

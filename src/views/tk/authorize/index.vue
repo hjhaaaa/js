@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import { authorizeList, authorizeOauthcheck } from '@/api/auth.js'
+import { authorizeList, authorizeOauthcheck } from '@/api/tk/authorizeApi.js'
 export default {
 	name: 'authorize',
 	data() {

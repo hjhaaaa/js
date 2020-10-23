@@ -98,6 +98,7 @@ request.interceptors.response.use(res => {
   if(res.data.IsSuccess){
     return res.data
   }else{
+    console.log("error")
     notification.error({
       message: '错误',
       description: res.data.Msg

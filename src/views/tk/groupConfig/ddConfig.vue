@@ -142,7 +142,7 @@
 </template>
 
 <script>
-import { pddconfig, savePddconfig } from '@/api/auth.js'
+import { pddconfig, savePddconfig } from '@/api/tk/userConfigApi.js'
 export default {
   name: 'ddConfig',
   data() {

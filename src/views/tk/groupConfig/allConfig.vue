@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import { allconfig, saveAllconfig, addfilter, deletefilter } from '@/api/auth.js'
+import { allconfig, saveAllconfig, addfilter, deletefilter } from '@/api/tk/userConfigApi.js'
 export default {
   name: 'allConfig',
   data() {

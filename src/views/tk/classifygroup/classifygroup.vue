@@ -304,6 +304,7 @@ export default {
 			this.editVisible = false
 		},
 		editHandleOk() {
+			console.log('editHandleOk')
 			var pram = {
 				ClassifyName: this.editInfo.Name,
 				IsNeedTLink: this.editInfo.IsNeedTLinkValue == 1,
@@ -313,6 +314,7 @@ export default {
 			this.editConfirmLoading = true
 			EditClassifyGroup(pram)
 				.then((res) => {
+					console.log('res')
 					if (res.IsSuccess) {
 						tipMessage.success('操作成功')
 						this.query()

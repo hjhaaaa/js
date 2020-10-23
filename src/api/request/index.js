@@ -5,6 +5,7 @@ import notification from 'ant-design-vue/es/notification'
 
 let timer = null
 const onError = error => {
+
   if (error.response) {
     const status = error.response.status
     const message = error.response.statusText
