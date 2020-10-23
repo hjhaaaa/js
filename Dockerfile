@@ -1,9 +1,8 @@
-FROM node:slim as builder
+FROM node as builder
 WORKDIR /app
 EXPOSE 80
 COPY . /app
 # RUN npm
-RUN set SASS_BINARY_SITE=https://npm.taobao.org/mirrors/node-sass/ && npm install node-sass
 RUN npm install
 RUN npm run build
 # Second stage
