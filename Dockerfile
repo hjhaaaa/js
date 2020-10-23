@@ -4,10 +4,7 @@ EXPOSE 80
 COPY . /app
 # RUN npm
 
-#RUN npm install -registry=https://registry.npm.taobao.org
-#RUN npm config set registry https://registry.npm.taobao.org
-RUN npm install cnpm -g --registry=https://registry.npm.taobao.org
-RUN cnpm i
+RUN npm install -registry=https://registry.npm.taobao.org
 RUN npm run build
 # Second stage
 FROM nginx
