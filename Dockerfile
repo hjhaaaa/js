@@ -3,8 +3,8 @@ WORKDIR /app
 EXPOSE 80
 COPY . /app
 # RUN npm
-RUN npm config set sass_binary_site https://npm.taobao.org/mirrors/node-sass/
-RUN npm install -registry=https://registry.npm.taobao.org
+RUN set SASS_BINARY_SITE=https://npm.taobao.org/mirrors/node-sass/ && npm install node-sass
+RUN npm install
 RUN npm run build
 # Second stage
 FROM nginx
