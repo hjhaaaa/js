@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/api/request/tk'
 
 //获取采集群
 export function GetCollectionGroupList(params) {

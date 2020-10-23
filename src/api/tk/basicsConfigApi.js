@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/api/request/tk'
 
 //获取基础配置
 export function GetBasicsConfig(id, configType) {

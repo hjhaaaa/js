@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/api/request/tk'
 
 
 // 获取授权列表

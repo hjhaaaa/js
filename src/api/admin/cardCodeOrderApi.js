@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/api/request/admin'
 
 //创建卡密订单
 export function CreateCardCodeOrder(params) {

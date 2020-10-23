@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/api/request/dl'
 
 
 // 获取代理工位列表

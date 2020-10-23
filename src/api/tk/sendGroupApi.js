@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/api/request/tk'
 //发送群列表
 export function SendGroupList(params) {
     return request.post('/SendGroup/list', params)

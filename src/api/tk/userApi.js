@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/api/request/tk'
 //用户列表
 export function UserList(params) {
     return request.post('/user/list', params)

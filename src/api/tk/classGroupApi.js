@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/api/request/tk'
 //分组列表
 export function ClassifyGroupList(params) {
     return request.post('/ClassifyGroup/list', params)

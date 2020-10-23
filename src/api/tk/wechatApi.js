@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/api/request/tk'
 
 //二维码登录
 export function WechatQRLogin(workstationId) {

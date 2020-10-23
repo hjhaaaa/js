@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/api/request/tk'
 //卡密列表
 export function CardCodeList(params) {
     return request.post('/CardCode/List', params)

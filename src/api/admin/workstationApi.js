@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/api/request/admin'
 //工位列表
 export function WorkstationList(params) {
     return request.post('/Workstation/list', params)
