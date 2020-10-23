@@ -8,7 +8,7 @@
   >
     <Logo :collapsed="collapsed" />
     
-    <Menu :collapsed="collapsed"></Menu>
+    <Menu :collapsed="collapsed" :type="type"></Menu>
   </a-layout-sider>
 </template>
 
@@ -29,7 +29,8 @@ export default {
     collapsed: {
       type: Boolean,
       default: false
-    }
+    },
+    type: String
   }
 }
 </script>

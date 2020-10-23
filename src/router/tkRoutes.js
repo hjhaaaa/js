@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { AppLayout, ViewLayout } from '@/components/Layout'
+import { TkLayout, ViewLayout } from '@/components/Layout'
 import Router from 'vue-router'
 
 
@@ -34,7 +34,7 @@ const routes = [
     path: '/',
     name: '',
     redirect: '/home',
-    component: AppLayout,
+    component: TkLayout,
     children: [
       {
         path: 'home',
@@ -46,7 +46,7 @@ const routes = [
   {
     path: '/user',
     name: 'userManage',
-    component: AppLayout,
+    component: TkLayout,
     children: [
       {
         path: 'manage',
@@ -66,7 +66,7 @@ const routes = [
   {
     path: '/cardcode',
     name: 'cardcodeManage',
-    component: AppLayout,
+    component: TkLayout,
     children: [
       {
         path: 'manage',
@@ -78,7 +78,7 @@ const routes = [
   {
     path: '/collection',
     name: 'collectionManege',
-    component: AppLayout,
+    component: TkLayout,
     children: [
       {
         path: 'index',
@@ -90,7 +90,7 @@ const routes = [
   {
     path: '/authorize',
     name: 'authorizeManage',
-    component: AppLayout,
+    component: TkLayout,
     children: [
       {
         path: 'manage',
@@ -102,7 +102,7 @@ const routes = [
   {
     path: '/groupConfig',
     name: 'groupConfigManage',
-    component: AppLayout,
+    component: TkLayout,
     children: [
       {
         path: 'manage',
@@ -114,7 +114,7 @@ const routes = [
   {
     path: '/classifygroup',
     name: 'classifygroupManage',
-    component: AppLayout,
+    component: TkLayout,
     children: [
       {
         path: 'manage',

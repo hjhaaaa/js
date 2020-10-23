@@ -1,5 +1,5 @@
 <template>
-  <layout>
+  <layout type="admin">
     <transition name="page-transition">
       <router-view />
     </transition>
