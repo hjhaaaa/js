@@ -3,7 +3,10 @@ WORKDIR /app
 EXPOSE 80
 COPY . /app
 # RUN npm
-RUN npm install -registry=https://registry.npm.taobao.org
+
+#RUN npm install -registry=https://registry.npm.taobao.org
+RUN npm config set registry https://registry.npm.taobao.org
+RUN npm install 
 RUN npm run build
 # Second stage
 FROM nginx
