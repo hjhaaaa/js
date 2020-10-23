@@ -13,7 +13,7 @@ const onError = error => {
   if (error.response) {
     const status = error.response.status
     const message = error.response.statusText
-    const token = Vue.ls.get(ACCESS_TOKEN)
+    const token = Vue.ss.get(ACCESS_TOKEN)
 
     if (status === 403) {
       notification.error({ message: '禁止访问', description: message })
@@ -40,9 +40,9 @@ const onError = error => {
           message: '未授权',
           description: '授权失败，请重新登录'
         })
-        if (token) {
-          store.dispatch('user/Logout').then(() => router.replace('/login'))
-        }
+        // if (token) {
+        //   store.dispatch('user/Logout').then(() => router.replace('/login'))
+        // }
         timer = null
       }, 500)
     }

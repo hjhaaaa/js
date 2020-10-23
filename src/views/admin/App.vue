@@ -5,6 +5,7 @@
 </template>
 
 <script>
+// console.log(1111, Cookie)
 export default {
   name: 'app'
 }
