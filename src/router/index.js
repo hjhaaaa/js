@@ -22,9 +22,9 @@ export const createRouter = (routes) =>
   })
 
 const router = {
+  adminRouter: createRouter(adminRoutes),
   tkRouter: createRouter(tkRoutes),
   dlRouter: createRouter(dlRoutes),
-  adminRoutes: createRouter(adminRoutes)
 }
 
 Object.keys(router).forEach((value) => {

@@ -4,13 +4,26 @@ import Router from 'vue-router'
 
 const whiteRoutes = [
   {
-    path: '/adminlogin',
-    name: 'adminlogin',
+    path: '/login',
+    name: 'login',
     component: () => import(/* webpackChunkName: "login" */ '@/views/auth/adminlogin')
   }
 ]
 
 const routes = [
+  {
+    path: '/',
+    name: '',
+    redirect: '/home',
+    component: AppLayout,
+    children: [
+      {
+        path: 'home',
+        name: 'home',
+        component: () => import(/* webpackChunkName: "login" */ '@/views/tk/home')
+      },
+    ]
+  },
   {
     path: '/cardcode',
     name: 'cardcodeManage',

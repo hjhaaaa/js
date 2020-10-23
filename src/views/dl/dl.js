@@ -11,6 +11,6 @@ new Vue({
   router: router.dlRouter,
   render: h => h(App),
   created () {
-    initStore()
+    // initStore()
   }
 }).$mount('#app')
