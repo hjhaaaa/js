@@ -1,5 +1,5 @@
 <template>
-  <layout>
+  <layout type="tk">
     <transition name="page-transition">
       <router-view />
     </transition>

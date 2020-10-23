@@ -2,7 +2,7 @@
 import { appStoreMixin, deviceMixin } from '@/mixins'
 import { generateOpenKeys } from '@/utils'
 // import menuData from './menus.js'
-import { GetCurrentLoginMenu } from '@/api/policyMenuApi.js'
+import { GetTkMenu, GetAdminMenu } from '@/api/policyMenuApi.js'
 export default {
   mixins: [appStoreMixin, deviceMixin],
   props: {
@@ -13,7 +13,8 @@ export default {
     collapsed: {
       type: Boolean,
       default: false
-    }
+    },
+    type: String
   },
   data () {
     return {
@@ -74,8 +75,16 @@ export default {
         : (this.openKeys = openKeys)
     },
     getCurrentLoginMenu(){
-      GetCurrentLoginMenu().then((res) => {
-			 this.menus = res.Data
+      let mentFunc
+      console.log('type',this.type)
+      if(this.type == 'tk'){
+        mentFunc = GetTkMenu
+      }else if(this.type == 'admin'){
+        mentFunc = GetAdminMenu
+      }
+
+      mentFunc().then((res) => {
+			  this.menus = res.Data
       }).catch((err) => {
         console.log(err)
       })

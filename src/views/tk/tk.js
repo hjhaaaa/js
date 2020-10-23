@@ -1,9 +1,9 @@
 import Vue from 'vue'
-import App from './App.vue'
+import '@/plugins'
 import router from '@/router/index'
 import { store, initStore } from '@/store/index'
+import App from './App.vue'
 
-import '@/plugins'
 
 // import * as filters from '@/filters'
 // import '@/assets/styles/index.scss'

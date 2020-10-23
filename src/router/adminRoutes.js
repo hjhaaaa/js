@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { AppLayout, ViewLayout } from '@/components/Layout'
+import { AdminLayout } from '@/components/Layout'
 import Router from 'vue-router'
 
 const whiteRoutes = [
@@ -15,7 +15,7 @@ const routes = [
     path: '/',
     name: '',
     redirect: '/home',
-    component: AppLayout,
+    component: AdminLayout,
     children: [
       {
         path: 'home',
@@ -27,7 +27,7 @@ const routes = [
   {
     path: '/cardcode',
     name: 'cardcodeManage',
-    component: AppLayout,
+    component: AdminLayout,
     children: [
       {
         path: 'index',
@@ -39,7 +39,7 @@ const routes = [
   {
     path: '/workstation',
     name: 'workstationManage',
-    component: AppLayout,
+    component: AdminLayout,
     children: [
       {
         path: 'index',
@@ -50,7 +50,7 @@ const routes = [
   {
     path: '/user',
     name: 'userManage',
-    component: AppLayout,
+    component: AdminLayout,
     children: [
       {
         path: 'index',

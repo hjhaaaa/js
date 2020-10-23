@@ -15,7 +15,7 @@
       </a-drawer>
     </template>
     <template v-if="!isMobile && layoutMode === 'side'">
-      <layout-sider :collapsed="collapsed"></layout-sider>
+      <layout-sider :collapsed="collapsed" :type="type"></layout-sider>
     </template>
     
     <a-layout :style="{ paddingLeft: contentLeft }" class="layout-right">
@@ -52,6 +52,9 @@ export default {
     Setting
   },
   mixins: [appStoreMixin, deviceMixin],
+  props: {
+    type: String,
+  },
   data () {
     return {
       collapsed: false
