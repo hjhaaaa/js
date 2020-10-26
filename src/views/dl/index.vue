@@ -316,6 +316,7 @@ export default {
           .p{
             font-size: 0.28rem;
             line-height: 0.5rem;
+            margin: 0;
           }
         }
       }
