@@ -13,7 +13,6 @@ export function sendGroupList(params) {
 
 // 修改发单群备注
 export function editRemark(params) {
-  // return request.post('/SendGroup/EditRemark', params)
   return request({
     url: '/SendGroup/EditRemark',
     method: 'post',
@@ -53,11 +52,25 @@ export function wechatPushLogin(params) {
   return request.get('/Wechat/PushLogin', {params})
 }
 
+// 二维码登录
+export function wechatQRLogin(params) {
+  return request.get('/Wechat/QRLogin', {params})
+}
+
+// 退出登录
+export function wechatLogout(params) {
+  return request.get('/Wechat/Logout', {params})
+}
+
 // 查询登录状态
 export function wechatLoginStatus(params) {
   return request.get('/Wechat/LoginStatus', {params})
 }
 
+// 代理账户登录
+export function dlLogin(params) {
+  return request.post('/UserLogin/Proxy', params)
+}
 
 
 

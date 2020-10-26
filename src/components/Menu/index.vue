@@ -82,7 +82,7 @@ export default {
       }else if(this.type == 'admin'){
         mentFunc = GetAdminMenu
       }
-
+      if(!mentFunc) return
       mentFunc().then((res) => {
 			  this.menus = res.Data
       }).catch((err) => {
