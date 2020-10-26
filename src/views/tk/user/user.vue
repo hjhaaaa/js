@@ -269,7 +269,7 @@ import {
 	CreatUser,
 	UpdateUserStatus,
 	UpdateUserRemark,
-	dlLogin
+	dlLogin,
 } from '@/api/tk/userApi.js'
 import { CreateWorkstation } from '@/api/tk/workstationApi.js'
 import { authorizeList } from '@/api/tk/authorizeApi.js'
@@ -631,16 +631,16 @@ export default {
 					}
 
 					if (isTk) {
-						this.mytableLoading = true
+						this.mytableLoading = false
 					} else {
-						this.tableLoading = true
+						this.tableLoading = false
 					}
 				})
 				.catch(() => {
 					if (isTk) {
-						this.mytableLoading = true
+						this.mytableLoading = false
 					} else {
-						this.tableLoading = true
+						this.tableLoading = false
 					}
 				})
 		},
@@ -650,12 +650,12 @@ export default {
 		goAgent(row) {
 			console.log(11, row)
 			dlLogin({
-				Id: row.Id
-			}).then(res => {
-				window.open('./dl.html#/dl')
-			}).catch((err) => {
-
+				Id: row.Id,
 			})
+				.then((res) => {
+					window.open('./dl.html#/dl')
+				})
+				.catch((err) => {})
 		},
 		edit(row, type) {
 			this.editVisible = true
@@ -694,16 +694,14 @@ export default {
 		},
 		addUser() {
 			this.visible = true
-			this.addInfo = Object.assign(
-				{},
-				{
+			this.$nextTick(() => {
+				this.aform.setFieldsValue({
 					userName: '',
 					pwd: '',
 					status: 1,
 					remark: '',
-				}
-			)
-			this.aform.resetFields()
+				})
+			})
 		},
 		addHandleOk() {
 			//e.preventDefault()
