@@ -1,4 +1,4 @@
-FROM node as builder
+FROM node:12.6.0-buster-slim  as builder
 WORKDIR /app
 EXPOSE 80
 COPY . /app
