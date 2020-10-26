@@ -22,7 +22,7 @@ export function GetLoginUserInfo() {
 
 // 登录代理
 export function dlLogin(params) {
-    return request.post('/UserLogin/Proxy', params)
+    return request.post('/UserLogin/TkLoginAgent', params)
     // return request({
     //     url: '/UserLogin/RegesterCode',
     //     method: 'post',

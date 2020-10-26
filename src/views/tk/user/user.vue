@@ -650,10 +650,9 @@ export default {
 		goAgent(row) {
 			console.log(11, row)
 			dlLogin({
-				UserName: row.UserName,
-				Pwd: row.Pwd,
+				Id: row.Id
 			}).then(res => {
-
+				window.open('./dl.html#/dl')
 			}).catch((err) => {
 
 			})
