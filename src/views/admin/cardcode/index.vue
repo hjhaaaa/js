@@ -471,7 +471,7 @@ export default {
 				],
 			},
 			creteCodeStr: '',
-			uploadAction: 'https://yfdcallbacktest.comzt.cn/api/UploadFile/Image',
+			uploadAction: process.env.VUE_APP_BASE_URL + '/api/UploadFile/Image',
 			uploadLoading: false,
 			previewVisible: false,
 			previewImage: '',

@@ -255,7 +255,7 @@ export default {
 	components: { EditableCell, Sendgroup, BasicsConfig, SetClassifyGroup },
 	data() {
 		return {
-			signalUrl: 'https://yfdcallbacktest.comzt.cn/WorkstationHub',
+			signalUrl: process.env.VUE_APP_BASE_URL + '/WorkstationHub',
 			statusOptions: [
 				{ label: '全部', value: -1 },
 				{ label: '启用', value: 1 },
