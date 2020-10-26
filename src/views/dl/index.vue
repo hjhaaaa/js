@@ -37,8 +37,8 @@
         <div class="c2-div2">
           <a-button class="div2-btn" type="primary" @click="tetsStatus">测试在线状态</a-button>
           <a-button class="div2-btn" type="primary" @click="pushLogin">推送登录</a-button>
-          <a-button class="div2-btn" type="primary">扫码登录</a-button>
-          <a-button class="div2-btn" type="primary">退出登录</a-button>
+          <a-button class="div2-btn" type="primary" @click="codeLogin">扫码登录</a-button>
+          <a-button class="div2-btn" type="primary" @click="wxLogout">退出登录</a-button>
         </div>
         <div class="c2-div3">
           使用说明<br/>
@@ -101,6 +101,29 @@
       </a-card>
     </div>
     <div class="shade" v-if="gwIsAll"></div>
+    <!--扫码登录-->
+		<a-modal
+			title="扫码登录"
+      class="wx-dl-login"
+			:visible="wxloginVisible"
+			:footer="null"
+			@cancel="wxQrloginHandleCancel"
+			width="400px"
+		>
+			<div>
+				<div id="divQrcode" ref="qrCodeUrl"></div>
+			</div>
+			<div>
+				<p style="text-align: center">
+					请在<span data-v-6e0de69a style="color: red">{{canloginSecond}}</span>前扫码登录微信
+				</p>
+        <div>
+          登录方式
+          <br/>1.将二维码截图发送给他们
+          <br/>2.将二维码截图发送至电脑，手机登录
+        </div>
+			</div>
+		</a-modal>
   </div>
 </template>
 
@@ -114,14 +137,20 @@ import {
   updateSendQuan,
   wechatPushLogin,
   wechatLoginStatus,
+  wechatQRLogin,
+  wechatLogout,
 } from '@/api/dl';
 import Vue from 'vue'
 import tipMessage from '@/utils/messageUtil'
+import '@/assets/js/signalr.min.js'
+import QRCode from 'qrcodejs2'
+import { formate } from '@/filters'
 
 export default {
   name: 'dl-index',
   data() {
     return {
+      signalUrl: process.env.VUE_APP_BASE_URL + '/WorkstationHub',
       gwIsAll: false,
       gwList: [],
       username: '',
@@ -129,7 +158,13 @@ export default {
       SendQuanConfig: false,
       fdGroupList: [],
       localGwId: 0,
-      qunInputText: ''
+      qunInputText: '',
+
+      signalRconnection: null,
+      wxloginType: '',
+      wxloginVisible: false,
+      canloginSecond: '',
+      timer: null,
     }
   },
   created() {
@@ -189,11 +224,139 @@ export default {
         tipMessage.success(res.Msg)
       })
     },
+    // 推送登录
     pushLogin(){
-      wechatPushLogin({workstationId: this.gwSelect.Id}).then(res => {
+      this.wxloginType = 'pushlogin'
+      this.connectSignalServer()
+    },
+    // 二维码登录
+    codeLogin(){
+      this.wxloginType = 'qrlogin'
+      this.connectSignalServer()
+    },
+    // 关闭弹窗
+    wxQrloginHandleCancel() {
+			this.wxloginType = ''
+			this.canloginSecond = ''
+			this.wxloginVisible = false
+			$('#divQrcode').empty()
+			this.diconnectSignalServer()
+		},
+    // 退出登录
+    wxLogout(){
+      wechatLogout({workstationId: this.gwSelect.Id}).then(res => {
         tipMessage.success(res.Msg)
       })
     },
+    // 连接
+    connectSignalServer() {
+			if (this.signalRconnection == null) {
+				this.signalRconnection = new signalR.HubConnectionBuilder()
+					.withUrl(this.signalUrl)
+					.withAutomaticReconnect() //断线自动重连
+					.build()
+				//接收消息
+				this.signalRconnection.on('ReceiveMessage', this.signalRReceiveMessage)
+
+				this.signalRconnection.start()
+			} else {
+				this.diconnectSignalServer()
+				this.connectSignalServer()
+			}
+		},
+		diconnectSignalServer() {
+			if (this.signalRconnection) {
+				this.signalRconnection.stop()
+				this.signalRconnection = null
+			}
+		},
+		signalRReceiveMessage(msg) {
+			console.log('signalRconnection:', this.signalRconnection)
+			console.log(msg)
+
+			if (!msg.isSuccess) {
+				tipMessage.error(msg.text)
+				return
+			}
+
+			//连接返回的消息
+			if (msg.type == 'Connected') {
+				console.log('调用服务端设置工位Id方法')
+				//调用服务端设置工位Id方法
+				this.signalRconnection
+					.invoke('SetWorkstationId', this.gwSelect.Id)
+					.catch(function (err) {
+						this.wxloginType = ''
+						console.log('err：', err)
+					})
+			} else if (msg.type == 'SetWorkstationId') {
+				if (!this.wxloginType) {
+					return
+				}
+
+				if (this.wxloginType == 'qrlogin') {
+					console.log('请求二维码登录接口')
+					//请求二维码登录接口
+					wechatQRLogin({workstationId: this.gwSelect.Id})
+						.then((res) => {
+							if (res.IsSuccess) {
+								this.wxloginVisible = true
+								this.$nextTick(() => {
+									this.creatQrCode(res.Data.newUrl)
+									this.canloginSecond = formate(new Date(new Date().getTime() + 180 * 1000), 'HH:mm:ss')
+									// this.doCountDown()
+								})
+							} else {
+								tipMessage.error('请求扫码出错:' + res.Msg)
+							}
+						})
+						.catch(() => {})
+				} else if (this.wxloginType == 'pushlogin') {
+					console.log('请求推送登录接口')
+					//推送登录
+					wechatPushLogin({workstationId: this.gwSelect.Id})
+						.then((res) => {
+							if (res.IsSuccess) {
+								tipMessage.success('推送成功,请在手机微信上进行操作')
+							} else {
+								tipMessage.error('推送失败:' + res.Msg)
+							}
+						})
+						.catch(() => {})
+				}
+			} else if (msg.type == 'LoginSuccessful') {
+        tipMessage.success('登录成功')
+        this.wxQrloginHandleCancel()
+        this.getGwList()
+			}
+		},
+		creatQrCode(text) {
+			console.log(text)
+			console.log(this.$refs.qrCodeUrl)
+			var qrcode = new QRCode(this.$refs.qrCodeUrl, {
+				text: text,
+				width: 300,
+				height: 300,
+				colorDark: '#000000',
+				colorLight: '#ffffff',
+				correctLevel: QRCode.CorrectLevel.H,
+			})
+		},
+		doCountDown() {
+			if (!this.timer) {
+				this.timer = setInterval(() => {
+					if (this.canloginSecond > 0) {
+						this.canloginSecond--
+					} else {
+						this.stopCountDown()
+					}
+				}, 1000)
+			}
+		},
+		stopCountDown() {
+			clearInterval(this.timer)
+			this.timer = null
+		},
     //============================================================================================================
     quanChange(){
       updateSendQuan({
@@ -400,6 +563,16 @@ export default {
         overflow: scroll;
         
       }
+    }
+  }
+}
+
+.wx-dl-login{
+  #divQrcode{
+    img{
+      margin: 0 auto;
+      max-width: 300px;
+      width: 100%;
     }
   }
 }

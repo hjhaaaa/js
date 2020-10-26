@@ -9,12 +9,14 @@ export function formatDate (date, fmt) {
       (date.getFullYear() + '').substr(4 - RegExp.$1.length)
     )
   }
+  console.log(fmt)
   if (/(s+)/.test(fmt)) {
     fmt = fmt.replace(
       RegExp.$1,
       (date.getMilliseconds() + '').substring(0, RegExp.$1.length)
     )
   }
+  console.log(fmt)
   const o = {
     'M+': date.getMonth() + 1,
     'd+': date.getDate(),
