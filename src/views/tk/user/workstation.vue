@@ -200,7 +200,7 @@
 				<p style="text-align: center">
 					请在
 					<span data-v-6e0de69a style="color: red">{{ canloginSecond }}</span
-					>秒以内扫码登录微信
+					>前扫码登录微信
 				</p>
 				<p>登录方式</p>
 				<p>1.将二维码截图发送给他们</p>
@@ -250,6 +250,7 @@ import { constants } from 'zlib'
 import { callbackify, log } from 'util'
 import { deeppink } from 'color-name'
 import QRCode from 'qrcodejs2'
+
 export default {
 	name: 'user-workstation',
 	components: { EditableCell, Sendgroup, BasicsConfig, SetClassifyGroup },
@@ -378,7 +379,7 @@ export default {
 			currentLoginWorkstation: undefined, //当前正在登录的工位
 			wxloginVisible: false,
 			timer: null,
-			canloginSecond: 200,
+			canloginSecond: '',
 			wxloginType: 'qrcode',
 		}
 	},
@@ -426,7 +427,7 @@ export default {
 		wxQrloginHandleCancel() {
 			console.log('wxQrloginHandleCancel')
 			this.wxloginType = ''
-			this.canloginSecond = 0
+			this.canloginSecond = ''
 			this.wxloginVisible = false
 			this.currentLoginWorkstation = undefined
 			$('#divQrcode').empty()
@@ -641,9 +642,10 @@ export default {
 								this.wxloginVisible = true
 								this.$nextTick(() => {
 									this.creatQrCode(res.Data.newUrl)
-									this.canloginSecond = 180
-									this.doCountDown()
-									this.countDownIsRun = true
+									this.canloginSecond = moment(new Date().getTime() + 180 * 1000).format('HH:mm:ss')
+									// this.canloginSecond = 180
+									// this.doCountDown()
+									// this.countDownIsRun = true
 								})
 							} else {
 								tipMessage.error('请求扫码出错:' + res.Msg)
