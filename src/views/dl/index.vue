@@ -115,7 +115,7 @@
 			</div>
 			<div>
 				<p style="text-align: center">
-					请在<span data-v-6e0de69a style="color: red">{{canloginSecond}}</span>前扫码登录微信
+					登录二维码将在<span data-v-6e0de69a style="color: red">{{canloginSecond}}</span>失效，请尽快登录
 				</p>
         <div>
           登录方式

@@ -198,9 +198,9 @@
 			</div>
 			<div>
 				<p style="text-align: center">
-					请在
+					登录二维码将在
 					<span data-v-6e0de69a style="color: red">{{ canloginSecond }}</span
-					>前扫码登录微信
+					>失效，请尽快登录
 				</p>
 				<p>登录方式</p>
 				<p>1.将二维码截图发送给他们</p>
