@@ -63,48 +63,28 @@
 				/>
 			</div>
 
-			<a-modal v-model="setPwdVisible" title="设置密码" @ok="setPwdHandleOk">
-				<a-form
-					:form="setPwdForm"
-					:model="setPwdFormModel"
-					:rules="setPwdRules"
-					ref="setPwdForm"
-				>
-					<a-form-item v-bind="formItemLayout" label="用户名">
-						<a-input
-							placeholder="登录用户名"
-							:read-only="true"
-							v-model="setPwdFormModel.userName"
-						/>
-					</a-form-item>
-					<a-form-item v-bind="formItemLayout" label="密码" prop="pwd">
-						<a-input-password
-							placeholder="登录密码"
-							autocomplete="new-password"
-							v-decorator="setPwdRules.pwd"
-						/>
-					</a-form-item>
-				</a-form>
-			</a-modal>
+
+			<SetUserPasswordCom
+				:platformType="2"
+				ref="setUserPassword"
+				@onSuccess="setUserPasswordSuccess"
+			></SetUserPasswordCom>
 		</a-card>
 	</div>
 </template>
 
 <script>
 import moment from 'moment'
+import SetUserPasswordCom from '@/components/User/SetUserPassword.vue'
 import tipMessage from '@/utils/messageUtil.js'
-import {
-	UserList,
-	SetUserSupplier,
-	SetUserPassword,
-} from '@/api/admin/userApi.js'
+import { UserList, SetUserSupplier } from '@/api/admin/userApi.js'
 import { constants } from 'zlib'
 import { callbackify } from 'util'
 import { deeppink } from 'color-name'
 
 export default {
 	name: 'adminUserList',
-	components: {},
+	components: { SetUserPasswordCom },
 	data() {
 		return {
 			statusOptions: [
@@ -184,29 +164,6 @@ export default {
 			setPwdVisible: false,
 			labelCol: { span: 4 },
 			wrapperCol: { span: 14 },
-			other: '',
-			nowSetPwdRow: undefined,
-			setPwdFormModel: {
-				userName: '',
-				pwd: undefined,
-			},
-			setPwdRules: {
-				pwd: [
-					'pwd',
-					{
-						rules: [
-							{
-								required: true,
-								message: '密码不能为空!',
-							},
-							{
-								pattern: /^[a-zA-Z0-9]{4,16}$/g,
-								message: '密码必须为4-16位的字母数字',
-							},
-						],
-					},
-				],
-			},
 		}
 	},
 	methods: {
@@ -249,45 +206,9 @@ export default {
 		},
 
 		updatePwd(row) {
-			this.nowSetPwdRow = row
-			this.setPwdVisible = true
-			;(this.setPwdFormModel.userName = row.UserName),
-				this.$nextTick(() => {
-					this.setPwdForm.setFieldsValue({
-						pwd: 'mg123456',
-					})
-				})
-			// this.setPwdFormModel = Object.assign(
-			// 	{},
-			// 	{
-			// 		userName: row.UserName,
-			// 		pwd:undefined
-			// 	}
-			// )
+			this.$refs.setUserPassword.openUpdatePwd(row)
 		},
-		setPwdHandleOk() {
-			this.setPwdForm.validateFieldsAndScroll((err, values) => {
-				if (!err) {
-					// console.log('setPwdForm values: ', va lues)
 
-					SetUserPassword(this.nowSetPwdRow.Id, values.pwd)
-						.then((res) => {
-							if (res.IsSuccess) {
-								this.nowSetPwdRow = undefined
-
-								this.query()
-								tipMessage.success('设置密码成功')
-								this.setPwdVisible = false
-							} else {
-								tipMessage.error(res.Msg)
-							}
-						})
-						.catch(() => {
-							this.tableLoading = false
-						})
-				}
-			})
-		},
 		setSupplier(row) {
 			let v = this //保存外层this对象
 			//删除工位
@@ -314,6 +235,10 @@ export default {
 				},
 				onCancel() {},
 			})
+		},
+		setUserPasswordSuccess(obj) {
+			// console.log('setUserPasswordSuccess')
+			this.query()
 		},
 	},
 	created() {

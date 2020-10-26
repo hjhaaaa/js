@@ -1,6 +1,6 @@
 import request from '@/api/request/admin'
 //管理员列表
-export function GetAdminList(params) {
+export function AdminList(params) {
     return request.post('/Admin/List', params)
 }
 
@@ -16,4 +16,8 @@ export function EditAdmin(params) {
 //删除管理员
 export function DeleteAdmin(id) {
     return request.post('/Admin/Delete?id='+id)
+}
+//设置管理员密码
+export function SetAdminPassword(id, pwd) {
+    return request.post('/user/SetUserPassword', { Id: id, Password: pwd })
 }

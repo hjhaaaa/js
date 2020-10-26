@@ -25,7 +25,7 @@ const request = axios.create({
 
 // 响应拦截器
 request.interceptors.response.use(res => {
-  console.log("res", res)
+  
   if (res.data.IsSuccess) {
     return res.data
   } else {

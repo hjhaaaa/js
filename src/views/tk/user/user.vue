@@ -42,7 +42,10 @@
 					>
 					<!-- <a type="link" @click="edit(row,1)">编辑信息</a> -->
 					<a-button type="primary" @click="goAgent(row)" size="small"
-						>登录代理端</a-button
+						>登录代理</a-button
+					>
+					<a-button type="primary" size="small" @click="updatePwd(row, 1)"
+						>设置密码</a-button
 					>
 				</div>
 			</a-table>
@@ -117,7 +120,10 @@
 					>
 					<!-- <a type="link" @click="edit(row,1)">编辑信息</a> -->
 					<a-button type="primary" @click="goAgent(row)" size="small"
-						>登录代理端</a-button
+						>登录代理</a-button
+					>
+					<a-button type="primary" size="small" @click="updatePwd(row, 2)"
+						>设置密码</a-button
 					>
 				</div>
 			</a-table>
@@ -252,7 +258,11 @@
 				</a-form-item>
 			</a-form>
 		</a-modal>-->
-
+		<SetUserPasswordCom
+			:platformType="1"
+			ref="setUserPassword"
+			@onSuccess="setUserPasswordSuccess"
+		></SetUserPasswordCom>
 		<BasicsConfig :configType="1" ref="basicsConfig"></BasicsConfig>
 		<SetClassifyGroup :targetType="1" ref="setClassifyGroup"></SetClassifyGroup>
 	</div>
@@ -261,6 +271,7 @@
 <script>
 import moment from 'moment'
 import EditableCell from '@/components/Table/EditableCell.vue'
+import SetUserPasswordCom from '@/components/User/SetUserPassword.vue'
 import BasicsConfig from '@/components/Config/BasicsConfig.vue'
 import SetClassifyGroup from '@/components/ClassifyGroup/SetClassifyGroup.vue'
 import tipMessage from '@/utils/messageUtil.js'
@@ -279,7 +290,12 @@ import { deeppink } from 'color-name'
 
 export default {
 	name: 'user',
-	components: { EditableCell, BasicsConfig, SetClassifyGroup },
+	components: {
+		EditableCell,
+		BasicsConfig,
+		SetClassifyGroup,
+		SetUserPasswordCom,
+	},
 	data() {
 		return {
 			statusOptions: [
@@ -792,6 +808,24 @@ export default {
 					}
 				})
 				.catch(() => {})
+		},
+		setUserPasswordSuccess(obj) {
+			console.log('obj', obj)
+			if (obj == 1) {
+				this.queryTk()
+			} else if (obj == 2) {
+				this.query()
+			}
+		},
+		updatePwd(row, type) {
+			var isTk = type == 1
+			if (isTk) {
+				this.mytableLoading = true
+			} else {
+				this.tableLoading = true
+			}
+
+			this.$refs.setUserPassword.openUpdatePwd(row, type)
 		},
 	},
 	created() {

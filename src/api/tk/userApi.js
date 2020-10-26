@@ -29,3 +29,7 @@ export function dlLogin(params) {
     //     params
     // })
 }
+//设置用户密码
+export function SetUserPassword(id, pwd) {
+    return request.post('/user/SetUserPassword', { Id: id, Password: pwd })
+}

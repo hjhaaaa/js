@@ -57,6 +57,17 @@ const routes = [
         component: () => import(/* webpackChunkName: "login" */ '@/views/admin/user/index.vue'),
       }
     ]
+  },  {
+    path: '/admin',
+    name: 'adminManage',
+    component: AdminLayout,
+    children: [
+      {
+        path: 'index',
+        name: '',
+        component: () => import(/* webpackChunkName: "login" */ '@/views/admin/account/index.vue')
+      },
+    ]
   },
 ]
 
