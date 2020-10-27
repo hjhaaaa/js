@@ -4,7 +4,7 @@ EXPOSE 80
 COPY . /app
 # RUN npm
 RUN npm install
-RUN npm run build
+RUN npm run build:prod
 # Second stage
 FROM nginx
 # copy dist from the first stage
