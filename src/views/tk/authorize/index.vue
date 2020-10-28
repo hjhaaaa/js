@@ -75,7 +75,7 @@
 
 <script>
 import { authorizeList, authorizeOauthcheck } from '@/api/tk/authorizeApi.js'
-import { authorizeOauthPddcheck  } from '@/api/tk/authorizePddApi.js'
+import { authorizeOauthPddcheck } from '@/api/tk/authorizePddApi.js'
 export default {
 	name: 'authorize',
 	data() {
@@ -141,7 +141,6 @@ export default {
 			authorizeOauthcheck({
 				returnUrl: location.href,
 			}).then((res) => {
-			
 				// window.open(
 				// 'https://oauth.taobao.com/authorize' +
 				// 	'?response_type=code' +
@@ -150,8 +149,8 @@ export default {
 				// 	'&state=' +
 				// 	resState
 				// )
-				location.href = res.Data;
-		
+				location.href = res.Data
+
 				// location.href =
 				// 	'https://oauth.taobao.com/authorize' +
 				// 	'?response_type=code' +
@@ -165,8 +164,8 @@ export default {
 			authorizeOauthPddcheck({
 				returnUrl: location.href,
 			}).then((res) => {
-				console.log("res",res)
-				// location.href = res.Data;
+				//console.log('res', res)
+				location.href = res.Data
 				// let resState = res.Data
 				// location.href =
 				// 	'https://ddjb.pinduoduo.com/open.html' +
