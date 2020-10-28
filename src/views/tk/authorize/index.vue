@@ -75,6 +75,7 @@
 
 <script>
 import { authorizeList, authorizeOauthcheck } from '@/api/tk/authorizeApi.js'
+import { authorizeOauthPddcheck  } from '@/api/tk/authorizePddApi.js'
 export default {
 	name: 'authorize',
 	data() {
@@ -161,17 +162,19 @@ export default {
 			})
 		},
 		addPddsq() {
-			authorizeOauthcheck({
+			authorizeOauthPddcheck({
 				returnUrl: location.href,
 			}).then((res) => {
-				let resState = res.Data
-				location.href =
-					'https://ddjb.pinduoduo.com/open.html' +
-					'?client_id=013d1ace79ea4bb0bc75716c26151e29' +
-					'&response_type=code' +
-					'&redirect_uri=http%3A%2F%2Fyfdoauth.sitezt.cn%2Fapi%2Fwyfd%2Ftk%2Fpdd%2Fnewoauthcallback' +
-					'&state=' +
-					resState
+				console.log("res",res)
+				// location.href = res.Data;
+				// let resState = res.Data
+				// location.href =
+				// 	'https://ddjb.pinduoduo.com/open.html' +
+				// 	'?client_id=013d1ace79ea4bb0bc75716c26151e29' +
+				// 	'&response_type=code' +
+				// 	'&redirect_uri=http%3A%2F%2yfdcallbacktest.comzt.cn%3A30080%2Fapi%2Fwyfd%2FUserPddOauth%2FOauthPddCallBack' +
+				// 	'&state=' +
+				// 	resState
 			})
 		},
 		query() {

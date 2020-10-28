@@ -10,4 +10,4 @@ export function authorizeList(params) {
   export function authorizeOauthcheck(params) {
     return request.get('/usertaobaooauth/oauthcheck', {params})
   }
-  
+ 
