@@ -25,7 +25,9 @@ const request = axios.create({
 
 // 响应拦截器
 request.interceptors.response.use(res => {
-  if(res.data.IsSuccess){
+  if(res.headers["content-type"] === 'application/ms-excel'){
+    return res
+  }else if(res.data.IsSuccess){
     return res.data
   }else{
     // notification.error({
