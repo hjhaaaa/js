@@ -58,13 +58,17 @@
 						>驳回</a-button
 					>
 				</div>
-
+				<div slot="alipaySlot" slot-scope="row">
+					<div>姓名:{{ row.AlipayName }}</div>
+					<div>账号:{{ row.Alipay }}</div>
+				</div>
 				<div slot="withdrawalStatusSlot" slot-scope="row">
 					<div v-if="row.WithdrawalStatus == 1">审核通过</div>
 					<div v-else-if="row.WithdrawalStatus == 2">
 						驳回：{{ row.ReviewRemark }}
 					</div>
 					<div v-else>待审核</div>
+					<div v-if="row.WithdrawalStatus != 0">{{ row.ReviewTime }}</div>
 				</div>
 				<div slot="balanceSlot" slot-scope="row">
 					<p>{{ row.OperateType == 1 ? '+' : '-' }}{{ row.Balance }}</p>
@@ -146,15 +150,16 @@ export default {
 					width: '100px',
 					dataIndex: 'Balance',
 				},
+				// {
+				// 	title: '支付宝账户',
+				// 	width: '150px',
+				// 	dataIndex: 'Alipay',
+				// },
 				{
-					title: '支付宝账户',
-					width: '150px',
-					dataIndex: 'Alipay',
-				},
-				{
-					title: '支付宝姓名',
+					title: '支付宝信息',
 					width: '200px',
-					dataIndex: 'AlipayName',
+					// dataIndex: 'AlipayName',
+					scopedSlots: { customRender: 'alipaySlot' },
 				},
 				{
 					title: '提现状态',
@@ -166,11 +171,11 @@ export default {
 					width: '180px',
 					dataIndex: 'CTime',
 				},
-				{
-					title: '审核时间',
-					width: '180px',
-					dataIndex: 'ReviewTime',
-				},
+				// {
+				// 	title: '审核时间',
+				// 	width: '180px',
+				// 	dataIndex: 'ReviewTime',
+				// },
 				{
 					title: '操作',
 					width: '200px',
@@ -304,9 +309,6 @@ export default {
 .userwithdrawal {
 	.ant-table-body {
 		overflow-x: auto !important;
-	}
-	.ant-modal-body {
-		padding: 0px !important;
 	}
 
 	.my .ant-btn {

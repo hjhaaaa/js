@@ -257,7 +257,6 @@ export default {
 		openWithdrawalHandle() {
 			this.addWithdrawalButtonLoading = true
 			this.addWithdrawalVisible = true
-			console.log(this.loginUserInfo)
 			this.$nextTick(() => {
 				this.addWithdrawalForm.setFieldsValue({
 					alipayName: this.loginUserInfo.AlipayName,
@@ -275,12 +274,11 @@ export default {
 			this.addWithdrawalButtonLoading = false
 		},
 		addWithdrawalHandleOk() {
-			console.log('addWithdrawalHandleOk')
 
 			this.addWithdrawalForm.validateFieldsAndScroll((err, values) => {
 				if (!err) {
 					this.addWithdrawalLoading = true
-					console.log('addWithdrawalForm values: ', values)
+		//			console.log('addWithdrawalForm values: ', values)
 					CreateUserWithdrawal(values)
 						.then((res) => {
 							this.getLoginUserInfo()
