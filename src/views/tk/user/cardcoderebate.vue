@@ -26,11 +26,7 @@
 					/>
 				</a-form-item>
 				<a-form-item label="结束日期">
-					<a-date-picker
-						format="YYYY-MM-DD"
-						placeholder="结束日期"
-						@change="onChange"
-					/>
+					<a-date-picker format="YYYY-MM-DD" placeholder="结束日期" />
 				</a-form-item>
 				<a-form-item>
 					<a-button icon="search" @click="handleSearch">查询</a-button>
@@ -97,6 +93,7 @@
 			</a-form>
 		</a-modal>
 		<UserWithdrawalCom
+			ref="userWithdrawalCom"
 			:visible.sync="withdrawalStatus"
 			@callback="withdrawalCallback"
 		></UserWithdrawalCom>
@@ -213,11 +210,6 @@ export default {
 	},
 	methods: {
 		moment,
-		onChange(value, dateString) {
-			console.log('value: ', value)
-			console.log('dateString: ', dateString)
-			this.form.endDate = dateString
-		},
 		query() {
 			this.tableLoading = true
 			let params = Object.assign({}, this.form)
@@ -264,10 +256,19 @@ export default {
 		},
 		openWithdrawalHandle() {
 			this.addWithdrawalButtonLoading = true
-			if (this.loginUserInfo.alipay && this.loginUserInfo.alipayName) {
-			} else {
-				this.addWithdrawalVisible = true
-			}
+			this.addWithdrawalVisible = true
+			console.log(this.loginUserInfo)
+			this.$nextTick(() => {
+				this.addWithdrawalForm.setFieldsValue({
+					alipayName: this.loginUserInfo.AlipayName,
+					alipay: this.loginUserInfo.Alipay,
+				})
+			})
+
+			// if (this.loginUserInfo.alipay && this.loginUserInfo.alipayName) {
+			// } else {
+
+			// }
 		},
 		addWithdrawalHandleCancel() {
 			this.addWithdrawalVisible = false
@@ -283,6 +284,7 @@ export default {
 					CreateUserWithdrawal(values)
 						.then((res) => {
 							this.getLoginUserInfo()
+
 							tipMessage.success('申请成功')
 						})
 						.catch(() => {})
@@ -291,11 +293,12 @@ export default {
 			})
 		},
 		openWithdrawal() {
+			this.$refs.userWithdrawalCom.query()
 			this.withdrawalStatus = true
 		},
 		withdrawalCallback(res) {
-			if(res.success){
-				this.withdrawalStatus = false;
+			if (res.success) {
+				this.withdrawalStatus = false
 			}
 		},
 	},

@@ -69,6 +69,18 @@ const routes = [
       },
     ]
   },
+  {
+    path: '/userwithdrawal',
+    name: 'userwithdrawalManage',
+    component: AdminLayout,
+    children: [
+      {
+        path: 'index',
+        name: '',
+        component: () => import(/* webpackChunkName: "login" */ '@/views/admin/userwithdrawal/index.vue')
+      },
+    ]
+  },
 ]
 
 const adminRoutes = [...whiteRoutes, ...routes]

@@ -12,9 +12,7 @@
 		>
 			<a-card :bordered="false">
 				<a-form layout="inline" :form="form" style="margin-bottom: 10px">
-					<a-form-item label="推广账号">
-						<a-input v-model="form.tkUserName" placeholder="请输入推广账号" />
-					</a-form-item>
+				
 					<a-form-item label="开始日期">
 						<a-date-picker
 							v-model="form.startDate"
@@ -26,7 +24,7 @@
 						<a-date-picker
 							format="YYYY-MM-DD"
 							placeholder="结束日期"
-							@change="onChange"
+							
 						/>
 					</a-form-item>
 					<a-form-item>
@@ -100,9 +98,9 @@ export default {
 				},
 			},
 			form: {
-				tkUserName: '',
 				startDate: undefined,
 				endDate: undefined,
+				status:-1,
 				pageSize: 20,
 				pageNum: 1,
 			},
@@ -152,11 +150,6 @@ export default {
 	},
 	methods: {
 		moment,
-		onChange(value, dateString) {
-			console.log('value: ', value)
-			console.log('dateString: ', dateString)
-			this.form.endDate = dateString
-		},
 		query() {
 			this.tableLoading = true
 			let params = Object.assign({}, this.form)
