@@ -60,6 +60,13 @@ const routes = [
         params: {
           userName: ''
         }
+      },{
+        path: 'cardcoderebate',
+        name: 'cardcoderebate',
+        component: () => import(/* webpackChunkName: "login" */ '@/views/tk/user/cardcoderebate.vue'),
+        params: {
+          userName: ''
+        }
       }
     ]
   },

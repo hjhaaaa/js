@@ -60,11 +60,7 @@
 				</a-form-item>
 			</a-form>
 
-			<div
-				id="transferCode"
-				v-if="isSupplier"
-				style="margin-bottom: 16px;"
-			>
+			<div id="transferCode" v-if="isSupplier" style="margin-bottom: 16px">
 				<!-- :loading="transferLoading" ss -->
 				<a-button type="primary" :disabled="!hasSelected" @click="openTransfer"
 					>转移激活码</a-button
@@ -351,19 +347,15 @@ export default {
 			let v = this
 			GetLoginUserInfo()
 				.then((res) => {
-					if (res.IsSuccess) {
-						if (res.Data.IsSupplier) {
-							this.isSupplier = true
-							this.columns.push({
-								title: '转让状态',
-								width: '150px',
-								dataIndex: 'TransferString',
-							})
-						}
-						this.query()
-					} else {
-						tipMessage.error('获取激活码失败')
+					if (res.Data.IsSupplier) {
+						this.isSupplier = true
+						this.columns.push({
+							title: '转让状态',
+							width: '150px',
+							dataIndex: 'TransferString',
+						})
 					}
+					this.query()
 				})
 				.catch(() => {})
 		},

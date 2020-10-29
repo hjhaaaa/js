@@ -188,8 +188,9 @@
 								]"
 								placeholder="请选择返佣类型"
 							>
-								<a-select-option value="1"> 1~20个(24元/个) </a-select-option>
-								<a-select-option value="2"> 21~100个(22元/个) </a-select-option>
+								<a-select-option value="0">不返佣 </a-select-option>
+								<a-select-option value="1">1~20个(24元/个)</a-select-option>
+								<a-select-option value="2">21~100个(22元/个)</a-select-option>
 								<a-select-option value="3">
 									101-1999个(20元/个
 								</a-select-option>
@@ -348,7 +349,6 @@ export default {
 		return {
 			labelCol: { span: 9 },
 			wrapperCol: { span: 15 },
-			transferForm: this.$form.createForm(this),
 			addForm: this.$form.createForm(this),
 			formItemLayout: {
 				labelCol: {
@@ -412,8 +412,6 @@ export default {
 			],
 			data: [],
 			total: 0,
-			isSupplier: false, //是否供应商
-			isCustomerService: false, //是否客服
 			tableLoading: false,
 			addVisible: false,
 			addLoading: false,
@@ -428,47 +426,7 @@ export default {
 				CardCodeType: '1',
 				SourceType: '1',
 				RebateType: '1',
-			},
-			addRules: {
-				OrderNo: [
-					{
-						required: true,
-						message: '请输入订单号',
-						trigger: 'blur',
-					},
-				],
-				region: [
-					{
-						required: true,
-						message: 'Please select Activity zone',
-						trigger: 'change',
-					},
-				],
-				date1: [
-					{ required: true, message: 'Please pick a date', trigger: 'change' },
-				],
-				type: [
-					{
-						type: 'array',
-						required: true,
-						message: 'Please select at least one activity type',
-						trigger: 'change',
-					},
-				],
-				resource: [
-					{
-						required: true,
-						message: 'Please select activity resource',
-						trigger: 'change',
-					},
-				],
-				desc: [
-					{
-						required: true,
-						message: 'Please input activity form',
-						trigger: 'blur',
-					},
-				],
+				Remarks:'',
 			},
 			creteCodeStr: '',
 			uploadAction: process.env.VUE_APP_BASE_URL + '/api/UploadFile/Image',
@@ -478,29 +436,7 @@ export default {
 		}
 	},
 	computed: {
-		hasSelected() {
-			return this.selectedRowKeys.length > 0
-		},
-		// hasSelected() {
-		// 	return this.hasSelect
-		// },
-		rowSelection() {
-			return {
-				selectedRowKeys: this.selectedRowKeys,
-				onChange: (selectedRowKeys, selectedRows) => {
-					console.log('selectedRowKeys:', selectedRowKeys)
-					this.selectedRowKeys = selectedRowKeys
-					this.transferList = selectedRows
-					this.transferInfo.transferCount = selectedRowKeys.length
-				},
-				getCheckboxProps: (record) => ({
-					props: {
-						disabled: record.TransferString != '可转让', // Column configuration not to be checked
-						name: record.CardCode,
-					},
-				}),
-			}
-		},
+	
 	},
 	methods: {
 		query() {
@@ -528,109 +464,7 @@ export default {
 		pageChange(p, s) {
 			this.form.pageNum = p
 			this.query()
-		},
-
-		showKFQr() {
-			this.qrVisible = true
-		},
-		closeKfQr() {
-			this.qrVisible = false
-		},
-
-		getCardCode() {
-			let v = this
-			GetRechargeCode()
-				.then((res) => {
-					if (res.IsSuccess) {
-						this.myCardCodeCount = res.Data.CardCodeCount
-						this.currentUserName = res.Data.UserName
-						this.isSupplier = res.Data.IsSupplier
-						this.isAdmin = res.Data.IsAdmin
-					} else {
-						tipMessage.error('获取激活码失败')
-					}
-				})
-				.catch(() => {})
-		},
-		openTransfer() {
-			this.transferVisible = true
-		},
-		transferHandleCancel() {
-			this.transferInfo.tkId = undefined
-			this.transferList = []
-			this.transferInfo.transferCount = 0
-			this.selectedRowKeys = []
-			this.transferVisible = false
-		},
-		transferHandleOk() {
-			console.log('tkId:', this.transferInfo.tkId)
-			if (!this.transferInfo.tkInfo || this.transferInfo.tkInfo.key <= 0) {
-				tipMessage.error('请选择转让目标')
-				return
-			}
-
-			let v = this //保存外层this对象
-			this.$confirm({
-				title: '提示',
-				content: `确定将【${v.transferInfo.transferCount}】个激活码转让给用户【${v.transferInfo.tkInfo.label}】?`,
-				okText: '确定',
-				onOk() {
-					v.transferConfirmLoading = true
-					var tkId = parseInt(v.transferInfo.tkInfo.key)
-					var ids = v.transferList.map(function (row) {
-						return row.Id
-					})
-					var params = {
-						tkId: tkId,
-						ids: ids,
-					}
-					BatchTransferCardCode(params)
-						.then((res) => {
-							if (res.IsSuccess) {
-								v.query()
-								v.getCardCode()
-								v.transferHandleCancel()
-								tipMessage.success('转让成功')
-							} else {
-								tipMessage.error('转让失败:' + res.Msg)
-							}
-						})
-						.catch(() => {})
-				},
-				onCancel() {},
-			})
-
-			this.transferConfirmLoading = false
-		},
-		getUserList() {
-			var params = {
-				pageNum: 1,
-				pageSize: 10000,
-				IsHasSelf: true,
-			}
-			UserList(params)
-				.then((res) => {
-					if (res.Data.length > 0) {
-						// var tkList=[];
-						// res.Data.forEach(function(row){
-
-						// 	tkList.push(new {Id:row.Id,Text})
-						// })
-
-						this.userList = res.Data
-					} else {
-						fetching = true
-					}
-				})
-				.catch(() => {})
-		},
-		filterUser(input, option) {
-			return (
-				option.componentOptions.children[0].text
-					.toLowerCase()
-					.indexOf(input.toLowerCase()) >= 0
-			)
-		},
+		},	
 		addHandleOk() {
 			this.addForm.validateFieldsAndScroll((err, values) => {
 				if (!err) {
@@ -755,6 +589,7 @@ export default {
 					CardCodeType: '1',
 					SourceType: '1',
 					RebateType: '1',
+					Remarks:''
 				})
 				this.addFormModel.ImgUrl = ''
 				this.addDisabled = false

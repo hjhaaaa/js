@@ -148,9 +148,9 @@ export default {
 			columns: [
 				{
 					title: '工位Id',
-					width: '70px',
+					width: '80px',
 					dataIndex: 'Id',
-					fixed: 'left'
+					// fixed: 'left'
 				},
 				{
 					title: '用户名',
