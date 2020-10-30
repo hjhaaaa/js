@@ -55,7 +55,7 @@
 				/>
 			</div>
 
-			<a-modal v-model="setPwdVisible" title="设置密码" @ok="setPwdHandleOk">
+			<a-modal v-model="setPwdVisible" title="修改密码" @ok="setPwdHandleOk">
 				<a-form
 					:form="setPwdForm"
 					:model="setPwdFormModel"
@@ -268,7 +268,7 @@ export default {
 								this.nowSetPwdRow = undefined
 
 								this.query()
-								tipMessage.success('设置密码成功')
+								tipMessage.success('修改密码成功')
 								this.setPwdVisible = false
 							} else {
 								tipMessage.error(res.Msg)

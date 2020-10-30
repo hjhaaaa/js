@@ -52,7 +52,7 @@
 						>编辑</a-button
 					>
 					<a-button type="primary" size="small" @click="updatePwd(row)"
-						>设置密码</a-button
+						>修改密码</a-button
 					>
 				</div>
 			</a-table>

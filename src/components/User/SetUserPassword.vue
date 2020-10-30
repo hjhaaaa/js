@@ -1,10 +1,11 @@
 <template>
 	<a-modal
 		v-model="visible"
-		title="设置密码"
+		title="修改密码"
 		ok-text="确认"
 		cancel-text="取消"
 		@ok="setPwdHandleOk"
+		@cancel="handleCancel"
 	>
 		<a-form
 			:form="setPwdForm"
@@ -37,10 +38,14 @@ export default {
 	name: 'SetUserPasswordComponent',
 	props: {
 		platformType: Number, //目标类型  1=淘客 2=管理员
+		isUseDefault: {
+			type: Boolean,
+			default: true,
+		},
 	},
 	data() {
 		return {
-			showTitle: '设置密码',
+			showTitle: '修改密码',
 			setPwdForm: this.$form.createForm(this),
 			formItemLayout: {
 				labelCol: {
@@ -85,7 +90,7 @@ export default {
 			;(this.setPwdFormModel.userName = row.UserName),
 				this.$nextTick(() => {
 					this.setPwdForm.setFieldsValue({
-						pwd: 'mg123456',
+						pwd: this.isUseDefault ? 'mg123456' : '',
 					})
 				})
 			this.visible = true
@@ -119,12 +124,14 @@ export default {
 		},
 		editSuccess() {
 			this.nowSetPwdRow = undefined
-			tipMessage.success('设置密码成功')
+			tipMessage.success('修改密码成功')
 			this.visible = false
 			this.$emit('onSuccess', this.other)
 		},
 		handleCancel() {
+		//	console.log("handleCancel");
 			this.closeUpdatePwd()
+			this.$emit('onCancel', this.other)
 		},
 		created() {},
 	},

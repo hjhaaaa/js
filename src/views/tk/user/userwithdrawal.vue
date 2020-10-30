@@ -7,7 +7,7 @@
 			:footer="null"
 			width="80%"
 			:bodyStyle="{'height': '70vh'}"
-			:class="'userwithdrawal'"
+			:class="'user-userwithdrawal'"
 			@cancel="handleCancel"
 		>
 			<a-card :bordered="false">
@@ -218,7 +218,7 @@ export default {
 }
 </style>
 <style lang="scss">
-.userwithdrawal {
+.user-userwithdrawal {
 	.ant-card-body {
 		padding: 0px !important;
 	}

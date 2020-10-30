@@ -45,7 +45,7 @@
 						>登录代理</a-button
 					>
 					<a-button type="primary" size="small" @click="updatePwd(row, 1)"
-						>设置密码</a-button
+						>修改密码</a-button
 					>
 				</div>
 			</a-table>
@@ -123,7 +123,7 @@
 						>登录代理</a-button
 					>
 					<a-button type="primary" size="small" @click="updatePwd(row, 2)"
-						>设置密码</a-button
+						>修改密码</a-button
 					>
 				</div>
 			</a-table>
@@ -260,8 +260,10 @@
 		</a-modal>-->
 		<SetUserPasswordCom
 			:platformType="1"
+			:isUseDefault="false"
 			ref="setUserPassword"
 			@onSuccess="setUserPasswordSuccess"
+			@onCancel="setUserPasswordCancel"
 		></SetUserPasswordCom>
 		<BasicsConfig :configType="1" ref="basicsConfig"></BasicsConfig>
 		<SetClassifyGroup :targetType="1" ref="setClassifyGroup"></SetClassifyGroup>
@@ -824,8 +826,18 @@ export default {
 			} else {
 				this.tableLoading = true
 			}
-
 			this.$refs.setUserPassword.openUpdatePwd(row, type)
+		},
+		setUserPasswordCancel(obj) {
+			this.hideLoading(obj)
+		},
+		hideLoading(type) {
+			var isTk = type == 1
+			if (isTk) {
+				this.mytableLoading = false
+			} else {
+				this.tableLoading = false
+			}
 		},
 	},
 	created() {

@@ -62,14 +62,14 @@
 
 			<div id="transferCode" v-if="isSupplier" style="margin-bottom: 16px">
 				<!-- :loading="transferLoading" ss -->
-				<a-button type="primary" :disabled="!hasSelected" @click="openTransfer"
-					>转移激活码</a-button
-				>
-				<span style="margin-left: 8px">
+				<a-button type="primary" @click="openTransfer">转移激活码</a-button>
+				<!-- <span style="margin-left: 8px">
 					<template v-if="hasSelected">{{
 						`已选择数量【${transferInfo.transferCount}】`
 					}}</template>
 				</span>
+					:row-selection="isSupplier ? rowSelection : undefined"
+				 -->
 			</div>
 			<a-table
 				:columns="columns"
@@ -77,7 +77,6 @@
 				rowKey="Id"
 				:loading="tableLoading"
 				:pagination="false"
-				:row-selection="isSupplier ? rowSelection : undefined"
 				:scroll="{ x: 1000 }"
 			>
 				<div slot="UseStatus" slot-scope="row">
@@ -137,7 +136,7 @@
 			@cancel="transferHandleCancel"
 			@ok="transferHandleOk"
 		>
-			<a-form :form="transferForm" :model="transferInfo" ref="transferForm">
+			<!-- <a-form :form="transferForm" :model="transferInfo" ref="transferForm">
 				<a-form-item v-bind="formItemLayout" label="转让目标">
 					<a-select
 						v-model="transferInfo.tkInfo"
@@ -152,12 +151,55 @@
 						}}</a-select-option>
 					</a-select>
 				</a-form-item>
-
+				<a-form-item v-bind="formItemLayout" label="可转数量：">
+					<a-input :value="myCardCodeCount" autocomplete="off" read-only />
+					
+				</a-form-item>
 				<a-form-item v-bind="formItemLayout" label="本次转让数量">
+					<a-input v-model="transferInfo.transferCount" autocomplete="off" />
+				
+				</a-form-item>
+			</a-form>
+		</a-modal> -->
+
+			<a-form :form="transferForm" :model="transferInfo" ref="transferForm">
+				<a-form-item v-bind="formItemLayout" label="可转数量：">
+					<a-input :value="myCanTransferCount" autocomplete="off" read-only />
+				</a-form-item>
+				<a-form-item v-bind="formItemLayout" label="转让目标">
+					<a-select
+						placeholder="请选择转让目标"
+						allowClear
+						showSearch
+						:filter-option="filterUser"
+						labelInValue
+						v-decorator="[
+							'tkInfo',
+							{
+								rules: [{ required: true, message: '请选择转让目标' }],
+							},
+						]"
+					>
+						<a-select-option v-for="d in userList" :key="d.Id">{{
+							d.UserName
+						}}</a-select-option>
+					</a-select>
+				</a-form-item>
+
+				<a-form-item v-bind="formItemLayout" label="转让数量">
+					<!-- <a-input v-model="transferInfo.transferCount" autocomplete="off" /> -->
 					<a-input
-						v-model="transferInfo.transferCount"
+						placeholder="转让数量"
 						autocomplete="off"
-						read-only
+						v-decorator="[
+							'transferCount',
+							{
+								rules: [
+									{ required: true, message: '请输入转让数量' },
+									{ pattern: /^[0-9]*$/g, message: '转让数量必须为数字' },
+								],
+							},
+						]"
 					/>
 				</a-form-item>
 			</a-form>
@@ -284,6 +326,7 @@ export default {
 			},
 			qrVisible: false,
 			myCardCodeCount: 0,
+			myCanTransferCount: 0,
 			currentUserName: '',
 			selectedRowKeys: [],
 		}
@@ -363,14 +406,9 @@ export default {
 			let v = this
 			GetRechargeCode()
 				.then((res) => {
-					if (res.IsSuccess) {
-						this.myCardCodeCount = res.Data.CardCodeCount
-						this.currentUserName = res.Data.UserName
-						this.isSupplier = res.Data.IsSupplier
-						this.isAdmin = res.Data.IsAdmin
-					} else {
-						tipMessage.error('获取激活码失败')
-					}
+					this.myCardCodeCount = res.Data.CardCodeCount
+					this.myCanTransferCount = res.Data.CanTransferCount
+					this.currentUserName = res.Data.UserName
 				})
 				.catch(() => {})
 		},
@@ -386,43 +424,47 @@ export default {
 		},
 		transferHandleOk() {
 			console.log('tkId:', this.transferInfo.tkId)
-			if (!this.transferInfo.tkInfo || this.transferInfo.tkInfo.key <= 0) {
-				tipMessage.error('请选择转让目标')
-				return
-			}
-
-			let v = this //保存外层this对象
-			this.$confirm({
-				title: '提示',
-				content: `确定将【${v.transferInfo.transferCount}】个激活码转让给用户【${v.transferInfo.tkInfo.label}】?`,
-				okText: '确定',
-				onOk() {
-					v.transferConfirmLoading = true
-					var tkId = parseInt(v.transferInfo.tkInfo.key)
-					var ids = v.transferList.map(function (row) {
-						return row.Id
-					})
-					var params = {
-						tkId: tkId,
-						ids: ids,
-					}
-					BatchTransferCardCode(params)
-						.then((res) => {
-							if (res.IsSuccess) {
-								v.query()
-								v.getCardCode()
-								v.transferHandleCancel()
-								tipMessage.success('转让成功')
-							} else {
-								tipMessage.error('转让失败:' + res.Msg)
+			// if (!this.transferInfo.tkInfo || this.transferInfo.tkInfo.key <= 0) {
+			// 	tipMessage.error('请选择转让目标')
+			// 	return
+			// }
+			this.transferForm.validateFieldsAndScroll((err, values) => {
+				console.log(values)
+				let tkInfo = values.tkInfo
+				if (!err) {
+					let v = this //保存外层this对象
+					this.$confirm({
+						title: '提示',
+						content: `确定将【${values.transferCount}】个激活码转让给用户【${tkInfo.label}】?`,
+						okText: '确定',
+						onOk() {
+							v.transferConfirmLoading = true
+							var tkId = parseInt(tkInfo.key)
+							// var ids = v.transferList.map(function (row) {
+							// 	return row.Id
+							// })
+							var params = {
+								tkId: tkId,
+								TransferCount: values.transferCount * 1,
 							}
-						})
-						.catch(() => {})
-				},
-				onCancel() {},
+							BatchTransferCardCode(params)
+								.then((res) => {
+									v.query()
+									v.getCardCode()
+									v.transferHandleCancel()
+									tipMessage.success('转让成功')
+									v.transferConfirmLoading = false
+								})
+								.catch(() => {
+									v.transferConfirmLoading = false
+								})
+						},
+						onCancel() {
+							v.transferConfirmLoading = false
+						},
+					})
+				}
 			})
-
-			this.transferConfirmLoading = false
 		},
 		getUserList() {
 			var params = {
@@ -467,9 +509,9 @@ export default {
 		},
 	},
 	created() {
+		this.getLoginUserInfo()
 		this.getCardCode()
 		this.getUserList()
-		this.getLoginUserInfo()
 	},
 }
 </script>
