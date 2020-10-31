@@ -296,7 +296,7 @@ export default {
 				},
 				onCancel() {
 					//tipMessage.error('ok')
-					this.tableLoading = false
+					$this.tableLoading = false
 				},
 			})
 		},

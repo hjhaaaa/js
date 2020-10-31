@@ -15,8 +15,10 @@
 				<template slot="editRemarks" slot-scope="text, row">
 					<editable-cell
 						:text="text"
-						@change="remarksChange(row, 'Remarks', $event)"
+						placeholder="请输入备注"
+						@change="remarksChange(row, 'Remarks', $event, 1)"
 						editTitle="编辑备注"
+						maxLength="50"
 					/>
 				</template>
 				<div slot="opSwitchStatus" class="wxOp" slot-scope="row">
@@ -90,9 +92,11 @@
 			>
 				<template slot="editRemarks" slot-scope="text, row">
 					<editable-cell
+						ref=""
 						:text="text"
-						@change="remarksChange(row, 'Remarks', $event)"
+						@change="remarksChange(row, 'Remarks', $event, 2)"
 						editTitle="编辑备注"
+						maxLength="50"
 					/>
 				</template>
 
@@ -572,11 +576,12 @@ export default {
 			this.form.pageNum = p
 			this.query()
 		},
-		remarksChange(row, key, value) {
+		remarksChange(row, key, value, type) {
 			if (!value) return
 			if (value.length > 50) {
 				tipMessage.error('备注不能超过50个字')
 				//this.$refs.SurveyForm.callApi()
+				this.$refs.userWithdrawalCom.query()
 				return
 			}
 			UpdateUserRemark(row.Id, value)

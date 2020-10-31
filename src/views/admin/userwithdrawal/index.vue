@@ -93,6 +93,7 @@
 			errorMessage="驳回原因不能为空"
 			placeholder="请输入驳回原因"
 			@ok="promptOk"
+			@cancel="promptCancel"
 		></PromptDialogCom>
 	</div>
 </template>
@@ -290,13 +291,19 @@ export default {
 			UserWithdrawalReviewReject(this.reviewId, value)
 				.then((res) => {
 					this.query()
-					this.tableLoading = false
-					this.promptVisible = false
-					this.reviewId = undefined
+					// this.tableLoading = false
+					// this.promptVisible = false
+					// this.reviewId = undefined
+					this.promptCancel();
 				})
 				.catch(() => {
 					this.tableLoading = false
 				})
+		},
+		promptCancel() {
+			this.tableLoading = false
+			this.promptVisible = false
+			this.reviewId = undefined
 		},
 	},
 	created() {

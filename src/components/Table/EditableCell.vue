@@ -1,7 +1,14 @@
 <template>
 	<div class="editable-cell">
 		<div v-if="editable" class="editable-cell-input-wrapper">
-			<a-input :value="value" @change="handleChange" @pressEnter="check" />
+			<a-input
+				:value="value"
+				@change="handleChange"
+				@pressEnter="check"
+				allowClear="true"
+				:maxLength="maxLength"
+				autocomplete="off"
+			/>
 			<!-- <a-textarea :value="value" @change="handleChange" @pressEnter="check" :auto-size="{ minRows: 3, maxRows: 6 }" /> -->
 			<!-- <a-icon type="check" class="editable-cell-icon-check" @click="check" /> -->
 			<div class="action">
@@ -34,6 +41,10 @@ export default {
 	props: {
 		text: String,
 		editTitle: String,
+		maxLength: {
+			type: Number,
+			default: 50,
+		},
 		openEdit: function () {
 			editable = true
 		},
@@ -66,45 +77,43 @@ export default {
 }
 </script>
 <style>
+.editable-cell {
+	position: relative;
+}
+.editable-cell-input-wrapper input {
+	width: 100%;
+}
+.editable-cell-text-wrapper {
+	padding: 5px 1px 5px 5px;
+}
 
-	.editable-cell {
-		position: relative;
-	}
-	.editable-cell-input-wrapper input {
-		width: 100%;
-	}
-	.editable-cell-text-wrapper {
-		padding: 5px 1px 5px 5px;
-	}
+.editable-cell-icon,
+.editable-cell-icon-check {
+	cursor: pointer;
+}
 
-	.editable-cell-icon,
-	.editable-cell-icon-check {
-		cursor: pointer;
-	}
+.editable-cell-icon {
+	line-height: 18px;
+	font-size: 18px;
+	display: inline-block;
+}
 
-	.editable-cell-icon {
-		line-height: 18px;
-		font-size: 18px;
-		display: inline-block;
-	}
+.editable-cell-icon:hover,
+.editable-cell-icon-check:hover {
+	color: #108ee9;
+}
 
-	.editable-cell-icon:hover,
-	.editable-cell-icon-check:hover {
-		color: #108ee9;
-	}
-
-	.editable-cell .editable-add-btn {
-		margin-bottom: 8px;
-	}
-	.editable-cell .aaa {
-		display: inline-block;
-		padding: 5px 24px 5px 5px;
-		height: 17px;
-		box-sizing: border-box;
-		width: 80%;
-	}
-	.action {
-		text-align: right;
-	}
-
+.editable-cell .editable-add-btn {
+	margin-bottom: 8px;
+}
+.editable-cell .aaa {
+	display: inline-block;
+	padding: 5px 24px 5px 5px;
+	height: 17px;
+	box-sizing: border-box;
+	width: 80%;
+}
+.action {
+	text-align: right;
+}
 </style>
