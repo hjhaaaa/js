@@ -18,7 +18,7 @@
 						placeholder="请输入备注"
 						@change="remarksChange(row, 'Remarks', $event, 1)"
 						editTitle="编辑备注"
-						maxLength="50"
+						:maxLength="remarksMaxLength"
 					/>
 				</template>
 				<div slot="opSwitchStatus" class="wxOp" slot-scope="row">
@@ -96,7 +96,7 @@
 						:text="text"
 						@change="remarksChange(row, 'Remarks', $event, 2)"
 						editTitle="编辑备注"
-						maxLength="50"
+						:maxLength="remarksMaxLength"
 					/>
 				</template>
 
@@ -168,11 +168,13 @@
 				</a-form-item>
 
 				<a-form-item
+					
 					v-bind="formItemLayout"
 					label="淘宝授权账号"
 					prop="TaoBaoSessionId"
 				>
 					<a-select
+					ref="sltTaoBaoSessionId"
 						placeholder="请选择淘宝授权账号"
 						v-decorator="addRules.TaoBaoSessionId"
 					>
@@ -187,6 +189,7 @@
 					prop="TaoBaoPid"
 				>
 					<a-input
+						ref="tbTaoBaoPid"
 						placeholder="请输入淘宝联盟Pid"
 						autocomplete="off"
 						v-decorator="addRules.TaoBaoPid"
@@ -211,6 +214,7 @@
 					prop="PddSessionId"
 				>
 					<a-select
+						ref="sltPddSessionId"
 						placeholder="请选择多多进宝账号"
 						v-decorator="addRules.PddSessionId"
 					>
@@ -222,6 +226,7 @@
 
 				<a-form-item v-bind="formItemLayout" label="多多进宝Pid" prop="PddPid">
 					<a-input
+						ref="tbPddSessionId"
 						placeholder="请输入多多进宝Pid"
 						autocomplete="off"
 						v-decorator="addRules.PddPid"
@@ -304,6 +309,7 @@ export default {
 	},
 	data() {
 		return {
+			remarksMaxLength: 50,
 			statusOptions: [
 				{ label: '启用', value: 1 },
 				{ label: '禁用', value: 0 },
@@ -364,8 +370,8 @@ export default {
 								message: '密码不能为空!',
 							},
 							{
-								pattern: /^[a-zA-Z0-9]{4,16}$/g,
-								message: '密码必须为4-16位的字母数字',
+								pattern: /^[a-zA-Z0-9]{6,18}$/g,
+								message: '密码必须为6-18位的字母数字',
 							},
 						],
 					},
@@ -731,15 +737,50 @@ export default {
 			this.aform.validateFieldsAndScroll((err, values) => {
 				if (!err) {
 					console.log('addform values: ', values)
+					if (values.TaoBaoSessionId > 0) {
+						if (values.TaoBaoPid == null || values.TaoBaoPid.length <= 0) {
+							this.$nextTick(() => {
+								this.$refs.tbTaoBaoPid.focus()
+							})
+							tipMessage.error('请输入淘宝PId')
+							return
+						}
+					}
+					//检查淘宝授权
+					if (values.TaoBaoPid) {
+						if (!values.TaoBaoSessionId ||values.TaoBaoSessionId <= 0) {
+							this.$nextTick(() => {
+								this.$refs.sltTaoBaoSessionId.focus() //输入框默认获取焦点
+							})
+							tipMessage.error('请选择淘宝授权账号')
+							return
+						}
+					}
+
+					if (values.PddSessionId > 0) {
+						if (values.PddPid == null || values.PddPid.length <= 0) {
+							this.$nextTick(() => {
+								this.$refs.tbPddSessionId.focus()
+							})
+							tipMessage.error('请输入多多进宝Pid')
+							return
+						}
+					}
+					//检查pdd授权
+					if (values.PddPid) {
+						if (!values.PddSessionId || values.PddSessionId <= 0) {
+							this.$nextTick(() => {
+								this.$refs.sltPddSessionId.focus()
+							})
+							tipMessage.error('请选择多多进宝授权账号')
+							return
+						}
+					}
 					CreatUser(values)
 						.then((res) => {
-							if (res.IsSuccess) {
-								tipMessage.success('用户创建成功')
-								this.query()
-								this.visible = false
-							} else {
-								tipMessage.error(res.Msg)
-							}
+							tipMessage.success('用户创建成功')
+							this.query()
+							this.visible = false
 						})
 						.catch(() => {
 							this.tableLoading = false

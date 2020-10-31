@@ -14,6 +14,7 @@
 				prop="TaoBaoSessionId"
 			>
 				<a-select
+					ref="sltTaoBaoSessionId"
 					placeholder="请选择淘宝授权账号"
 					v-model="configModel.TaoBaoSessionId"
 				>
@@ -24,6 +25,7 @@
 			</a-form-item>
 			<a-form-item v-bind="formItemLayout" label="淘宝联盟Pid" prop="TaoBaoPid">
 				<a-input
+					ref="tbTaoBaoPid"
 					placeholder="淘宝联盟Pid"
 					v-model="configModel.TaoBaoPid"
 					autocomplete="off"
@@ -44,6 +46,7 @@
 				prop="PddSessionId"
 			>
 				<a-select
+					ref="sltPddSessionId"
 					v-model="configModel.PddSessionId"
 					placeholder="请选择多多进宝账号"
 				>
@@ -55,6 +58,7 @@
 
 			<a-form-item v-bind="formItemLayout" label="多多进宝Pid" prop="PddPid">
 				<a-input
+					ref="tbPddSessionId"
 					placeholder="多多进宝Pid"
 					v-model="configModel.PddPid"
 					autocomplete="off"
@@ -92,7 +96,7 @@
 	</a-modal>
 </template>
 <script>
-import notification from 'ant-design-vue/es/notification'
+import tipMessage from '@/utils/messageUtil.js'
 import {
 	SetSendGroupBasicsConfig,
 	SetUserBasicsConfig,
@@ -139,6 +143,7 @@ export default {
 				Remarks: '',
 			},
 			isInit: false,
+			rules: [],
 		}
 	},
 	methods: {
@@ -223,10 +228,7 @@ export default {
 						this.$message.success('保存成功')
 						this.closeBasicsConfig()
 					} else {
-						notification.error({
-							message: '错误',
-							description: '保存出错:' + res.Data,
-						})
+						tipMessage.error('保存出错:' + res.Data)
 					}
 					this.confirmLoading = false
 				})
@@ -243,10 +245,7 @@ export default {
 						this.$message.success('保存成功')
 						this.closeBasicsConfig()
 					} else {
-						notification.error({
-							message: '错误',
-							description: '保存出错:' + res.Data,
-						})
+						tipMessage.error('保存出错:' + res.Data)
 					}
 					this.confirmLoading = false
 				})
@@ -263,10 +262,7 @@ export default {
 						this.$message.success('保存成功')
 						this.closeBasicsConfig()
 					} else {
-						notification.error({
-							message: '错误',
-							description: '保存出错:' + res.Data,
-						})
+						tipMessage.error('保存出错:' + res.Data)
 					}
 					this.confirmLoading = false
 				})
@@ -275,6 +271,55 @@ export default {
 				})
 		},
 		handleOk() {
+			console.log(this.configModel)
+			//检查淘宝pid
+			if (this.configModel.TaoBaoSessionId > 0) {
+				if (
+					this.configModel.TaoBaoPid == null ||
+					this.configModel.TaoBaoPid.length <= 0
+				) {
+					this.$nextTick(() => {
+						this.$refs.tbTaoBaoPid.focus() //输入框默认获取焦点
+					})
+					tipMessage.error('请输入淘宝PId')
+					return
+				}
+			}
+			//检查淘宝授权
+			if (this.configModel.TaoBaoPid) {
+				if (this.configModel.TaoBaoSessionId <= 0) {
+					this.$nextTick(() => {
+						this.$refs.sltTaoBaoSessionId.focus() //输入框默认获取焦点
+					})
+					tipMessage.error('请选择淘宝授权账号')
+					return
+				}
+			}
+			
+			//检查pddPid
+			if (this.configModel.PddSessionId > 0) {
+				if (
+					this.configModel.PddPid == null ||
+					this.configModel.PddPid.length <= 0
+				) {
+					this.$nextTick(() => {
+						this.$refs.tbPddSessionId.focus()
+					})
+					tipMessage.error('请输入多多进宝Pid')
+					return
+				}
+			}
+			//检查pdd授权
+			if (this.configModel.PddPid) {
+				if (this.configModel.PddSessionId <= 0) {
+					this.$nextTick(() => {
+						this.$refs.sltPddSessionId.focus()
+					})
+					tipMessage.error('请选择多多进宝授权账号')
+					return
+				}
+			}
+
 			this.confirmLoading = true
 			if (this.configType == 1) {
 				this.setUser()
