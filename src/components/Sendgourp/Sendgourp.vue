@@ -213,7 +213,7 @@ export default {
 						.then((res) => {
 							if (res.IsSuccess) {
 								v.querySendGroup()
-								tipMessage.success('删除工位成功')
+								tipMessage.success('删除成功')
 							} else {
 								tipMessage.error('操作失败:' + res.Msg)
 							}

@@ -17,7 +17,8 @@
 					></a-select>
 				</a-form-item>
 				<a-form-item label="微信状态">
-					<a-select style="width: 100px"
+					<a-select
+						style="width: 100px"
 						v-model="form.WxStatus"
 						:options="wxStatusOptions"
 					></a-select>
@@ -77,10 +78,14 @@
 						<p>{{ row.OffLineTime || ' ' }}</p>
 					</div>
 				</div>
-				<div slot="opSwitchStatus" class="wxOp" slot-scope="row">
+				<div slot="opSwitchStatus" slot-scope="row">
 					{{ !!row.SwitchStatus ? '开启' : '关闭' }}
 				</div>
-				primary
+				<div class="table operation" slot="actionSlot" slot-scope="row">
+					<a-button type="primary" @click="updateWorkstationDevice(row)" size="small"
+						>更换设备</a-button
+					>
+				</div>
 			</a-table>
 			<div style="margin-top: 15px">
 				<a-pagination
@@ -100,7 +105,10 @@
 <script>
 import moment from 'moment'
 import tipMessage from '@/utils/messageUtil.js'
-import { WorkstationList } from '@/api/admin/workstationApi.js'
+import {
+	WorkstationList,
+	UpdateWorkstationDevice,
+} from '@/api/admin/workstationApi.js'
 import { constants } from 'zlib'
 import { callbackify, log } from 'util'
 import { deeppink } from 'color-name'
@@ -167,7 +175,7 @@ export default {
 					width: '180px',
 					scopedSlots: { customRender: 'wxStatus' },
 				},
-				
+
 				{
 					title: '工位状态',
 					width: '100px',
@@ -183,7 +191,8 @@ export default {
 					title: '所在服务器',
 					width: '150px',
 					dataIndex: 'Ip',
-				},{
+				},
+				{
 					title: '充值类型',
 					width: '150px',
 					scopedSlots: { customRender: 'StationRechageTypeSlot' },
@@ -193,11 +202,11 @@ export default {
 					width: '180px',
 					dataIndex: 'CTime',
 				},
-				// {
-				// 	title: '操作',
-				// 	width: '200px',
-				// 	scopedSlots: { customRender: 'opti' },
-				// },
+				{
+					title: '操作',
+					width: '200px',
+					scopedSlots: { customRender: 'actionSlot' },
+				},
 			],
 			visible: false, //添加用户
 			data: [],
@@ -245,6 +254,18 @@ export default {
 				return ' '
 			}
 			return moment(time).format('YYYY-MM-DD')
+		},
+		updateWorkstationDevice(row) {
+			this.tableLoading = true
+			UpdateWorkstationDevice(row.Id)
+				.then((res) => {
+					this.query();
+					tipMessage.success('更换成功')
+					this.tableLoading = false
+				})
+				.catch(() => {
+					this.tableLoading = false
+				})
 		},
 	},
 	created() {
