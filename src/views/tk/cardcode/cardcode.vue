@@ -99,7 +99,7 @@
 					<div>
 						{{ row.CardCode }}
 						<!-- <input class="tableCode" type="text" :value="row.CardCode" /> -->
-						<a type="link" @click="doCopy(row)">复制</a>
+						<a v-if="row.TransferString!='可转让'" type="link" @click="doCopy(row)">复制</a>
 					</div>
 				</div>
 			</a-table>
@@ -276,32 +276,27 @@ export default {
 				},
 				{
 					title: '激活码',
-					Key: 'CardCode',
 					width: '300px',
 					scopedSlots: { customRender: 'CardCode' },
 				},
 				{
 					title: '购买时间',
-					Key: 'CTime',
 					width: '180px',
 					dataIndex: 'CTime',
 				},
 				{
 					title: '使用状态',
-					key: 'UseStatus',
 					width: '100px',
 					scopedSlots: { customRender: 'UseStatus' },
 				},
 				{
 					title: '使用时间',
-					Key: 'UseTime',
 					width: '180px',
 					dataIndex: 'UseTime',
 				},
 
 				{
 					title: '使用项目',
-					key: 'UseType',
 					width: '150px',
 					scopedSlots: { customRender: 'UseType' },
 				},

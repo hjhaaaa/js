@@ -7,6 +7,7 @@
 		@ok="handleOk"
 		@cancel="handleCancel"
 	>
+		<h3>PID优先级：群PID>工位PID>用户PID>淘客PID</h3>
 		<a-form :form="form" :model="configModel" ref="form">
 			<a-form-item
 				v-bind="formItemLayout"
@@ -295,7 +296,7 @@ export default {
 					return
 				}
 			}
-			
+
 			//检查pddPid
 			if (this.configModel.PddSessionId > 0) {
 				if (

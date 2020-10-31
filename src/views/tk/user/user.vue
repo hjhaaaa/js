@@ -150,6 +150,7 @@
 			@cancel="addHandleCancel"
 		>
 			<a-form :form="aform" :model="addInfo" :rules="addRules" ref="aform">
+				<h3>PID优先级：群PID>工位PID>用户PID>淘客PID</h3>
 				<a-form-item v-bind="formItemLayout" label="用户名" prop="userName">
 					<a-input placeholder="登录用户名" v-decorator="addRules.userName" />
 				</a-form-item>
@@ -168,13 +169,12 @@
 				</a-form-item>
 
 				<a-form-item
-					
 					v-bind="formItemLayout"
 					label="淘宝授权账号"
 					prop="TaoBaoSessionId"
 				>
 					<a-select
-					ref="sltTaoBaoSessionId"
+						ref="sltTaoBaoSessionId"
 						placeholder="请选择淘宝授权账号"
 						v-decorator="addRules.TaoBaoSessionId"
 					>
@@ -655,6 +655,9 @@ export default {
 						}
 
 						tipMessage.success('创建工位成功')
+						this.$router.push({
+							path: '/user/workstation?userName=' + row.UserName,
+						})
 					} else {
 						tipMessage.error(res.msg)
 					}
@@ -748,7 +751,7 @@ export default {
 					}
 					//检查淘宝授权
 					if (values.TaoBaoPid) {
-						if (!values.TaoBaoSessionId ||values.TaoBaoSessionId <= 0) {
+						if (!values.TaoBaoSessionId || values.TaoBaoSessionId <= 0) {
 							this.$nextTick(() => {
 								this.$refs.sltTaoBaoSessionId.focus() //输入框默认获取焦点
 							})

@@ -165,9 +165,10 @@
 					<a-radio-group
 						v-model="rechargeInfo.RechageType"
 						@change="rechageTypeChange"
+						:options="rechargeOptions"
 					>
-						<a-radio :value="1">基础版 有效期30天 10个发单群</a-radio>
-						<a-radio :value="2">增强版 有效期30天 60个发单群</a-radio>
+						<!-- <a-radio :value="1">基础版 有效期30天 10个发单群</a-radio>
+						<a-radio :value="2">增强版 有效期30天 60个发单群</a-radio> -->
 					</a-radio-group>
 				</a-form-item>
 				<a-form-item v-bind="formItemLayout" label="需要卡密数">
@@ -273,6 +274,14 @@ export default {
 				{ label: '未充值', value: 0 },
 				{ label: '普通版', value: 1 },
 				{ label: '增强版', value: 2 },
+			],
+			rechargeOptionsAll: [
+				{ label: '基础版 有效期30天 10个发单群', value: 1 },
+				{ label: '增强版 有效期30天 60个发单群', value: 2 },
+			],
+			rechargeOptions: [
+				{ label: '基础版 有效期30天 10个发单群', value: 1 },
+				{ label: '增强版 有效期30天 60个发单群', value: 2 },
 			],
 			aform: this.$form.createForm(this),
 			rechargeForm: this.$form.createForm(this),
@@ -477,7 +486,7 @@ export default {
 			let v = this
 			GetRechargeCode()
 				.then((res) => {
-					console.log('rechargeInfo', v.rechargeInfo)
+					//console.log('rechargeInfo', v.rechargeInfo)
 
 					if (res.IsSuccess) {
 						v.rechargeInfo.WorkstationId = row.Id
@@ -488,6 +497,26 @@ export default {
 							'充值用户【' + row.UserName + '】工位【' + row.Id + '】'
 						this.checkNeedCardCodeCount()
 						this.rechargeVisible = true
+
+						// 		{ label: '基础版 有效期30天 10个发单群', value: 1 },
+						// { label: '增强版 有效期30天 60个发单群', value: 2 },
+						if (row.StationRechageType == 1) {
+							this.rechargeOptions.length = 0
+							this.rechargeOptions.push({
+								label: '基础版 有效期30天 10个发单群',
+								value: 1,
+							})
+							this.rechargeInfo.RechageType = 1
+						} else if (row.StationRechageType == 2) {
+							this.rechargeOptions.length = 0
+							this.rechargeOptions.push({
+								label: '增强版 有效期30天 60个发单群',
+								value: 2,
+							})
+							this.rechargeInfo.RechageType = 2
+						} else {
+							this.rechargeOptions = this.rechargeOptionsAll
+						}
 					} else {
 						tipMessage.error('获取卡密失败')
 					}
@@ -642,7 +671,9 @@ export default {
 								this.wxloginVisible = true
 								this.$nextTick(() => {
 									this.creatQrCode(res.Data.newUrl)
-									this.canloginSecond = moment(new Date().getTime() + 180 * 1000).format('HH:mm:ss')
+									this.canloginSecond = moment(
+										new Date().getTime() + 180 * 1000
+									).format('HH:mm:ss')
 									// this.canloginSecond = 180
 									// this.doCountDown()
 									// this.countDownIsRun = true
@@ -733,10 +764,9 @@ export default {
 					var nowTime = moment()
 					var workEndTime = moment(row.EndTime)
 					var duration = moment.duration(workEndTime.diff(nowTime))
-					console.log('duration', duration)
+
 					isCan = duration._data.days > 0
 				}
-				console.log('isCan', isCan)
 			}
 			return isCan
 		},
