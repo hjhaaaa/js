@@ -26,7 +26,7 @@
 					/>
 				</a-form-item>
 				<a-form-item label="结束日期">
-					<a-date-picker format="YYYY-MM-DD" placeholder="结束日期" />
+					<a-date-picker v-model="form.endDate" format="YYYY-MM-DD" placeholder="结束日期" />
 				</a-form-item>
 				<a-form-item>
 					<a-button icon="search" @click="handleSearch">查询</a-button>

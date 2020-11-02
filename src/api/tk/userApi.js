@@ -23,13 +23,12 @@ export function GetLoginUserInfo() {
 // 登录代理
 export function dlLogin(params) {
     return request.post('/UserLogin/TkLoginAgent', params)
-    // return request({
-    //     url: '/UserLogin/RegesterCode',
-    //     method: 'post',
-    //     params
-    // })
 }
 //设置用户密码
 export function SetUserPassword(id, pwd) {
     return request.post('/user/SetUserPassword', { Id: id, Password: pwd })
+}
+//供应商淘客列表
+export function SupplierTkList(params) {
+    return request.post('/user/SupplierTkList', params)
 }

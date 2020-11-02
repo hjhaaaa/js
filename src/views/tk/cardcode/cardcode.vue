@@ -224,7 +224,7 @@ import {
 	GetRechargeCode,
 	BatchTransferCardCode,
 } from '@/api/tk/cardCodeApi.js'
-import { UserList, GetLoginUserInfo } from '@/api/tk/userApi.js'
+import { SupplierTkList, GetLoginUserInfo } from '@/api/tk/userApi.js'
 export default {
 	name: 'cardcode',
 	components: {},
@@ -465,9 +465,9 @@ export default {
 			var params = {
 				pageNum: 1,
 				pageSize: 10000,
-				IsHasSelf: true,
+				HasSelf: true,
 			}
-			UserList(params)
+			SupplierTkList(params)
 				.then((res) => {
 					if (res.Data.length > 0) {
 						// var tkList=[];
