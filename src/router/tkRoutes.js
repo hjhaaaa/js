@@ -5,6 +5,10 @@ import Router from 'vue-router'
 
 const whiteRoutes = [
   {
+    path: '*',
+    redirect: '/error/404',
+  },
+  {
     path: '/login',
     name: 'login',
     component: () => import('@/views/auth/login')
