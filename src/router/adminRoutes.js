@@ -37,6 +37,18 @@ const routes = [
     ]
   },
   {
+    path: '/cardcode',
+    name: 'cardcodeorder',
+    component: AdminLayout,
+    children: [
+      {
+        path: 'cardcodeorder',
+        name: '',
+        component: () => import(/* webpackChunkName: "login" */ '@/views/admin/cardcode/cardcodeorder.vue')
+      }
+    ]
+  },
+  {
     path: '/workstation',
     name: 'workstationManage',
     component: AdminLayout,
