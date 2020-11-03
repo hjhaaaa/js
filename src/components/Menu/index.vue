@@ -191,6 +191,7 @@ export default {
 	}
   .ant-menu-inline .ant-menu-item{
     margin-top: 0px;
+    margin-bottom: 0px;
   }
 }
 </style>
