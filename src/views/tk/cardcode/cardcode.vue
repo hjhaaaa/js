@@ -99,7 +99,12 @@
 					<div>
 						{{ row.CardCode }}
 						<!-- <input class="tableCode" type="text" :value="row.CardCode" /> -->
-						<a v-if="row.TransferString!='可转让'" type="link" @click="doCopy(row)">复制</a>
+						<a
+							v-if="row.TransferString != '可转让'"
+							type="link"
+							@click="doCopy(row)"
+							>复制</a
+						>
 					</div>
 				</div>
 			</a-table>
@@ -409,6 +414,12 @@ export default {
 		},
 		openTransfer() {
 			this.transferVisible = true
+			this.transferForm.setFieldsValue({
+			
+				tkInfo: undefined,
+				transferCount: 0,
+
+			})
 		},
 		transferHandleCancel() {
 			this.transferInfo.tkId = undefined
