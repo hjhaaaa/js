@@ -1,12 +1,29 @@
 import Vue from 'vue'
-import { AdminLayout } from '@/components/Layout'
+import { AdminLayout, ViewLayout } from '@/components/Layout'
 import Router from 'vue-router'
 
 const whiteRoutes = [
   {
+    path: '*',
+    redirect: '/error/404',
+  },
+  {
     path: '/login',
     name: 'login',
     component: () => import(/* webpackChunkName: "login" */ '@/views/auth/adminlogin')
+  },
+  {
+    path: '/error',
+    name: 'error',
+    redirect: '404',
+    component: ViewLayout,
+    children: [
+      {
+        path: '404',
+        name: '404',
+        component: () => import(/* webpackChunkName: "404" */ '@/views/error/404')
+      }
+    ]
   }
 ]
 

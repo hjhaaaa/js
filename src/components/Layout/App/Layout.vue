@@ -11,7 +11,7 @@
         @close="() => this.collapsed = false"
         wrapClassName="drawer-sider"
       >
-        <layout-sider :collapsed="false" :collapsible="false" @close="() => this.collapsed = false"></layout-sider>
+        <layout-sider :collapsed="false" :collapsible="false" @close="() => this.collapsed = false" :type="type"></layout-sider>
       </a-drawer>
     </template>
     <template v-if="!isMobile && layoutMode === 'side'">
@@ -68,6 +68,9 @@ export default {
           ? '80px'
           : '256px'
     }
+  },
+  created(){
+    console.log('1-type', this.type)
   },
   watch: {
     device: {

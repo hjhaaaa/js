@@ -5,14 +5,18 @@ import Router from 'vue-router'
 
 const whiteRoutes = [
   {
+    path: '*',
+    redirect: '/error/404',
+  },
+  {
     path: '/login',
     name: 'login',
-    component: () => import(/* webpackChunkName: "login" */ '@/views/auth/login')
+    component: () => import('@/views/auth/login')
   },
   {
     path: '/regester',
     name: 'regester',
-    component: () => import(/* webpackChunkName: "login" */ '@/views/auth/regester')
+    component: () => import('@/views/auth/regester')
   },
   {
     path: '/error',
@@ -39,7 +43,7 @@ const routes = [
       {
         path: 'home',
         name: 'home',
-        component: () => import(/* webpackChunkName: "login" */ '@/views/tk/home')
+        component: () => import('@/views/tk/home')
       },
     ]
   },
@@ -51,22 +55,26 @@ const routes = [
       {
         path: 'manage',
         name: '',
-        component: () => import(/* webpackChunkName: "login" */ '@/views/tk/user/user.vue')
+        component: () => import('@/views/tk/user/user.vue')
       },
       {
         path: 'workstation',
         name: 'workstation',
-        component: () => import(/* webpackChunkName: "login" */ '@/views/tk/user/workstation.vue'),
+        component: () => import('@/views/tk/user/workstation.vue'),
         params: {
           userName: ''
         }
-      },{
+      }, {
         path: 'cardcoderebate',
         name: 'cardcoderebate',
-        component: () => import(/* webpackChunkName: "login" */ '@/views/tk/user/cardcoderebate.vue'),
+        component: () => import('@/views/tk/user/cardcoderebate.vue'),
         params: {
           userName: ''
         }
+      }, {
+        path: 'suppliertk',
+        name: 'suppliertk',
+        component: () => import('@/views/tk/user/suppliertk.vue'),
       }
     ]
   },
@@ -78,7 +86,7 @@ const routes = [
       {
         path: 'manage',
         name: '',
-        component: () => import(/* webpackChunkName: "login" */ '@/views/tk/cardcode/cardcode.vue')
+        component: () => import('@/views/tk/cardcode/cardcode.vue')
       },
     ]
   },
@@ -90,7 +98,7 @@ const routes = [
       {
         path: 'index',
         name: '',
-        component: () => import(/* webpackChunkName: "login" */ '@/views/tk/collection/index.vue')
+        component: () => import('@/views/tk/collection/index.vue')
       },
     ]
   },
@@ -102,7 +110,7 @@ const routes = [
       {
         path: 'manage',
         name: '',
-        component: () => import(/* webpackChunkName: "login" */ '@/views/tk/authorize/index.vue')
+        component: () => import('@/views/tk/authorize/index.vue')
       },
     ]
   },
@@ -114,7 +122,7 @@ const routes = [
       {
         path: 'manage',
         name: '',
-        component: () => import(/* webpackChunkName: "login" */ '@/views/tk/groupConfig/index.vue')
+        component: () => import('@/views/tk/groupConfig/index.vue')
       },
     ]
   },
@@ -126,7 +134,7 @@ const routes = [
       {
         path: 'manage',
         name: '',
-        component: () => import(/* webpackChunkName: "login" */ '@/views/tk/classifygroup/classifygroup.vue')
+        component: () => import('@/views/tk/classifygroup/classifygroup.vue')
       },
     ]
   },

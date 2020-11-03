@@ -9,7 +9,7 @@
           :type="item.Id == gwSelect.Id ? 'primary' : ''"
           @click="selectGw(item)"
           v-for="(item, index) in gwList" 
-          :key="index">{{item.Id}}</a-button>
+          :key="index">{{item.Id + (item.RNamme ? (`(${item.RNamme})`) : '')}}</a-button>
 
         <a href="javascript:;" class="card1-more" @click="gwIsAll = !gwIsAll">
           <a-icon v-if="!gwIsAll" type="down" />
@@ -169,12 +169,34 @@ export default {
   },
   created() {
     this.getGwList()
-    this.localGwId = Vue.ss.get('GwId') || 0
+    this.localGwId = Vue.ls.get('GwId') || 0
   },
   methods: {
     getGwList(){
       agentList().then(res => {
         this.username = res.Data.UserName
+        const regd = /[^\x00-\xff]/; // 双字节的字符
+        res.Data.WorkstationList.forEach((value) => {
+          let n_length = 0
+          let n_index
+          for(let i=0;i<value.Remarks.length;i++){
+            console.log(value.Remarks[i])
+            if(regd.test(value.Remarks[i])){
+              n_length += 2
+            }else{
+              n_length++
+            }
+            if(n_length > 8){
+              n_index = i;
+              break;
+            }
+          }
+          if(n_index){
+            value.RNamme = value.Remarks.slice(0, n_index) + '...'
+          }else{
+            value.RNamme = value.Remarks
+          }
+        })
         this.gwList = res.Data.WorkstationList
 
         this.getGwDetail()
@@ -212,7 +234,7 @@ export default {
     selectGw(row){
       if(row.Id !== this.gwSelect.Id){
         this.localGwId = row.Id
-        Vue.ss.set('GwId', row.Id)
+        Vue.ls.set('GwId', row.Id)
         this.getGwDetail()
         this.gwIsAll = false
       }
@@ -246,6 +268,9 @@ export default {
     wxLogout(){
       wechatLogout({workstationId: this.gwSelect.Id}).then(res => {
         tipMessage.success(res.Msg)
+        setTimeout(() => {
+          this.getGwList()
+        }, 500)
       })
     },
     // 连接
@@ -331,8 +356,6 @@ export default {
 			}
 		},
 		creatQrCode(text) {
-			console.log(text)
-			console.log(this.$refs.qrCodeUrl)
 			var qrcode = new QRCode(this.$refs.qrCodeUrl, {
 				text: text,
 				width: 300,
@@ -394,13 +417,23 @@ export default {
       }
     },
     qunDelete(row){
-      sendGroupDelete({
-        id: row.Id
-      }).then(res => {
-        this.getQunList()
-      }).catch(err => {
+      this.$confirm({
+        title: '确定删除？',
+        content: '发单群：' + row.GroupName,
+        okText: '确认',
+        cancelText: '取消',
+        onOk: () => {
+          sendGroupDelete({
+            id: row.Id
+          }).then(res => {
+            this.getQunList()
+          }).catch(err => {
 
-      })
+          })
+        },
+        onCancel() {},
+      });
+      
     },
     // 所选工位移动到第一
     gwListMoveFirst(){
