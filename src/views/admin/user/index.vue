@@ -46,7 +46,7 @@
 						type="primary"
 						size="small"
 						@click="setSupplier(row)"
-						:disabled="row.IsSupplier"
+						:disabled="row.IsSupplier||row.SupplierId>0"
 						>成为供应商</a-button
 					>
 				</div>
@@ -105,7 +105,7 @@ export default {
 				Remark: '',
 				Status: '-1',
 				UserName: '',
-				pageSize: 10,
+				pageSize: 20,
 				pageNum: 1,
 			},
 			columns: [

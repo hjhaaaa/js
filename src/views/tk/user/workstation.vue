@@ -1,5 +1,5 @@
 <template>
-	<div class="workstation">
+	<div class="tkworkstation">
 		<a-card title="工位列表" :bordered="false">
 			<a-form layout="inline" :form="form" style="margin-bottom: 10px">
 				<!-- <div class="searchrow"> -->
@@ -59,14 +59,13 @@
 						<a-tag v-if="row.StationType == 1" color="blue">淘客</a-tag>
 					</div>
 				</div>
-				<div slot="Status" slot-scope="row">
+				<div slot="Status" class="status" slot-scope="row">
 					<a-tag v-if="row.StationRechageType == 2" color="purple"
 						>增强版</a-tag
 					>
 					<a-tag v-else-if="row.StationRechageType == 1" color="blue"
 						>普通版</a-tag
 					>
-
 					<a-tag v-if="isShowExpireTag(row)" color="red">即将到期</a-tag>
 					<p>状态:{{ row.WorkStatus == 2 ? '启用' : '禁用' }}</p>
 					<p>到期时间:{{ formatEndDate(row) }}</p>
@@ -306,9 +305,9 @@ export default {
 			columns: [
 				{
 					title: '工位Id',
-					width: '70px',
+					width: '80px',
 					dataIndex: 'Id',
-					fixed: 'left',
+				//	fixed: 'left',
 				},
 				{
 					title: '用户名',
@@ -327,7 +326,7 @@ export default {
 				{
 					title: '微信用户',
 					Key: '',
-					width: '150px',
+					width: '100px',
 					dataIndex: '',
 					scopedSlots: { customRender: 'showWXAvatar' },
 				},
@@ -348,7 +347,7 @@ export default {
 				{
 					title: '工位状态',
 					key: 'Status',
-					width: '120px',
+					width: '150px',
 					scopedSlots: { customRender: 'Status' },
 				},
 				{
@@ -780,7 +779,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.workstation {
+.tkworkstation {
 	.ant-table-body {
 		overflow-x: auto !important;
 	}
@@ -832,6 +831,9 @@ export default {
 	.wxlogin img {
 		margin-right: auto;
 		margin-left: auto;
+	}
+	 p{
+		margin: 0px;
 	}
 }
 </style>

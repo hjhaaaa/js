@@ -20,12 +20,8 @@
 						<a-select-option value="-1">全部</a-select-option>
 						<a-select-option value="0">未使用</a-select-option>
 						<a-select-option value="1">已使用</a-select-option>
-						<a-select-option value="2" v-if="isSupplier"
-							>可转让</a-select-option
-						>
-						<a-select-option value="3" v-if="isSupplier"
-							>已转让</a-select-option
-						>
+						<a-select-option value="2">可转让</a-select-option>
+						<a-select-option value="3">已转让</a-select-option>
 					</a-select>
 				</a-form-item>
 
@@ -45,7 +41,6 @@
 				rowKey="Id"
 				:loading="tableLoading"
 				:pagination="false"
-				:row-selection="isSupplier ? rowSelection : undefined"
 				:scroll="{ x: 1000 }"
 			>
 				<div slot="UseStatus" slot-scope="row">
@@ -68,7 +63,7 @@
 					<div>
 						{{ row.CardCode }}
 						<!-- <input class="tableCode" type="text" :value="row.CardCode" /> -->
-						<a type="link" @click="doCopy(row)">复制</a>
+						<a type="link" v-if="row.TkId>0" @click="doCopy(row)">复制</a>
 					</div>
 				</div>
 			</a-table>
@@ -426,7 +421,7 @@ export default {
 				CardCodeType: '1',
 				SourceType: '1',
 				RebateType: '1',
-				Remarks:'',
+				Remarks: '',
 			},
 			creteCodeStr: '',
 			uploadAction: process.env.VUE_APP_BASE_URL + '/api/UploadFile/Image',
@@ -435,9 +430,7 @@ export default {
 			previewImage: '',
 		}
 	},
-	computed: {
-	
-	},
+	computed: {},
 	methods: {
 		query() {
 			this.tableLoading = true
@@ -464,7 +457,7 @@ export default {
 		pageChange(p, s) {
 			this.form.pageNum = p
 			this.query()
-		},	
+		},
 		addHandleOk() {
 			this.addForm.validateFieldsAndScroll((err, values) => {
 				if (!err) {
@@ -589,7 +582,7 @@ export default {
 					CardCodeType: '1',
 					SourceType: '1',
 					RebateType: '1',
-					Remarks:''
+					Remarks: '',
 				})
 				this.addFormModel.ImgUrl = ''
 				this.addDisabled = false
