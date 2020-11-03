@@ -4,6 +4,10 @@ import Router from 'vue-router'
 
 const whiteRoutes = [
   {
+    path: '*',
+    redirect: '/dl',
+  },
+  {
     path: '/login',
     name: 'login',
     component: () => import(/* webpackChunkName: "login" */ '@/views/dl/login')

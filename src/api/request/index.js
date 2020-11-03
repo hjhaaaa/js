@@ -1,6 +1,6 @@
 
 import notification from 'ant-design-vue/es/notification'
-
+import router from '@/router'
 // api 配置
 
 let timer = null
@@ -27,16 +27,6 @@ const onError = error => {
         message: '服务器错误',
         description: message
       })
-    }
-
-    if (status === 401 && !timer) {
-      timer = setTimeout(() => {
-        notification.error({
-          message: '未授权',
-          description: '授权失败，请重新登录'
-        })
-        timer = null
-      }, 1000)
     }
   }
   return Promise.reject(error)

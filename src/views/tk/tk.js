@@ -6,7 +6,7 @@ import App from './App.vue'
 
 
 // import * as filters from '@/filters'
-// import '@/assets/styles/index.scss'
+import '@/assets/styles/index.scss'
 // import commonFunc from '@/utils/mformat.js'
 
 // Vue.use(commonFunc)

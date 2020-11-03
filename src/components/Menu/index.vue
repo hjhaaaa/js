@@ -76,7 +76,7 @@ export default {
     },
     getCurrentLoginMenu(){
       let mentFunc
-      console.log('type',this.type)
+      console.log('type',this.type, this.collapsed, this.mode)
       if(this.type == 'tk'){
         mentFunc = GetTkMenu
       }else if(this.type == 'admin'){

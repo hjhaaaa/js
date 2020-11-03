@@ -1,5 +1,6 @@
 import axios from 'axios'
 import onError from './index'
+import router from '@/router/index'
 import { ACCESS_TOKEN } from '@/store/mutation-types'
 import tipMessage from '@/utils/messageUtil.js'
 const request = axios.create({
@@ -24,6 +25,7 @@ const request = axios.create({
 })
 
 // 响应拦截器
+let timer = null
 request.interceptors.response.use(res => {
   if(res.data.IsSuccess){
     return res.data
@@ -35,6 +37,18 @@ request.interceptors.response.use(res => {
     tipMessage.error(res.data.Msg)
     return Promise.reject(res.data)
   }
-}, onError)
+}, err => {
+  const status = err.response.status
+  const message = err.response.statusText
+  if (status === 401 && !timer) {
+    timer = setTimeout(() => {
+      tipMessage.error('授权失败，请重新登录')
+      timer = null
+      router.dlRouter.push('/login')
+    }, 1000)
+  }else{
+    onError(err)
+  }
+})
 
 export default request
