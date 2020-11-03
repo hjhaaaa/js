@@ -20,8 +20,8 @@
 						<a-select-option value="-1">全部</a-select-option>
 						<a-select-option value="0">未使用</a-select-option>
 						<a-select-option value="1">已使用</a-select-option>
-						<a-select-option value="2">可转让</a-select-option>
-						<a-select-option value="3">已转让</a-select-option>
+						<!-- <a-select-option value="2">可转让</a-select-option> -->
+						<!-- <a-select-option value="3">已转让</a-select-option> -->
 					</a-select>
 				</a-form-item>
 
