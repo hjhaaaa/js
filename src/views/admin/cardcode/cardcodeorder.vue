@@ -1,11 +1,13 @@
 <template>
 	<div>
-		<a-card title="卡密订单列表">
+		<a-card title="激活码订单列表">
 			<a-form layout="inline" :form="form" style="margin-bottom: 10px">
 				<a-form-item label="订单号">
 					<a-input v-model="form.OrderNo" placeholder="请输入订单号" />
 				</a-form-item>
-
+				<a-form-item label="淘客">
+					<a-input v-model="form.TkUserName" placeholder="请输入淘客" />
+				</a-form-item>
 				<a-form-item label="开始日期">
 					<a-date-picker
 						v-model="form.startDate"
@@ -14,11 +16,11 @@
 					/>
 				</a-form-item>
 				<a-form-item label="结束日期">
-					<a-date-picker format="YYYY-MM-DD" placeholder="结束日期" />
-				</a-form-item>
-
-				<a-form-item label="淘客">
-					<a-input v-model="form.TkUserName" placeholder="请输入淘客" />
+					<a-date-picker
+						v-model="form.endDate"
+						format="YYYY-MM-DD"
+						placeholder="结束日期"
+					/>
 				</a-form-item>
 
 				<a-form-item>
@@ -89,62 +91,62 @@ export default {
 					title: '序号',
 					Key: 'Id',
 					width: '50px',
-					dataIndex: 'Id'
+					dataIndex: 'Id',
 				},
 				{
 					title: '订单号',
 					Key: 'OrderNo',
 					width: '100px',
-					dataIndex: 'OrderNo'
+					dataIndex: 'OrderNo',
 				},
 				{
 					title: '价格',
 					Key: 'Price',
 					width: '50px',
-					dataIndex: 'Price'
+					dataIndex: 'Price',
 				},
 				{
 					title: '数量',
 					Key: 'CodeCount',
 					width: '50px',
-					dataIndex: 'CodeCount'
+					dataIndex: 'CodeCount',
 				},
 				{
 					title: '金额',
 					Key: 'OrderAmout',
 					width: '100px',
-					dataIndex: 'OrderAmout'
+					dataIndex: 'OrderAmout',
 				},
 				{
 					title: '淘客',
 					Key: 'TkUserName',
 					width: '100px',
-					dataIndex: 'TkUserName'
+					dataIndex: 'TkUserName',
 				},
 				{
 					title: '来源',
 					key: 'SourceType',
 					width: '100px',
-					scopedSlots: { customRender: 'SourceType' }
+					scopedSlots: { customRender: 'SourceType' },
 				},
 				{
 					title: '操作员',
 					Key: 'Operator',
 					width: '100px',
-					dataIndex: 'Operator'
+					dataIndex: 'Operator',
 				},
 				{
 					title: '创建时间',
 					Key: 'Ctime',
 					width: '100px',
-					dataIndex: 'Ctime'
+					dataIndex: 'Ctime',
 				},
 				{
 					title: '图片',
 					Key: 'ImgUrl',
 					width: '100px',
-					scopedSlots: { customRender: 'ImgUrl' }
-				}
+					scopedSlots: { customRender: 'ImgUrl' },
+				},
 			],
 			data: [],
 			total: 0,
@@ -152,7 +154,7 @@ export default {
 			labelCol: { span: 4 },
 			wrapperCol: { span: 14 },
 			previewVisible: false,
-			previewImage: ''
+			previewImage: '',
 		}
 	},
 	methods: {
@@ -181,12 +183,12 @@ export default {
 			this.previewImage = row.ImgUrl
 			this.previewVisible = true
 		},
-	    previewHandleCancel() {
+		previewHandleCancel() {
 			this.previewVisible = false
-		}
+		},
 	},
-    created() {
+	created() {
 		this.query()
-	}
+	},
 }
 </script>
