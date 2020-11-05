@@ -3,7 +3,7 @@
 		<a-card style="width: 460px;" :body-style="{padding: '60px'}">
 			<div class="logo-wrapper">
 				<img src="../../assets/images/logo.png" class="logo" alt="背景图" />
-				<span class="title">后台管理</span>
+				<span class="title">用户登录</span>
 			</div>
 
 			<a-form :form="form" class="login-form">
@@ -82,7 +82,7 @@
 					>登录</a-button>
 				</a-form-item>
 				<a-form-item style="text-align: center;margin-bottom: 0px;">
-					<a-button type="link" @click="showRegesterModal">用户注册</a-button>
+					<a-button type="link" @click="showRegesterModal">新用户注册</a-button>
 				</a-form-item>
 			</a-form>
 		</a-card>
