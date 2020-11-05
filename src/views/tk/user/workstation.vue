@@ -67,8 +67,9 @@
 						>普通版</a-tag
 					>
 					<a-tag v-if="isShowExpireTag(row)" color="red">即将到期</a-tag>
-					<p>状态:{{ row.WorkStatus == 2 ? '启用' : '禁用' }}</p>
-					<p>到期时间:{{ formatEndDate(row) }}</p>
+					<a-tag v-if="isShowTimeoutTag(row)" color="#f50">已过期</a-tag>
+					<p>状态:{{ getWorkStatus(row) }}</p>
+					<p>到期日期:{{ formatEndDate(row) }}</p>
 					<p>设备号:{{ row.Uid }}</p>
 				</div>
 				<div slot="showWXAvatar" slot-scope="row">
@@ -257,6 +258,7 @@ export default {
 	data() {
 		return {
 			signalUrl: process.env.VUE_APP_BASE_URL + '/WorkstationHub',
+			workStatusList: ['禁用', '禁用', '启用', '禁用', '已过期'],
 			statusOptions: [
 				{ label: '全部', value: -1 },
 				{ label: '启用', value: 1 },
@@ -307,7 +309,7 @@ export default {
 					title: '工位Id',
 					width: '80px',
 					dataIndex: 'Id',
-				//	fixed: 'left',
+					//	fixed: 'left',
 				},
 				{
 					title: '用户名',
@@ -743,7 +745,26 @@ export default {
 
 			var duration = moment.duration(workEndTime.diff(nowTime))
 			//  console.log('duration', duration)
-			return duration._data.days <= 7
+			return duration._data.days <= 7 && duration._data.days > 0
+		},
+		isShowTimeoutTag(row) {
+			// console.log(row)
+			if (!row.EndTime) {
+				return false
+			}
+			var nowTime = moment()
+			var workEndTime = moment(row.EndTime)
+
+			var duration = moment.duration(workEndTime.diff(nowTime))
+			//  console.log('duration', duration)
+			return duration._data.days <= 0
+		},
+		getWorkStatus(row) {
+			try {
+				return this.workStatusList[row.WorkStatus]
+			} catch (error) {
+				return '禁用'
+			}
 		},
 		formatEndDate(row) {
 			if (!row.EndTime) {
@@ -832,7 +853,7 @@ export default {
 		margin-right: auto;
 		margin-left: auto;
 	}
-	 p{
+	p {
 		margin: 0px;
 	}
 }
