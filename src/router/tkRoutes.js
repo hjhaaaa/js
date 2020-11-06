@@ -138,6 +138,18 @@ const routes = [
       },
     ]
   },
+  {
+    path: '/moments',
+    name: 'moments',
+    component: TkLayout,
+    children: [
+      {
+        path: 'index',
+        name: '',
+        component: () => import('@/views/tk/moments/index.vue')
+      },
+    ]
+  }
 ]
 
 const tkRoutes = [...whiteRoutes, ...routes]
