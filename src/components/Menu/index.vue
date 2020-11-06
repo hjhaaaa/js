@@ -187,6 +187,11 @@ export default {
 	.ant-menu-inline.ant-menu-sub {
 		background: rgba(37, 37, 37, 1);
 		box-shadow: none;
+
 	}
+  .ant-menu-inline .ant-menu-item{
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
 }
 </style>

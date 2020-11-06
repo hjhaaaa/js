@@ -27,7 +27,7 @@
 				rowKey="Id"
 				:loading="tableLoading"
 				:pagination="false"
-				:scroll="{ x: 500 }"
+				:scroll="{ x: 300 }"
 			>
 			</a-table>
 			<div style="margin-top: 15px">
@@ -77,17 +77,17 @@ export default {
 			columns: [
 				{
 					title: '序号',
-					width: '100px',
+					width: '80px',
 					dataIndex: 'Id',
 				},
 				{
 					title: '用户名',
-					width: '200px',
+					width: '150px',
 					dataIndex: 'UserName',
 				},
 				{
 					title: '注册时间',
-					width: '200px',
+					width: '150px',
 					dataIndex: 'CTime',
 				},
 			],

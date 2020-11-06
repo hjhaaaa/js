@@ -50,7 +50,7 @@
 					</div>
 				</div>
 				<div slot="Status" slot-scope="row">
-					<p>{{ row.WorkStatus == 2 ? '启用' : '禁用' }}</p>
+					<p>{{ getWorkStatus(row) }}</p>
 				</div>
 				<div slot="StationRechageTypeSlot" slot-scope="row">
 					<a-tag v-if="row.StationRechageType == 2" color="purple"
@@ -82,7 +82,10 @@
 					{{ !!row.SwitchStatus ? '开启' : '关闭' }}
 				</div>
 				<div class="table operation" slot="actionSlot" slot-scope="row">
-					<a-button type="primary" @click="updateWorkstationDevice(row)" size="small"
+					<a-button
+						type="primary"
+						@click="updateWorkstationDevice(row)"
+						size="small"
 						>更换设备</a-button
 					>
 				</div>
@@ -117,6 +120,7 @@ export default {
 	components: {},
 	data() {
 		return {
+			workStatusList: ['禁用', '禁用', '启用', '禁用', '已过期'],
 			statusOptions: [
 				{ label: '全部', value: -1 },
 				{ label: '启用', value: 1 },
@@ -247,7 +251,7 @@ export default {
 			var workEndTime = moment(row.EndTime)
 			var duration = moment.duration(workEndTime.diff(nowTime))
 			//  console.log('duration', duration)
-			return duration._data.days <= 7
+			return duration._data.days <= 7 && duration._data.days > 0
 		},
 		formatDate(time) {
 			if (!time) {
@@ -259,13 +263,20 @@ export default {
 			this.tableLoading = true
 			UpdateWorkstationDevice(row.Id)
 				.then((res) => {
-					this.query();
+					this.query()
 					tipMessage.success('更换成功')
 					this.tableLoading = false
 				})
 				.catch(() => {
 					this.tableLoading = false
 				})
+		},
+		getWorkStatus(row) {
+			try {
+				return this.workStatusList[row.WorkStatus]
+			} catch (error) {
+				return '禁用'
+			}
 		},
 	},
 	created() {
