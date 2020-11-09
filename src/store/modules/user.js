@@ -77,7 +77,10 @@ const user = {
             reject(err)
           })
         }else{
-          userLogin(userInfo).then(res => {
+          userLogin({
+            UserName: userInfo.UserName,
+            Pwd: userInfo.Pwd
+          }).then(res => {
             if(res.IsSuccess){
               commit('SET_USER', { username: userInfo.UserName })
               commit('SET_TOKEN', res.Data.Token)
