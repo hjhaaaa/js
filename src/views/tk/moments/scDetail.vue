@@ -1,8 +1,7 @@
 <template>
-  <div class="moments-tbDetail">
+  <div class="moments-scDetail">
     <a-card>
       <div>
-        <TopGoods :topInfo="topInfo"></TopGoods>
         <h2 class="h2">朋友圈或微信群推广</h2>
         <a-row :gutter="20">
           <a-col :span="12">
@@ -79,7 +78,7 @@
           </a-col>
           <a-col :span="12">
             <h3 class="h3">(2)第二条评论: 发朋友圈时生效（评论区可编辑并直接转发）
-              <a-switch checked-children="开" un-checked-children="关" v-model="UseCommtwoModel" @change="modelChange(1, UseCommtwoModel)" />
+              <a-switch checked-children="开" un-checked-children="关" v-model="UseCommtwoModel"  @change="modelChange(2, UseCommtwoModel)" />
             </h3>
             <div style="margin-top: 5px">
               <a-textarea
@@ -140,16 +139,17 @@
 
 <script>
 import TopGoods from './components/top-goods';
-import { sendSnsSendSns, sendSnsPddItemDetail, tKSetSendQunConfig } from '@/api/tk/moments';
+import { sendSnsSendSns, sendSnsTbItemDetail, tKSetSendQunConfig } from '@/api/tk/moments';
 import tipMessage from '@/utils/messageUtil';
 import moment from 'moment'
 
 export default {
-  name: 'moments-tbDetail',
+  name: 'moments-scDetail',
   data() {
     return {
       queryObj: {
-        ItemUrl: this.$route.query.ItemUrl
+        ItemUrl: this.$route.query.ItemUrl,
+        QuanUrl: this.$route.query.QuanUrl,
       },
       goodsInfo: {
 
@@ -161,6 +161,8 @@ export default {
       buttonArr: [
         {
           name: '随机表情',
+        },{
+          name: '淘口令',
         },{
           name: '短链接',
         },{
@@ -205,48 +207,9 @@ export default {
     TopGoods
   },
   created() {
-    this.query()
+    
   },
   methods: {
-    query(){
-      sendSnsPddItemDetail(this.queryObj).then(res => {
-        this.goodsInfo = res.Data.ItemInfo;
-
-        const {FirComment, SecComment, UseCommoneModel, UseCommtwoModel} = res.Data
-        const {ItemImg, Price, ItemNum, QuanAmount, ShopJian, Rate, Recommend, 
-          QuanLeftCount, QuanTotalCount, QuanStartTime, QuanEndTime, Item_Gallery_Images} = this.goodsInfo;
-
-        const qhPrice = Math.round(Price * ItemNum - QuanAmount - ShopJian) / 100;
-        const yongPrice = Math.round(qhPrice * Rate / 100) /100;
-
-        this.topInfo = {
-          Pic: ItemImg,
-          topPrice: Price ? Price * ItemNum / 100 : '',
-          qhPrice,
-          Rate,
-          yongPrice,
-          Recommend,
-          QuanAmount,
-          QuanLeftCount,
-          QuanTotalCount,
-          QuanStartTime,
-          QuanEndTime,
-        };
-
-        this.con = {
-          Recommend,
-          FirComment,
-          SecComment
-        }
-
-        this.UseCommoneModel = UseCommoneModel == 1;
-        this.UseCommtwoModel = UseCommtwoModel == 1;
-
-        this.Pics = [ItemImg, ...Item_Gallery_Images]
-      }).catch(error => {
-
-      })
-    },
     send(){
 
       let IsJump = 0;
@@ -265,12 +228,11 @@ export default {
         SendType = 1;
       }
 
-      const {ItemId} = this.goodsInfo;
       const { Recommend, FirComment, SecComment} = this.con;
 
       let params = Object.assign({
-        ItemType: 1, // pdd
-        ItemId: ItemId * 1,
+        ItemType: 2, // 素材
+        ItemId: 0,
         Content: Recommend,
         Pics: this.Pics,
         CommentOne: FirComment,
@@ -283,10 +245,7 @@ export default {
         // ClassifyId,
       })
 
-      console.log(params)
-
       sendSnsSendSns(params).then(res => {
-        console.log(res)
         tipMessage.success(res.Msg)
         this.$router.push('/moments/index')
       }).catch(err => {
@@ -342,7 +301,6 @@ export default {
     },
     handleChange(file, fileList, event){
       const {status, response, name} = file.file
-      console.log(123, status, file)
       if (status === 'done') {
         if(response.IsSuccess){
           this.Pics.push(response.Data.Url)
@@ -366,7 +324,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.moments-tbDetail{
+.moments-scDetail{
   min-width: 900px;
   .h2{
     text-align: center;

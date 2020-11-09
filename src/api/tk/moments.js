@@ -22,3 +22,22 @@ export function sendSnsSendSns(params) {
   return request.post('/SendSns/SendSns', params)
 }
 
+// 淘客设置发圈是否使用模板
+export function tKSetSendQunConfig(params) {
+  return request.get('/SendSns/TKSetSendQunConfig', {params})
+}
+
+// 立即重新发送
+export function sendNow(params) {
+  return request.get('/SendSns/SendNow', {params})
+}
+
+// 重新排队发送
+export function rewriteQueue(params) {
+  return request.get('/SendSns/RewriteQueue', {params})
+}
+
+// 撤销发送
+export function cancelQuan(params) {
+  return request.get('/SendSns/CancelQuan', {params})
+}

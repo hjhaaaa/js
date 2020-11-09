@@ -66,7 +66,7 @@
         <a-row :gutter="20">
           <a-col :span="12">
             <h3 class="h3">3.(1)第一条评论: 发朋友圈时生效（评论区可编辑并直接转发）
-              <a-switch checked-children="开" un-checked-children="关" v-model="UseCommoneModel" />
+              <a-switch checked-children="开" un-checked-children="关" v-model="UseCommoneModel" @change="modelChange(1, UseCommoneModel)" />
             </h3>
             <div style="margin-top: 5px">
               <a-textarea
@@ -79,7 +79,7 @@
           </a-col>
           <a-col :span="12">
             <h3 class="h3">(2)第二条评论: 发朋友圈时生效（评论区可编辑并直接转发）
-              <a-switch checked-children="开" un-checked-children="关" v-model="UseCommtwoModel" />
+              <a-switch checked-children="开" un-checked-children="关" v-model="UseCommtwoModel"  @change="modelChange(2, UseCommtwoModel)" />
             </h3>
             <div style="margin-top: 5px">
               <a-textarea
@@ -106,7 +106,7 @@
               <a-radio :value="1">系统默认排序发送</a-radio>
               <a-radio :value="2">
                 定时发送
-                <a-date-picker v-model="sendData.SendTime" show-time placeholder="请选择发送时间" />
+                <a-date-picker v-model="sendData.SendTime" :disabled="fangshiValue != 2" show-time placeholder="请选择发送时间" />
               </a-radio>
               <a-radio :value="3">插队立即发送</a-radio>
             </a-radio-group>
@@ -115,7 +115,7 @@
           <a-col :span="24" style="margin-top: 5px">
             发送范围&ensp;&ensp;
             <a-radio-group v-model="fanweiValue">
-              <a-radio :value="1">
+              <!-- <a-radio :value="1">
                 选择分组
                 <a-select v-model="sendData.ClassifyId" style="width: 120px" placeholder="请选择分组">
                   <a-select-option 
@@ -123,7 +123,8 @@
                     :key="index"
                     :value="item.Id">{{item.Name}}</a-select-option>
                 </a-select>
-              </a-radio>
+              </a-radio> -->
+              <a-radio :value="1">团队</a-radio>
               <a-radio :value="2">仅自己</a-radio>
             </a-radio-group>
           </a-col>
@@ -139,7 +140,7 @@
 
 <script>
 import TopGoods from './components/top-goods';
-import { sendSnsSendSns, sendSnsTbItemDetail } from '@/api/tk/moments';
+import { sendSnsSendSns, sendSnsTbItemDetail, tKSetSendQunConfig } from '@/api/tk/moments';
 import tipMessage from '@/utils/messageUtil';
 import moment from 'moment'
 
@@ -182,12 +183,10 @@ export default {
       },
       Pics: [],
       dragging: null,
-      fangshiValue: '',
-      fanweiValue: '',
+      fangshiValue: 1,
+      fanweiValue: 1,
       sendData: {
         SendTime: null,
-        IsJump: 0,
-        ClassifyId: '',
       },
       classList: [
         {
@@ -254,10 +253,8 @@ export default {
     send(){
 
       let IsJump = 0;
-      let SendTime = '';
-      if(this.fangshiValue == 1){
-
-      }else if(this.fangshiValue == 2){
+      let SendTime;
+      if(this.fangshiValue == 2){
         if(!this.sendData.SendTime){
           return tipMessage.info('定时发送请选择发送时间');
         }
@@ -266,33 +263,28 @@ export default {
         IsJump = 1
       }
 
-      let ClassifyId = '';
-      if(this.fanweiValue == 1){
-        if(!this.sendData.ClassifyId){
-          return tipMessage.info('请选择分组');
-        }
-        ClassifyId = this.sendData.ClassifyId
-      }else if(this.fanweiValue == 2){
-
+      let SendType = 0;
+      if(this.fanweiValue == 2){
+        SendType = 1;
       }
 
       const {ItemId} = this.goodsInfo;
       const { Recommend, FirComment, SecComment} = this.con;
 
       let params = Object.assign({
-        temType: 0, // 淘宝
-        ItemId,
+        ItemType: 0, // 淘宝
+        ItemId: ItemId * 1,
         Content: Recommend,
         Pics: this.Pics,
         CommentOne: FirComment,
-        CommentOneBut: this.UseCommoneModel ? 1 : 0,
+        CommentOneBut: this.UseCommoneModel,
         CommentTow: SecComment,
-        CommentTowBut: this.UseCommtwoModel ? 1 : 0,
+        CommentTowBut: this.UseCommtwoModel,
         SendTime,
-        SendType: 0, // 个人
+        SendType,
         QuanUrl: this.queryObj.QuanUrl,
         IsJump,
-        ClassifyId,
+        // ClassifyId,
       })
 
       console.log(params)
@@ -364,6 +356,14 @@ export default {
       }else if(status === 'error'){
         tipMessage(`${name} 上传失败`)
       }
+    },
+    modelChange(type, val){
+      tKSetSendQunConfig({
+        Type: type,
+        Use: val ? 1: 0,
+      }).then(res => {
+        
+      })
     }
   },
 }
