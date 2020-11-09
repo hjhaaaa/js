@@ -149,7 +149,31 @@ const routes = [
         component: () => import('@/views/tk/moments/index.vue')
       },
     ]
-  }
+  },
+  {
+    path: '/moments',
+    name: 'moments',
+    component: TkLayout,
+    children: [
+      {
+        path: 'tbDetail',
+        name: '',
+        component: () => import('@/views/tk/moments/tbDetail.vue')
+      },
+    ]
+  },
+  {
+    path: '/moments',
+    name: 'moments',
+    component: TkLayout,
+    children: [
+      {
+        path: 'pddDetail',
+        name: '',
+        component: () => import('@/views/tk/moments/pddDetail.vue')
+      },
+    ]
+  },
 ]
 
 const tkRoutes = [...whiteRoutes, ...routes]
