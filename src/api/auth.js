@@ -17,7 +17,14 @@ export function RegesterCode(params) {
     params
   })
 }
-
+// 登录发送验证码
+export function LoginCode(params) {
+  return request({
+    url: '/UserLogin/LoginCode',
+    method: 'post',
+    params
+  })
+}
 // 注册
 export function Regester(params) {
   return request({
@@ -26,7 +33,6 @@ export function Regester(params) {
     data: params
   })
 }
-
 // 登录
 export function login(params) {
   return request({
@@ -34,7 +40,16 @@ export function login(params) {
     method: 'post',
     data: params
   })
-}// 客服登录
+}
+// 短信登录
+export function loginPhone(params) {
+  return request({
+    url: '/UserLogin/Phone',
+    method: 'post',
+    data: params
+  })
+}
+// 客服登录
 export function adminLogin(params) {
   return request({
     url: '/UserLogin/Admin',

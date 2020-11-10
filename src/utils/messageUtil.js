@@ -13,6 +13,12 @@ const tipMessage = {
             description: msg
         })
     },
+    info(msg) {
+        notification.info({
+            message: '提示',
+            description: msg
+        })
+    },
     // confirmDelete(msg, okAction, cancelAction) {
     //     console.log(this, confirm)
     //     if (!msg) {
