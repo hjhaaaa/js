@@ -18,14 +18,14 @@
         </a-row>
         <a-row>
           <a-col :span="24">
-            <div>今日各分组发圈个数：
+            <!-- <div>今日各分组发圈个数：
               <p>
                 <span style="margin-right: 20px" v-for="(itemval ,itemkey, index) in ObjData" :key="index">
                   {{itemkey}}： {{itemval}}个
                 </span>
               </p>
-            </div>
-            <div>
+            </div> -->
+            <div style="margin-top: 10px">
               <a-table :columns="columns1" :data-source="data1" rowKey="Id" :pagination="false" bordered>
                 <template slot="Goods" slot-scope="row">
                   <div>
