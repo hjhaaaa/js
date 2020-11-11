@@ -12,3 +12,7 @@ export function WechatLogout(workstationId) {
 export function WechatPushLogin(workstationId) {
     return request.get('/Wechat/PushLogin?workstationId=' + workstationId)
 }
+//推送登录
+export function WechatCancelLogin(workstationId) {
+    return request.get('/Wechat/CancelLogin?workstationId=' + workstationId)
+}

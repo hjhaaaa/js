@@ -195,7 +195,13 @@
 			width="400px"
 		>
 			<div>
-				<div id="divQrcode" ref="qrCodeUrl"></div>
+				<!-- <div id="divQrcode" ref="qrCodeUrl"></div> -->
+				<img
+					id="wxLoginImg"
+					:src="wxLoginSrc"
+					title="二维码"
+					style="width: 350px"
+				/>
 			</div>
 			<div>
 				<p style="text-align: center">
@@ -239,6 +245,7 @@ import {
 	WechatQRLogin,
 	WechatLogout,
 	WechatPushLogin,
+	WechatCancelLogin,
 } from '@/api/tk/wechatApi.js'
 import {
 	SendGroupList,
@@ -391,6 +398,7 @@ export default {
 			timer: null,
 			canloginSecond: '',
 			wxloginType: 'qrcode',
+			wxLoginSrc: '',
 		}
 	},
 	mounted() {
@@ -434,13 +442,20 @@ export default {
 			this.currentLoginWorkstation = row
 			this.wxloginType = 'qrlogin'
 		},
-		wxQrloginHandleCancel() {
-			console.log('wxQrloginHandleCancel')
+		wxQrloginHandleCancel(type) {
+			// console.log('type', type)
+			if (type != 'LoginSuccessful') {
+				//推送登录
+				WechatCancelLogin(this.currentLoginWorkstation.Id)
+					.then((res) => {})
+					.catch(() => {})
+			}
+			this.wxloginVisible = false
 			this.wxloginType = ''
 			this.canloginSecond = ''
-			this.wxloginVisible = false
+
 			this.currentLoginWorkstation = undefined
-			$('#divQrcode').empty()
+			this.wxLoginSrc = undefined
 			this.diconnectSignalServer()
 		},
 		wxPushlogin(row) {
@@ -671,7 +686,10 @@ export default {
 							if (res.IsSuccess) {
 								this.wxloginVisible = true
 								this.$nextTick(() => {
-									this.creatQrCode(res.Data.newUrl)
+									//	this.creatQrCode(res.Data.newUrl)
+
+									this.wxLoginSrc = `data:image/jpg;base64,${res.Data.QrBase64}`
+
 									this.canloginSecond = moment(
 										new Date().getTime() + 180 * 1000
 									).format('HH:mm:ss')
@@ -691,7 +709,6 @@ export default {
 						.then((res) => {
 							if (res.IsSuccess) {
 								tipMessage.success('推送成功,请在手机微信上进行操作')
-								this.wxQrloginHandleCancel()
 							} else {
 								tipMessage.error('推送失败:' + res.Msg)
 							}
@@ -701,7 +718,7 @@ export default {
 			} else if (msg.type == 'LoginSuccessful') {
 				console.log('登录成功')
 				if (this.currentLoginWorkstation.Uid == msg.data) {
-					this.wxQrloginHandleCancel()
+					this.wxQrloginHandleCancel('LoginSuccessful')
 					this.query()
 				}
 			}
@@ -853,6 +870,7 @@ export default {
 		margin-right: auto;
 		margin-left: auto;
 	}
+
 	p {
 		margin: 0px;
 	}
