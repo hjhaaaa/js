@@ -91,11 +91,13 @@
         <a-form :form="formTb" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }" >
           <a-form-item label="商品链接">
             <a-input
+              placeholder="链接/商品ID/淘口令/领券短链"
               v-decorator="['ItemUrl', { rules: [{ required: true, message: '请输入商品链接' }] }]"
             />
           </a-form-item>
           <a-form-item label="券链接">
             <a-input
+              placeholder="选填"
               v-decorator="['QuanUrl']"
             />
             <a-button type="primary" @click="yanzhen">验证商品</a-button>
@@ -117,6 +119,7 @@
         <a-form :form="formPdd" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }" >
           <a-form-item label="商品链接">
             <a-input
+              placeholder="短链接/长链接/商品ID"
               v-decorator="['ItemUrl', { rules: [{ required: true, message: '请输入商品链接' }] }]"
             />
             <a-button type="primary" @click="yanzhenPdd">验证商品</a-button>
