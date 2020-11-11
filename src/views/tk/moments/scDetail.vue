@@ -161,7 +161,8 @@ export default {
       buttonArr: [
         {
           name: '随机表情',
-        },{
+        },
+        {
           name: '淘口令',
         },{
           name: '短链接',

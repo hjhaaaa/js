@@ -467,8 +467,10 @@ export default {
 			WechatLogout(row.Id)
 				.then((res) => {
 					if (res.IsSuccess) {
-						tipMessage.success('退出成功')
-						this.query()
+						setTimeout(() => {
+							tipMessage.success('退出成功')
+							this.query()
+						}, 1000)
 					} else {
 						tipMessage.error('退出失败:' + res.Msg)
 					}
