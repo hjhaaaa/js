@@ -138,6 +138,18 @@ const routes = [
       },
     ]
   },
+  {
+    path: '/fanstask',
+    name: 'fanstaskManage',
+    component: TkLayout,
+    children: [
+      {
+        path: 'index',
+        name: '',
+        component: () => import('@/views/tk/fanstask/index.vue')
+      }
+    ]
+  }
 ]
 
 const tkRoutes = [...whiteRoutes, ...routes]
