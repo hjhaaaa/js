@@ -67,8 +67,9 @@
 						>普通版</a-tag
 					>
 					<a-tag v-if="isShowExpireTag(row)" color="red">即将到期</a-tag>
-					<p>状态:{{ row.WorkStatus == 2 ? '启用' : '禁用' }}</p>
-					<p>到期时间:{{ formatEndDate(row) }}</p>
+					<a-tag v-if="isShowTimeoutTag(row)" color="#f50">已过期</a-tag>
+					<p>状态:{{ getWorkStatus(row) }}</p>
+					<p>到期日期:{{ formatEndDate(row) }}</p>
 					<p>设备号:{{ row.Uid }}</p>
 				</div>
 				<div slot="showWXAvatar" slot-scope="row">
@@ -194,7 +195,13 @@
 			width="400px"
 		>
 			<div>
-				<div id="divQrcode" ref="qrCodeUrl"></div>
+				<!-- <div id="divQrcode" ref="qrCodeUrl"></div> -->
+				<img
+					id="wxLoginImg"
+					:src="wxLoginSrc"
+					title="二维码"
+					style="width: 350px"
+				/>
 			</div>
 			<div>
 				<p style="text-align: center">
@@ -238,6 +245,7 @@ import {
 	WechatQRLogin,
 	WechatLogout,
 	WechatPushLogin,
+	WechatCancelLogin,
 } from '@/api/tk/wechatApi.js'
 import {
 	SendGroupList,
@@ -257,6 +265,7 @@ export default {
 	data() {
 		return {
 			signalUrl: process.env.VUE_APP_BASE_URL + '/WorkstationHub',
+			workStatusList: ['禁用', '禁用', '启用', '禁用', '已过期'],
 			statusOptions: [
 				{ label: '全部', value: -1 },
 				{ label: '启用', value: 1 },
@@ -307,7 +316,7 @@ export default {
 					title: '工位Id',
 					width: '80px',
 					dataIndex: 'Id',
-				//	fixed: 'left',
+					//	fixed: 'left',
 				},
 				{
 					title: '用户名',
@@ -389,6 +398,7 @@ export default {
 			timer: null,
 			canloginSecond: '',
 			wxloginType: 'qrcode',
+			wxLoginSrc: '',
 		}
 	},
 	mounted() {
@@ -432,13 +442,20 @@ export default {
 			this.currentLoginWorkstation = row
 			this.wxloginType = 'qrlogin'
 		},
-		wxQrloginHandleCancel() {
-			console.log('wxQrloginHandleCancel')
+		wxQrloginHandleCancel(type) {
+			// console.log('type', type)
+			if (type != 'LoginSuccessful') {
+				//推送登录
+				WechatCancelLogin(this.currentLoginWorkstation.Id)
+					.then((res) => {})
+					.catch(() => {})
+			}
+			this.wxloginVisible = false
 			this.wxloginType = ''
 			this.canloginSecond = ''
-			this.wxloginVisible = false
+
 			this.currentLoginWorkstation = undefined
-			$('#divQrcode').empty()
+			this.wxLoginSrc = undefined
 			this.diconnectSignalServer()
 		},
 		wxPushlogin(row) {
@@ -450,8 +467,10 @@ export default {
 			WechatLogout(row.Id)
 				.then((res) => {
 					if (res.IsSuccess) {
-						tipMessage.success('退出成功')
-						this.query()
+						setTimeout(() => {
+							tipMessage.success('退出成功')
+							this.query()
+						}, 1000)
 					} else {
 						tipMessage.error('退出失败:' + res.Msg)
 					}
@@ -669,7 +688,10 @@ export default {
 							if (res.IsSuccess) {
 								this.wxloginVisible = true
 								this.$nextTick(() => {
-									this.creatQrCode(res.Data.newUrl)
+									//	this.creatQrCode(res.Data.newUrl)
+
+									this.wxLoginSrc = `data:image/jpg;base64,${res.Data.QrBase64}`
+
 									this.canloginSecond = moment(
 										new Date().getTime() + 180 * 1000
 									).format('HH:mm:ss')
@@ -689,7 +711,6 @@ export default {
 						.then((res) => {
 							if (res.IsSuccess) {
 								tipMessage.success('推送成功,请在手机微信上进行操作')
-								this.wxQrloginHandleCancel()
 							} else {
 								tipMessage.error('推送失败:' + res.Msg)
 							}
@@ -699,7 +720,7 @@ export default {
 			} else if (msg.type == 'LoginSuccessful') {
 				console.log('登录成功')
 				if (this.currentLoginWorkstation.Uid == msg.data) {
-					this.wxQrloginHandleCancel()
+					this.wxQrloginHandleCancel('LoginSuccessful')
 					this.query()
 				}
 			}
@@ -743,7 +764,26 @@ export default {
 
 			var duration = moment.duration(workEndTime.diff(nowTime))
 			//  console.log('duration', duration)
-			return duration._data.days <= 7
+			return duration._data.days <= 7 && duration._data.days > 0
+		},
+		isShowTimeoutTag(row) {
+			// console.log(row)
+			if (!row.EndTime) {
+				return false
+			}
+			var nowTime = moment()
+			var workEndTime = moment(row.EndTime)
+
+			var duration = moment.duration(workEndTime.diff(nowTime))
+			//  console.log('duration', duration)
+			return duration._data.days <= 0
+		},
+		getWorkStatus(row) {
+			try {
+				return this.workStatusList[row.WorkStatus]
+			} catch (error) {
+				return '禁用'
+			}
 		},
 		formatEndDate(row) {
 			if (!row.EndTime) {
@@ -832,7 +872,8 @@ export default {
 		margin-right: auto;
 		margin-left: auto;
 	}
-	 p{
+
+	p {
 		margin: 0px;
 	}
 }

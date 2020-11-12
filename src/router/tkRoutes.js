@@ -139,17 +139,53 @@ const routes = [
     ]
   },
   {
-    path: '/fanstask',
-    name: 'fanstaskManage',
+    path: '/moments',
+    name: 'moments',
     component: TkLayout,
     children: [
       {
         path: 'index',
         name: '',
-        component: () => import('@/views/tk/fanstask/index.vue')
-      }
+        component: () => import('@/views/tk/moments/index.vue')
+      },
     ]
-  }
+  },
+  {
+    path: '/moments',
+    name: 'moments',
+    component: TkLayout,
+    children: [
+      {
+        path: 'tbDetail',
+        name: '',
+        component: () => import('@/views/tk/moments/tbDetail.vue')
+      },
+    ]
+  },
+  {
+    path: '/moments',
+    name: 'moments',
+    component: TkLayout,
+    children: [
+      {
+        path: 'pddDetail',
+        name: '',
+        component: () => import('@/views/tk/moments/pddDetail.vue')
+      },
+    ]
+  },
+  {
+    path: '/moments',
+    name: 'moments',
+    component: TkLayout,
+    children: [
+      {
+        path: 'scDetail',
+        name: '',
+        component: () => import('@/views/tk/moments/scDetail.vue')
+      },
+    ]
+  },
 ]
 
 const tkRoutes = [...whiteRoutes, ...routes]
