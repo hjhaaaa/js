@@ -186,6 +186,30 @@ const routes = [
       },
     ]
   },
+  {
+    path: '/fanstask',
+    name: 'moments',
+    component: TkLayout,
+    children: [
+      {
+        path: 'index',
+        name: '',
+        component: () => import('@/views/tk/fanstask/index.vue')
+      }
+    ]
+  },
+  {
+    path: '/template',
+    name: 'moments',
+    component: TkLayout,
+    children: [
+      {
+        path: 'index',
+        name: '',
+        component: () => import('@/views/tk/template/index.vue')
+      }
+    ]
+  }
 ]
 
 const tkRoutes = [...whiteRoutes, ...routes]
