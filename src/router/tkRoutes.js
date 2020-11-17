@@ -209,6 +209,30 @@ const routes = [
         component: () => import('@/views/tk/template/index.vue')
       }
     ]
+  },
+  {
+    path: '/powderManagement',
+    name: 'powder',
+    component: TkLayout,
+    children: [
+      {
+        path: 'index',
+        name: '接粉管理',
+        component: () => import('@/views/tk/powderManagement/index.vue')
+      }
+    ]
+  },
+  {
+    path: '/groupManagement',
+    name: 'group',
+    component: TkLayout,
+    children: [
+      {
+        path: 'index',
+        name: '入群管理',
+        component: () => import('@/views/tk/groupManagement/index.vue')
+      }
+    ]
   }
 ]
 
