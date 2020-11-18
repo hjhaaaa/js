@@ -18,7 +18,7 @@ export function listSwitch(params) {
 
 // 下拉列表
 export function selectList(params) {
-    return request.post('PushMessageTemplate/PageList', params)
+    return request.post('PushMessageTemplate/PagedList', params)
 }
 
 // 修改备注

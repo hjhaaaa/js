@@ -46,7 +46,7 @@
                 </div>
                 <div slot="IsAutoPassFriends" slot-scope="row">
                     <!-- <div>{{row.IsAutoPassFriends}}</div> -->
-                    <a-switch checked-children="开" un-checked-children="关" :checked="!!row.IsAutoPassFriends == 1" @change="onChange(row)" />
+                    <a-switch checked-children="开" un-checked-children="关" :disabled="totalSwitch == '1' ? false : true" :checked="!!row.IsAutoPassFriends == 1" @change="onChange(row)" />
                 </div>
                 <div slot="ReceivinTemplateList" slot-scope="row" class="powder-tab">
                     <div v-if="row.ReceivinTemplateList[0]">{{row.ReceivinTemplateList[0].TemplateName}}</div>
@@ -112,6 +112,16 @@
                         <a-button type="primary" @click="submitDialogUpdate">确定</a-button>
                     </div>
                  </a-modal>
+                 <a-modal v-model="switchStatus" title="温馨提示" :footer="null" @ok="hideModal" wrapClassName="dialog-switch">
+                     <div>
+                        <span style="font-size: 14px">若关闭本功能，所有接粉号将暂停自动通过粉丝好友申请、引导入群及免单发放等功能</span><br>
+                        <span style="font-size: 18px">确认关闭吗？</span>
+                     </div>
+                     <div class="subBtn">
+                        <a-button @click="switchCancelDialog">取消</a-button>
+                        <a-button type="primary" @click="switchSureDialog">确认关闭</a-button>
+                    </div>
+                 </a-modal>
             </div>
         </a-card>
     </div>
@@ -145,6 +155,7 @@ export default {
                 IsAutoPassFriends: -1
             },
             totalSwitch: '',
+            switchStatus: false,
             queryList: {
                 PageNum: 1,
                 PageSize: 20
@@ -233,13 +244,28 @@ export default {
             this.getDataList()
         },
         // 总开关
-        totalOnChange(sta) {
+        totalSwitchStatus() {
             const newSta = this.totalSwitch == '1' ? '0' : '1' 
             totalSwitch({Value: newSta}).then(res => {
                 this.totalSwitch = newSta
-                console.log('sta--', sta)
+                this.switchStatus = false
 
             })
+        },
+        totalOnChange(sta) {
+            if(sta == '1') {
+                this.switchStatus = true
+            }
+            // return
+            if(sta == '0') {
+                this.totalSwitchStatus()
+            }
+        },
+        switchCancelDialog() {
+            this.switchStatus = true
+        },
+        switchSureDialog() {
+            this.totalSwitchStatus()
         },
         // 列表开关
         onChange(data) {
@@ -260,7 +286,8 @@ export default {
                 this.dialogModal = 2
             }
             console.log('this.visible', this.visible)
-            selectList({PageNum: 1, PageSize: 10, CategoryName: num}).then(res => {
+            const selectObj =  Object.assign({}, this.queryList, {CategoryName: num})
+            selectList(selectObj).then(res => {
                 this.dialogSelect = res.Data
             })
         },
@@ -293,6 +320,7 @@ export default {
         submitCancal() {
             this.visible = false
         },
+        // 
         // fen ye
         pageChange(p, s) {
             this.queryList.PageNum = p
@@ -302,7 +330,7 @@ export default {
 }
 </script>
 <style lang="scss">
-.dialog-modal{
+.dialog-modal, .dialog-switch{
     .ant-modal-header{
         border-bottom: 0;
         .ant-modal-title{
@@ -331,9 +359,19 @@ export default {
         justify-content: space-between;
     }
 }
+.dialog-switch{
+    .subBtn{
+        width: 36%;
+        margin-top: 30px;
+    }
+}
 .powder {
     .ant-table table, .ant-form label{
         font-size: 16px;
+    }
+    .ant-card-head-title{
+        font-size: 18px;
+        font-weight: 600;
     }
     // .ant-table-body{
     //     tr{
@@ -349,16 +387,17 @@ export default {
 </style>
 <style lang="scss" scoped>
 .powder {
-    .ant-card-head-title{
-        font-size: 18px;
-        font-weight: 600;
-    }
+    // .ant-card-head-title{
+    //     font-size: 18px;
+    //     font-weight: 600;
+    // }
     .online{
         width: 60px;
         height: 30px;
         text-align: center;
         line-height: 26px;
         font-size: 14px;
+        border-radius: 5px;
         color: rgba(24, 144, 255, 1);
         border: 2px solid rgba(24, 144, 255, 1)
     }
