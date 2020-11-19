@@ -233,6 +233,26 @@ const routes = [
         component: () => import('@/views/tk/groupManagement/index.vue')
       }
     ]
+  },
+  {
+    path: '/templateManagement',
+    name: 'group',
+    component: TkLayout,
+    children: [
+      {
+        path: 'index',
+        name: '模板管理',
+        component: () => import('@/views/tk/templateManagement/index.vue')
+      },
+      {
+        path: 'addEditTemplate',
+        name: '新增编辑模板',
+        component: () => import('@/views/tk/templateManagement/addEditTemplate.vue'),
+        params: {
+          userName: ''
+        }
+      }
+    ]
   }
 ]
 

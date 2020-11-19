@@ -35,32 +35,32 @@
 				</a-form-item>
             </a-form>
             <a-table :columns="columns" :dataSource="tabData" rowKey="Id" :loading="tabLoading" align="center" :pagination="false" >
-                <div slot="wxNickName" slot-scope="row">
+                <div slot="wxNickName" slot-scope="row" align="center">
                     <div>{{row.NickName}}</div>
                 </div>
-                <div slot="userAccount" slot-scope="row">
+                <div slot="userAccount" slot-scope="row" align="center">
                     <div>{{row.UserName}}</div>
                 </div>
-                <div slot="wxStatus" slot-scope="row">
+                <div slot="wxStatus" slot-scope="row" align="center">
                     <div :class="row.Status == 1 ? 'online' : 'offline'">{{row.Status | wxStatusMap}}</div>
                 </div>
-                <div slot="IsAutoPassFriends" slot-scope="row">
+                <div slot="IsAutoPassFriends" slot-scope="row" align="center">
                     <!-- <div>{{row.IsAutoPassFriends}}</div> -->
                     <a-switch checked-children="开" un-checked-children="关" :disabled="totalSwitch == '1' ? false : true" :checked="!!row.IsAutoPassFriends == 1" @change="onChange(row)" />
                 </div>
-                <div slot="ReceivinTemplateList" slot-scope="row" class="powder-tab">
+                <div slot="ReceivinTemplateList" slot-scope="row" align="center" class="powder-tab">
                     <div v-if="row.ReceivinTemplateList[0]">{{row.ReceivinTemplateList[0].TemplateName}}</div>
                     <div class="powder-choose"><a @click="clickChoose(row, 0)">选择</a></div>
                 </div>
-                <div slot="JoinGroupTemplateList" slot-scope="row">
+                <div slot="JoinGroupTemplateList" slot-scope="row" align="center">
                     <div v-if="row.JoinGroupTemplateList[0]">{{row.JoinGroupTemplateList[0].TemplateName}}</div>
                     <div class="powder-choose"><a @click="clickChoose(row, 1)">选择</a></div>
                 </div>
-                <div slot="freeCondition" slot-scope="row">
+                <div slot="freeCondition" slot-scope="row" align="center">
                     <div>{{row.NickName}}</div>
                     <!-- <div class="powder-choose"><a @click="clickUpdate()">修改</a></div> -->
                 </div>
-                <div slot="remark" slot-scope="row">
+                <div slot="remark" slot-scope="row" align="center">
                     <div>{{row.Remarks}}</div>
                     <div class="powder-choose"><a @click="clickUpdate(row)">修改</a></div>
                 </div>
@@ -176,34 +176,42 @@ export default {
             columns: [
                 {
                     title: '微信昵称',
+                    align: 'center',
                     scopedSlots: { customRender: 'wxNickName' },
                 },
                 {
                     title: '用户账号',
+                    align: 'center',
                     scopedSlots: { customRender: 'userAccount' },
                 },
                 {
                     title: '微信状态',
+                    align: 'center',
                     scopedSlots: { customRender: 'wxStatus' },
                 },
                 {
                     title: '接粉状态',
+                    align: 'center',
                     scopedSlots: { customRender: 'IsAutoPassFriends' },
                 },
                 {
                     title: '接粉欢迎',
+                    align: 'center',
                     scopedSlots: { customRender: 'ReceivinTemplateList' },
                 },
                 {
                     title: '入群送免单',
+                    align: 'center',
                     scopedSlots: { customRender: 'JoinGroupTemplateList' },
                 },
                 {
                     title: '免单条件',
+                    align: 'center',
                     scopedSlots: { customRender: 'freeCondition' },
                 },
                 {
                     title: '备注',
+                    align: 'center',
                     scopedSlots: { customRender: 'remark' },
                 },
             ],
@@ -286,7 +294,7 @@ export default {
                 this.dialogModal = 2
             }
             console.log('this.visible', this.visible)
-            const selectObj =  Object.assign({}, this.queryList, {CategoryName: num})
+            const selectObj =  Object.assign({}, this.queryList, {TemplateType: num})
             selectList(selectObj).then(res => {
                 this.dialogSelect = res.Data
             })

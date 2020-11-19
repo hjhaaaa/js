@@ -39,32 +39,32 @@
 				</a-form-item>
             </a-form>
             <a-table :columns="columns" :dataSource="groupData" rowKey="Id" :loading="tabLoading" :pagination="false" >
-                <div slot="GroupName" slot-scope="row">
+                <div slot="GroupName" slot-scope="row" align="center">
                     <div>{{row.GroupName}}</div>
                 </div>
-                <div slot="UserName" slot-scope="row">
+                <div slot="UserName" slot-scope="row" align="center">
                     <div>{{row.UserName}}</div>
                 </div>
-                <div slot="IsAutoPass" slot-scope="row">
+                <div slot="IsAutoPass" slot-scope="row" align="center">
                     <!-- <div>{{row.IsAutoPass}}</div> -->
                     <a-switch checked-children="开" un-checked-children="关" :checked="!!row.IsAutoPass == 1" :disabled="totalSwitch == '1' ? false : true" @change="onChange(row)" />
                 </div>
-                <div slot="JoinGroupWelcomeTemplateList" slot-scope="row" class="powder-tab">
+                <div slot="JoinGroupWelcomeTemplateList" slot-scope="row" align="center" class="powder-tab">
                     <div v-if="row.JoinGroupWelcomeTemplateList[0]">{{row.JoinGroupWelcomeTemplateList[0].TemplateName}}</div>
                     <div class="powder-choose"><a @click="clickChoose(row, 0)">选择</a></div>
                 </div>
-                <div slot="PushMessageRuleList" slot-scope="row">
+                <div slot="PushMessageRuleList" slot-scope="row" align="center">
                     <div v-if="row.PushMessageRuleList[0]">进群{{row.PushMessageRuleList[0].PersonCount}}人或{{row.PushMessageRuleList[0].TimeCount}}秒</div>
                     <div class="powder-choose"><a @click="clickChoose(row, 1)">修改</a></div>
                 </div>
-                <div slot="WxId" slot-scope="row">
+                <div slot="WxId" slot-scope="row" align="center">
                     <div>{{row.WxId}}</div>
                 </div>
-                <div slot="Status" slot-scope="row">
+                <div slot="Status" slot-scope="row" align="center">
                     <div :class="row.Status == 0 ? 'offline' : 'online'">{{row.Status | wxStatusMap}}</div>
                     <!-- <div class="powder-choose"><a @click="clickUpdate()">修改</a></div> -->
                 </div>
-                <div slot="Remarks" slot-scope="row">
+                <div slot="Remarks" slot-scope="row" align="center">
                     <div>{{row.Remarks}}</div>
                     <div class="powder-choose"><a @click="clickChoose(row, 2)">修改</a></div>
                 </div>
@@ -171,34 +171,42 @@ export default {
             columns: [
                 {
                     title: '群名称',
+                    align: 'center',
                     scopedSlots: { customRender: 'GroupName' },
                 },
                 {
                     title: '用户账号',
+                    align: 'center',
                     scopedSlots: { customRender: 'UserName' },
                 },
                 {
                     title: '自动入群',
+                    align: 'center',
                     scopedSlots: { customRender: 'IsAutoPass' },
                 },
                 {
                     title: '入群欢迎',
+                    align: 'center',
                     scopedSlots: { customRender: 'JoinGroupWelcomeTemplateList' },
                 },
                 {
                     title: '发送规则',
+                    align: 'center',
                     scopedSlots: { customRender: 'PushMessageRuleList' },
                 },
                 {
                     title: '群管号',
+                    align: 'center',
                     scopedSlots: { customRender: 'WxId' },
                 },
                 {
                     title: '微信状态',
+                    align: 'center',
                     scopedSlots: { customRender: 'Status' },
                 },
                 {
                     title: '备注',
+                    align: 'center',
                     scopedSlots: { customRender: 'Remarks' },
                 },
             ],
@@ -295,7 +303,7 @@ export default {
             this.dialogForm.NickName = data.GroupName
             if(num == 0) {
                 this.dialogModal = 1
-                const selectObj = Object.assign({}, this.QueryList, {CategoryName: 2})
+                const selectObj = Object.assign({}, this.QueryList, {TemplateType: 2})
                 selectList(selectObj).then(res => {
                     console.log('2----sel--', res)
                     this.dialogSelect = res.Data
@@ -346,6 +354,11 @@ export default {
 }
 </script>
 <style lang="scss">
+// .group-manage{
+//     .ant-table{
+//         font-size: 14px !important;
+//     }
+// }
 .dialog-group, .dialog-switch-btn{
     .ant-modal-header{
         border-bottom: 0;
