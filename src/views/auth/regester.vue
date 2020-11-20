@@ -33,7 +33,7 @@
 							{
 								rules: [
 									{ required: true, message: '请输入密码' },
-									{ pattern: /^[a-zA-Z0-9]{4,16}$/g, message: '密码必须为4-16位的字母数字' }
+									{ pattern: /^[a-zA-Z0-9]{6,18}$/g, message: '密码必须为6-18位的字母数字' }
 								],
 								validateTrigger: 'blur'
 							}
@@ -53,7 +53,7 @@
 							{
 								rules: [
 									{ required: true, message: '请确认密码' },
-									{ pattern: /^[a-zA-Z0-9]{4,16}$/g, message: '密码必须为4-16位的字母数字' }
+									{ pattern: /^[a-zA-Z0-9]{6,18}$/g, message: '密码必须为6-18位的字母数字' }
 								],
 								validateTrigger: 'blur'
 							}
