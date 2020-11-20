@@ -179,16 +179,18 @@ export default {
         res.Data.WorkstationList.forEach((value) => {
           let n_length = 0
           let n_index
-          for(let i=0;i<value.Remarks.length;i++){
-            console.log(value.Remarks[i])
-            if(regd.test(value.Remarks[i])){
-              n_length += 2
-            }else{
-              n_length++
-            }
-            if(n_length > 8){
-              n_index = i;
-              break;
+          if(value.Remarks){
+            for(let i=0;i<value.Remarks.length;i++){
+              console.log(value.Remarks[i])
+              if(regd.test(value.Remarks[i])){
+                n_length += 2
+              }else{
+                n_length++
+              }
+              if(n_length > 8){
+                n_index = i;
+                break;
+              }
             }
           }
           if(n_index){

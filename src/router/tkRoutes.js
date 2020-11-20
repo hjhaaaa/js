@@ -186,6 +186,74 @@ const routes = [
       },
     ]
   },
+  {
+    path: '/fanstask',
+    name: 'moments',
+    component: TkLayout,
+    children: [
+      {
+        path: 'index',
+        name: '',
+        component: () => import('@/views/tk/fanstask/index.vue')
+      }
+    ]
+  },
+  {
+    path: '/template',
+    name: 'moments',
+    component: TkLayout,
+    children: [
+      {
+        path: 'index',
+        name: '',
+        component: () => import('@/views/tk/template/index.vue')
+      }
+    ]
+  },
+  {
+    path: '/powderManagement',
+    name: 'powder',
+    component: TkLayout,
+    children: [
+      {
+        path: 'index',
+        name: '接粉管理',
+        component: () => import('@/views/tk/powderManagement/index.vue')
+      }
+    ]
+  },
+  {
+    path: '/groupManagement',
+    name: 'group',
+    component: TkLayout,
+    children: [
+      {
+        path: 'index',
+        name: '入群管理',
+        component: () => import('@/views/tk/groupManagement/index.vue')
+      }
+    ]
+  },
+  {
+    path: '/templateManagement',
+    name: 'group',
+    component: TkLayout,
+    children: [
+      {
+        path: 'index',
+        name: '模板管理',
+        component: () => import('@/views/tk/templateManagement/index.vue')
+      },
+      {
+        path: 'addEditTemplate',
+        name: '新增编辑模板',
+        component: () => import('@/views/tk/templateManagement/addEditTemplate.vue'),
+        params: {
+          userName: ''
+        }
+      }
+    ]
+  }
 ]
 
 const tkRoutes = [...whiteRoutes, ...routes]
