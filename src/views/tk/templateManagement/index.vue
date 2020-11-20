@@ -137,7 +137,6 @@ export default {
     },
     methods: {
         handleSearch() {
-            console.log('form--', this.form)
             this.getTemplateList()
         },
         // get list
@@ -153,22 +152,19 @@ export default {
                 this.total = res.TotalCount
                 this.QueryList.PageNum = res.PageNum
                 this.QueryList.PageSize = res.PageSize
-                console.log('temp-----', res)
             })
         },
         createdTemplate() {},
         // 删除
         clickDelete(Id){
-            console.log('tel--id-----', Id)
             this.tempVisible = true
             this.delId = Id
         },
         tempDelSure() {
             DeletePushMessageTemplate({Id: this.delId}).then(res => {
                 this.tempVisible = false
-                tipMessage.succecss('操作成功！')
                 this.getTemplateList()
-                console.log('del-------temp--', res)
+                tipMessage.success('操作成功！')
             })
         },
         tempDelCancal() {
