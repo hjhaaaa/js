@@ -33,6 +33,19 @@
                                 </div>
                             </a-form-item>
                         </div>
+                        <div v-if="newAddPictureFile.length" class="upload-file">                            
+                            <a-form-item v-for="(item, index) in newAddPictureFile" :key="index">
+                                <!-- <a-input
+                                    v-model="item.picture"
+                                    placeholder="内容 1"
+                                /> -->
+                                <div><img :src="item.picture" alt="" style="height: 180px"></div>
+                            </a-form-item>
+                            <div class="operate-btn">
+                                <span>修改</span>
+                                <span>删除</span>
+                            </div>
+                        </div>
                     </div>
                     <div v-if="pageStatusType == 2">
                         <div v-for="(item, index) in modeDataForm" :key="index" class="more-content">
@@ -106,11 +119,34 @@
             <a-modal v-model="textVisible" title="请输入文本" :footer="null" @ok="hideModal" wrapClassName="dialog-temp-edit" style="wdith: 420px">
                 <!-- <a-input v-model="textContent" class="text-content">
                 </a-input> -->
-                <a-textarea v-model="textContent" placeholder="文本域" :rows="4" class="text-content" />
-                <div class="text-btn">
-                    <a-button @click="insertText('免单口令')">免单口令</a-button>
-                    <a-button @click="insertText('@入群新人')">@入群新人</a-button>
-                    <a-button @click="insertText('邀请码')">邀请码</a-button>
+                <div v-if="MessageType == 0">
+                    <a-textarea v-model="textContent" placeholder="文本域" :rows="4" class="text-content" />
+                    <div class="text-btn">
+                        <a-button @click="insertText('免单口令')">免单口令</a-button>
+                        <a-button @click="insertText('@入群新人')">@入群新人</a-button>
+                        <a-button @click="insertText('邀请码')">邀请码</a-button>
+                    </div>
+                </div>
+                <div v-if="MessageType == 1">
+                    <a-upload
+                        name="avatar"
+                        list-type="picture-card"
+                        class="avatar-uploader"
+                        :show-upload-list="false"
+                        :customRequest="upLoadImage"
+                        :before-upload="beforeUpload"
+                    >
+                    <!-- 
+                        action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                        @change="handleChange" -->
+                        <img v-if="imageUrl" :src="imageUrl" alt="avatar"/>
+                        <div v-else>
+                        <a-icon :type="loading ? 'loading' : 'plus'" />
+                        <div class="ant-upload-text">
+                            Upload
+                        </div>
+                        </div>
+                    </a-upload>
                 </div>
                 <div class="subBtn">
                     <a-button @click="clickCancel">取消</a-button>
@@ -123,6 +159,8 @@
 <script>
 import { CreatePushMessageTemplate, } from '@/api/tk/templateManagement.js'
 import tipMessage from '@/utils/messageUtil.js'
+import axios from 'axios'
+
 
 const formItemLayout = {
   labelCol: { span: 1 },
@@ -137,6 +175,11 @@ const formTailLayout = {
   labelCol: { span: 4 },
   wrapperCol: { span: 8, offset: 4 },
 };
+function getBase64(img, callback) {
+  const reader = new FileReader();
+  reader.addEventListener('load', () => callback(reader.result));
+  reader.readAsDataURL(img);
+}
 export default {
   data() {
     return {
@@ -167,9 +210,9 @@ export default {
                   { name: '' }
               ],
               newAddPictureFile: [
-                  {
-                      picture: ''
-                  }
+                //   {
+                //       picture: ''
+                //   }
               ],
               newAddVoiceFile: [
                   {
@@ -199,6 +242,7 @@ export default {
     //   updateSort: '',//创建，修改，删除Sort
       MessageContent: '',//消息内容
       textContent: '',
+    //   uploadFileContent: '',
       MessageType:0,//消息类型 0文本 1图片 3音频 4视频 5群邀请	int
       moreDataArr: [
         //   {
@@ -210,7 +254,10 @@ export default {
         //     }
         ],
     //  文本
-    textVisible: false,
+    // 图片
+      loading: false,
+      imageUrl: '',
+      textVisible: false,
     };
   },
   methods: {
@@ -251,19 +298,33 @@ export default {
     },
     // 弹窗新增文本
     clickSure() {
-        // 新增文本
+        // 新增
+        //文本
+        var addContent
+        if(this.MessageType == 0) {
+            addContent = this.textContent
+        } else if(this.MessageType == 1 || this.MessageType == 2 || this.MessageType == 3) {
+            addContent = this.imageUrl
+        }
         var textObj = {
               Id: this.updateId,//新增的时候默认0，编辑或者删除的是必传，根据列表获取	
-              Opt:0,//操作类型 0新增 1删除 2修改
+              Opt: 0,//操作类型 0新增 1删除 2修改
               Sort: Math.floor(Math.random(1,10)*10),// int  new Date().getTime()  
-              MessageContent:this.textContent,//消息内容	路径地址
+              MessageContent: this.imageUrl,//this.textContent消息内容	路径地址
               MessageType: this.MessageType//消息类型 0文本 1图片 3音频 4视频 5群邀请	int
            }
         this.moreDataArr.push(textObj)
         // 新增文本[]
-        var newTextObj = {textContent: this.textContent}
-        this.newAddGroupCall.push(newTextObj)
-        console.log('666---------', this.newAddGroupCall)
+        var newTextObj
+        if(this.MessageType == 0) {
+            newTextObj = {textContent: this.textContent}
+            this.newAddGroupCall.push(newTextObj)
+        } else if(this.MessageType == 1 || this.MessageType == 2 || this.MessageType == 3) {
+            newTextObj = { picture: this.imageUrl }
+            this.newAddPictureFile.push(newTextObj)
+        }
+        // console.log('666---------', this.newAddGroupCall)
+        console.log('img---------', this.newAddPictureFile)
         this.textVisible = false
         console.log('确定', this.moreDataArr)
     },
@@ -273,7 +334,61 @@ export default {
     },
     hideModal() {
         this.textVisible = false
-    }
+    },
+    // 图片
+    // handleChange(info) {
+    //     console.log('handleChange---------------------info---', info)
+    //   if (info.file.status === 'uploading') {
+    //     this.loading = true;
+    //     return;
+    //   }
+    //   if (info.file.status === 'done') {
+    //     // Get this url from response in real world.
+    //     getBase64(info.file.originFileObj, imageUrl => {
+    //       this.imageUrl = imageUrl;
+    //       this.loading = false;
+    //     });
+    //   }
+    // },
+    upLoadImage(file) {
+        console.log('自定义---------', file)
+        const formData = new window.FormData()
+        formData.append('Files', file.file)
+        console.log('formData----------', formData)
+        axios({
+            method: 'post',
+            // url: '/api/UploadFile/UploadFile',
+            url: '/api/UploadFile/UploadImage',
+            data: formData,
+            headers: {
+            'Content-Type': 'multipart/form-data',
+            // 'token': this.token
+            }
+        }).then(res => {
+            console.log('res--------img-------res--------', res)
+            this.imageUrl = res.data.Msg
+            // if (file) {
+            // file.onSuccess(res)
+            // }
+            // this.detailData.imgUrl = res.data.result
+        }).catch((err) => {
+            file.onError(err)
+        })
+    },
+    beforeUpload(file) {
+        console.log('beforeUpload----------------file---', file)
+    //   const isJpgOrPng = file.type === 'video/mp4';
+    //   const isJpgOrPng = file.type === 'audio/mpeg';
+      const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg';
+      if (!isJpgOrPng) {
+        this.$message.error('You can only upload JPG file!');
+      }
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isLt2M) {
+        this.$message.error('Image must smaller than 2MB!');
+      }
+      return isJpgOrPng && isLt2M;
+    },
   },
 };
 </script>
@@ -311,6 +426,33 @@ export default {
             }
         }
     }
+    .upload-file{
+        display: flex;
+        width: 600px;
+        height: 200px;
+        padding: 5px 10px;
+        .operate-btn{
+            margin: 80px 0 0 20px;
+            span{
+                text-decoration: underline;
+                color: rgba(24, 144, 255, 1);
+                margin-left: 10px;
+            }
+        }
+    }
+}
+.avatar-uploader > .ant-upload {
+    width: 128px;
+    height: 128px;
+    }
+.ant-upload-select-picture-card i {
+    font-size: 32px;
+    color: #999;
+}
+
+.ant-upload-select-picture-card .ant-upload-text {
+    margin-top: 8px;
+    color: #666;
 }
 .dialog-temp-edit{
     .ant-modal{
