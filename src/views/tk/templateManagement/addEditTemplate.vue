@@ -7,13 +7,15 @@
                 :wrapper-col="formItemLayout.wrapperCol"
                 label="模板名称"
                 >
-                <a-input
+                <a-input v-if="pageStatusType == 1" v-model="form.tempName" required placeholder="接粉入群（群名称）" />
+                <a-input v-if="pageStatusType == 2" v-model="this.$route.params.data.TemplateName" required placeholder="接粉入群（群名称）" />
+                <!-- <a-input
                     v-decorator="[
-                    'TemplateName',
+                    'this.$route.params.data.TemplateName',
                     { rules: [{ required: true, message: '请输入模板名称' }] },
                     ]"
                     placeholder="接粉入群（群名称）"
-                />
+                /> -->
                 </a-form-item>
                 <a-form-item
                     :label-col="formItemContent.labelCol"
@@ -39,47 +41,86 @@
                                     v-model="item.picture"
                                     placeholder="内容 1"
                                 /> -->
-                                <div><img :src="item.picture" alt="" style="height: 180px"></div>
+                                <div class="img-box"><img :src="item.picture" alt="" style="height: 180px"></div>
+                                <div class="operate-btn">
+                                    <span>修改</span>
+                                    <span>删除</span>
+                                </div>
                             </a-form-item>
-                            <div class="operate-btn">
-                                <span>修改</span>
-                                <span>删除</span>
-                            </div>
+                        </div>
+                        <div v-if="newAddVideoFile.length" class="upload-file">                            
+                            <a-form-item v-for="(item, index) in newAddVideoFile" :key="index">
+                                <!-- <a-input
+                                    v-model="item.picture"
+                                    placeholder="内容 1"
+                                /> -->
+                                <div class="img-box"><video :src="item.video" alt="" controls="controls" style="height: 180px" /></div>
+                                <div class="operate-btn">
+                                    <span>修改</span>
+                                    <span>删除</span>
+                                </div>
+                            </a-form-item>
+                        </div>
+                        <div v-if="newAddVoiceFile.length" class="upload-file">                            
+                            <a-form-item v-for="(item, index) in newAddVoiceFile" :key="index">
+                                <!-- <a-input
+                                    v-model="item.picture"
+                                    placeholder="内容 1"
+                                /> -->
+                                <div class="img-box"><audio :src="item.voiceUrl" alt="" controls="controls" /></div>
+                                <div class="operate-btn">
+                                    <span>修改</span>
+                                    <span>删除</span>
+                                </div>
+                            </a-form-item>
                         </div>
                     </div>
                     <div v-if="pageStatusType == 2">
                         <div v-for="(item, index) in modeDataForm" :key="index" class="more-content">
-                            <a-form-item>
+                                <!-- {{item}} -->
+                            <a-form-item v-if="item.MessageType == 0">
                                 <a-input
-                                    v-model="item.groupCall"
-                                    placeholder="内容 1"
+                                    v-model="item.MessageContent"
+                                    placeholder="请输入"
                                 />
                                 <div class="operate-btn">
                                     <span>修改</span>
                                     <span>删除</span>
                                 </div>
                             </a-form-item>
-                            <a-form-item>
-                                <a-input
-                                    v-model="item.groupName"
-                                    placeholder="群名称 1"
-                                />
-                                <div class="operate-btn">
-                                    <span>修改</span>
-                                    <span>删除</span>
-                                </div>
-                            </a-form-item>
-                            <!-- <a-form-item>
-                                <a-input
+                            <a-form-item v-if="item.MessageType == 1" :key="index">
+                                <!-- <a-input
                                     v-model="item.picture"
-                                    placeholder="图片 1"
-                                />
+                                    placeholder="内容 1"
+                                /> -->
+                                <div class="img-box"><img :src="item.MessageContent" alt="" style="height: 180px"></div>
                                 <div class="operate-btn">
                                     <span>修改</span>
                                     <span>删除</span>
                                 </div>
-                            </a-form-item> -->
-                            
+                            </a-form-item>
+                            <a-form-item v-if="item.MessageType == 3" :key="index">
+                                <!-- <a-input
+                                    v-model="item.picture"
+                                    placeholder="内容 1"
+                                /> -->
+                                <div class="img-box"><audio :src="item.MessageContent" controls="controls" /></div>
+                                <div class="operate-btn">
+                                    <span>修改</span>
+                                    <span>删除</span>
+                                </div>
+                            </a-form-item>
+                            <a-form-item v-if="item.MessageType == 4" :key="index">
+                                <!-- <a-input
+                                    v-model="item.picture"
+                                    placeholder="内容 1"
+                                /> -->
+                                <div class="img-box"><video :src="item.MessageContent" alt="" controls="controls" style="height: 180px" /></div>
+                                <div class="operate-btn">
+                                    <span>修改</span>
+                                    <span>删除</span>
+                                </div>
+                            </a-form-item>
                         </div>
                     </div>
                     <!-- <a-input
@@ -100,13 +141,15 @@
                 :wrapper-col="formItemLayout.wrapperCol"
                 label="备注"
                 >
-                <a-input
+                    <a-input v-if="pageStatusType == 1" v-model="form.remarks" required placeholder="接粉入群（群名称）" />
+                    <a-input v-if="pageStatusType == 2" v-model="this.$route.params.data.Remarks" required placeholder="接粉入群（群名称）" />
+                <!-- <a-input
                     v-decorator="[
                     'Remarks',
                     { rules: [{ required: false, message: '' }] },
                     ]"
                     placeholder="备注"
-                />
+                /> -->
                 </a-form-item>
                 <a-form-item :label-col="formTailLayout.labelCol" :wrapper-col="formTailLayout.wrapperCol">
                 <!-- <a-form-item> -->
@@ -127,7 +170,7 @@
                         <a-button @click="insertText('邀请码')">邀请码</a-button>
                     </div>
                 </div>
-                <div v-if="MessageType == 1">
+                <div v-if="MessageType == 1 || MessageType == 3 || MessageType == 4">
                     <a-upload
                         name="avatar"
                         list-type="picture-card"
@@ -136,10 +179,13 @@
                         :customRequest="upLoadImage"
                         :before-upload="beforeUpload"
                     >
-                    <!-- 
+                    <!-- this.$router.push({ name: 'CredentialResult', params: { data: res.data, id: this.proofForm.number }})
+                    this.$route.params.id
                         action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                         @change="handleChange" -->
-                        <img v-if="imageUrl" :src="imageUrl" alt="avatar"/>
+                        <img v-if="imageUrl && MessageType == 1" :src="imageUrl" alt="avatar" style="width: 160px"/>
+                        <audio v-else-if="voiceUrl && MessageType == 3" :src="voiceUrl" controls="controls"/>
+                        <video v-else-if="videoUrl && MessageType == 4" :src="videoUrl" controls="controls" style="width: 160px"/>
                         <div v-else>
                         <a-icon :type="loading ? 'loading' : 'plus'" />
                         <div class="ant-upload-text">
@@ -147,6 +193,18 @@
                         </div>
                         </div>
                     </a-upload>
+                </div>
+                <div v-if="MessageType == 5">
+                    <a-form :form="form" :rule="fansRule">
+                        <!-- <a-form-item label="粉丝群" prop="fansGroup">
+                            <a-select
+                                style="width: 100px"
+                                v-model="fansForm.fansGroupName"
+                                :options="fansGroupList"
+                            >
+                            </a-select>
+                        </a-form-item> -->
+                    </a-form>
                 </div>
                 <div class="subBtn">
                     <a-button @click="clickCancel">取消</a-button>
@@ -158,6 +216,8 @@
 </template>
 <script>
 import { CreatePushMessageTemplate, } from '@/api/tk/templateManagement.js'
+import { PageList } from '@/api/tk/groupManagement.js'
+
 import tipMessage from '@/utils/messageUtil.js'
 import axios from 'axios'
 
@@ -189,7 +249,11 @@ export default {
       formItemLayout,
       formItemContent,
       formTailLayout,
-      form: this.$form.createForm(this, { name: 'dynamic_rule' }),
+    //   form: this.$form.createForm(this, { name: 'dynamic_rule' }),
+      form: {
+          tempName: '',
+          remarks: ''
+      },
       newForm: {},
       addEditStatusType: 0,//0新增，1删除， 2修改
       addBtnList: [
@@ -200,39 +264,20 @@ export default {
         { text: '群邀请' }
       ],
     //   新增的form
-    //   newAddForm: [
-    //       {
-              newAddGroupCall: [
-                //   { textContent: '1230000' },
-                //   { textContent: '1111111000000000' },
-              ],
-              newAddGroupName: [
-                  { name: '' }
-              ],
-              newAddPictureFile: [
-                //   {
-                //       picture: ''
-                //   }
-              ],
-              newAddVoiceFile: [
-                  {
-                      voice: ''
-                  }
-              ],
-              newAddVideoFile: [
-                  {
-                      video: ''
-                  }
-              ],
-    //       }
-    //   ],
+      newAddGroupCall: [],
+      newAddGroupName: [
+        { name: '' }
+      ],
+       newAddPictureFile: [],
+       newAddVoiceFile: [],
+       newAddVideoFile: [],
     //   编辑 form
       modeDataForm: [
-        {
-            groupCall: 'hello',//群招呼
-            groupName: 'qunn',
-            picture: ''
-        }
+        // {
+        //     groupCall: 'hello',//群招呼
+        //     groupName: 'qunn',
+        //     picture: ''
+        // }
       ],
       fixData: {
           TemplateType:3,
@@ -256,20 +301,37 @@ export default {
     //  文本
     // 图片
       loading: false,
-      imageUrl: '',
+      imageUrl: '',//图片
+      voiceUrl: '',//音频
+      videoUrl: '',//视频
+      fansForm: {
+          fansGroupName: ''
+      },
+      fansGroupList: [],
+      fansRule: {
+          fansGroup: [
+              { required: true, message: '请选择粉丝群' }
+          ]
+      },
       textVisible: false,
     };
   },
+  created() {
+      this.pageStatusType = this.$route.params.pageStatusType
+      this.modeDataForm = this.$route.params.data.PushMessageTemplateDetail
+      console.log('route---', this.$route.params)
+  },
   methods: {
     check() {
-      this.form.validateFields((err, value) => {
-          this.newForm = value
-          console.log('88----', value)
-        if (!err) {
-          console.info('success');
-        }
-      });             
-      const params = {...this.newForm,...this.fixData,...{Id: this.updateId},...{PushMessageTemplateDetail:this.moreDataArr}}
+    //   this.form.validateFields((err, value) => {
+    //       this.newForm = value
+    //       console.log('88----', value)
+    //     if (!err) {
+    //       console.info('success');
+    //     }
+    //   });             
+    //   const params = {...this.newForm,...this.fixData,...{Id: this.updateId},...{PushMessageTemplateDetail:this.moreDataArr}}
+      const params = {...this.form,...this.fixData,...{Id: this.updateId},...{PushMessageTemplateDetail:this.moreDataArr}}
       CreatePushMessageTemplate(params).then(res => {
           console.log('ti---jiao---', res)
       })
@@ -288,13 +350,25 @@ export default {
             this.MessageType = 4
         } else if(num == 4) {
             this.MessageType = 5
+            PageList({PageNum: 1, PageSize: 20, IsAutoPass: -1, Status: -1}).then(res => {
+                // this.fansGroupList = res.Data
+                var obj = {}
+                for(var i = 0;i<res.Data.length;i++) {
+                    obj.value = res.Data[i].Id
+                    obj.label = res.Data[i].GroupName
+                    if(this.fansGroupList.indexOf(obj) === -1){
+                        this.fansGroupList.push(obj)
+                        console.log('fs-----list---', this.fansGroupList)
+                    }
+                }
+            })
         }
         // 点击文本，图片，音频，视频，群邀请时
         if(this.MessageType >= 1 || this.MessageType <= 5) {
             this.updateId = 0
             // 设置点击 删除时 updateId 为1 ，设置点击 修改时 updateId 为2
         }
-        console.log('add--', e.target.dataset.btnindex)
+        console.log('add--', this.MessageType)
     },
     // 弹窗新增文本
     clickSure() {
@@ -303,28 +377,57 @@ export default {
         var addContent
         if(this.MessageType == 0) {
             addContent = this.textContent
-        } else if(this.MessageType == 1 || this.MessageType == 2 || this.MessageType == 3) {
+        } else if(this.MessageType == 1) {
             addContent = this.imageUrl
+        } else if(this.MessageType == 3) {
+            addContent = this.voiceUrl
+        } else if(this.MessageType == 4) {
+            addContent = this.videoUrl
         }
+        console.log('file0---url---', addContent)
         var textObj = {
               Id: this.updateId,//新增的时候默认0，编辑或者删除的是必传，根据列表获取	
               Opt: 0,//操作类型 0新增 1删除 2修改
               Sort: Math.floor(Math.random(1,10)*10),// int  new Date().getTime()  
-              MessageContent: this.imageUrl,//this.textContent消息内容	路径地址
+              MessageContent: addContent,//this.textContent消息内容	路径地址
               MessageType: this.MessageType//消息类型 0文本 1图片 3音频 4视频 5群邀请	int
            }
         this.moreDataArr.push(textObj)
         // 新增文本[]
         var newTextObj
-        if(this.MessageType == 0) {
-            newTextObj = {textContent: this.textContent}
-            this.newAddGroupCall.push(newTextObj)
-        } else if(this.MessageType == 1 || this.MessageType == 2 || this.MessageType == 3) {
-            newTextObj = { picture: this.imageUrl }
-            this.newAddPictureFile.push(newTextObj)
+        if(this.pageStatusType ==1) {
+            if(this.MessageType == 0) {
+                newTextObj = {textContent: this.textContent}
+                this.newAddGroupCall.push(newTextObj)
+            } else if(this.MessageType == 1) {
+                newTextObj = { picture: this.imageUrl }
+                this.newAddPictureFile.push(newTextObj)
+            } else if(this.MessageType == 3) {
+                newTextObj = { voiceUrl: this.voiceUrl }
+                this.newAddVoiceFile.push(newTextObj)
+            } else if(this.MessageType == 4) {
+                newTextObj = { video: this.videoUrl }
+                this.newAddVideoFile.push(newTextObj)
+            }
+        } else if(this.pageStatusType == 2) {
+            if(this.MessageType == 0) {
+                newTextObj = {textContent: this.textContent}
+                this.modeDataForm.push(newTextObj)
+            } else if(this.MessageType == 1) {
+                newTextObj = { picture: this.imageUrl }
+                this.modeDataForm.push(newTextObj)
+            } else if(this.MessageType == 3) {
+                newTextObj = { voiceUrl: this.voiceUrl }
+                this.modeDataForm.push(newTextObj)
+            } else if(this.MessageType == 4) {
+                newTextObj = { video: this.videoUrl }
+                this.modeDataForm.push(newTextObj)
+            }
         }
-        // console.log('666---------', this.newAddGroupCall)
-        console.log('img---------', this.newAddPictureFile)
+        // console.log('666---------', this.modeDataForm)
+        // console.log('img---------', this.newAddPictureFile)
+        // console.log('video---------', this.newAddVideoFile)
+        console.log('video---------', this.newAddVoiceFile)
         this.textVisible = false
         console.log('确定', this.moreDataArr)
     },
@@ -354,11 +457,15 @@ export default {
         console.log('自定义---------', file)
         const formData = new window.FormData()
         formData.append('Files', file.file)
-        console.log('formData----------', formData)
+        var addApiUrl
+        if(this.MessageType == 1) {
+            addApiUrl = '/api/UploadFile/UploadImage'
+        } else if(this.MessageType == 3 || this.MessageType == 4) {
+            addApiUrl = '/api/UploadFile/UploadFile'
+        }
         axios({
             method: 'post',
-            // url: '/api/UploadFile/UploadFile',
-            url: '/api/UploadFile/UploadImage',
+            url: addApiUrl,
             data: formData,
             headers: {
             'Content-Type': 'multipart/form-data',
@@ -366,7 +473,13 @@ export default {
             }
         }).then(res => {
             console.log('res--------img-------res--------', res)
-            this.imageUrl = res.data.Msg
+            if(this.MessageType == 1) {
+                this.imageUrl = res.data.Msg
+            } else if(this.MessageType == 3) {
+                this.voiceUrl = res.data.Msg
+            } else if(this.MessageType == 4) {
+                this.videoUrl = res.data.Msg
+            }
             // if (file) {
             // file.onSuccess(res)
             // }
@@ -379,11 +492,26 @@ export default {
         console.log('beforeUpload----------------file---', file)
     //   const isJpgOrPng = file.type === 'video/mp4';
     //   const isJpgOrPng = file.type === 'audio/mpeg';
-      const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg';
+    var isJpgOrPng = ''
+      switch (this.MessageType) {
+          case 1:
+              isJpgOrPng = ['image/jpeg', 'image/png', 'image/jpg'].includes(file.type)
+              break;
+          case 3:
+              isJpgOrPng = ['audio/mpeg', 'audio/mp3', 'audio/flv', 'audio/avi', 'audio/mov', 'audio/mpg', 'audio/mov', 'audio/wmv', 'audio/wma', 'audio/swf', 'audio/rm'].includes(file.type)
+              break;
+          case 4:
+              isJpgOrPng = ['video/mp4', 'video/wmv', 'video/asf', 'video/asx', 'video/rm', 'video/rmvb', 'video/3gp', 'video/mov', 'video/m4v', 'video/avi', 'video/dat', 'video/mkv', 'video/flv', 'video/vob'].includes(file.type)
+              break;
+          default:
+              break;
+      }
+    //   const isJpgOrPng = ['image/jpeg', 'image/png', 'image/jpg'].includes(file.type);
       if (!isJpgOrPng) {
         this.$message.error('You can only upload JPG file!');
       }
-      const isLt2M = file.size / 1024 / 1024 < 2;
+      const isLt2M = file.size;
+    //   const isLt2M = file.size / 1024 / 1024 < 2;
       if (!isLt2M) {
         this.$message.error('Image must smaller than 2MB!');
       }
@@ -416,6 +544,12 @@ export default {
     .more-content{
         .ant-form-item-children{
             display: flex;
+            .img-box{
+                width: 660px;
+                padding: 20px 10px 5px 10px;
+                border: 1px solid #ccc;
+                background: #ccc;
+            }
             .operate-btn{
                 width: 160px;
                 span{
@@ -427,16 +561,22 @@ export default {
         }
     }
     .upload-file{
-        display: flex;
-        width: 600px;
-        height: 200px;
-        padding: 5px 10px;
-        .operate-btn{
-            margin: 80px 0 0 20px;
-            span{
-                text-decoration: underline;
-                color: rgba(24, 144, 255, 1);
-                margin-left: 10px;
+        .ant-form-item-children{
+            display: flex;
+            .img-box{
+                width: 560px;
+                padding: 5px 10px;
+                border: 1px solid #ccc;
+                background: #ccc;
+            }
+            .operate-btn{
+                flex: none;
+                margin: 80px 0 0 20px;
+                span{
+                    text-decoration: underline;
+                    color: rgba(24, 144, 255, 1);
+                    margin-left: 10px;
+                }
             }
         }
     }

@@ -50,7 +50,7 @@
                 </div>
                 <div slot="GroupName" slot-scope="row" align="center">
                     <div class="operate-dom">
-                        <a class="temp-edit">编辑</a>
+                        <a class="temp-edit" @click="clickSkipEdit(row.Id, row)">编辑</a>
                         <a class="temp-del" @click="clickDelete(row.Id)">删除</a>
                     </div>
                 </div>
@@ -154,7 +154,13 @@ export default {
                 this.QueryList.PageSize = res.PageSize
             })
         },
-        createdTemplate() {},
+        createdTemplate() {
+            this.$router.push({name: 'AddEditTemplate', params: { pageStatusType: 1 }})
+        },
+        // 编辑
+        clickSkipEdit(id, data) {
+            this.$router.push({ name: 'AddEditTemplate', params: { id, data, pageStatusType: 2}})
+        },
         // 删除
         clickDelete(Id){
             this.tempVisible = true
