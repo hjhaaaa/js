@@ -7,8 +7,8 @@
                 :wrapper-col="formItemLayout.wrapperCol"
                 label="模板名称"
                 >
-                <a-input v-if="pageStatusType == 1" v-model="form.tempName" required placeholder="接粉入群（群名称）" />
-                <a-input v-if="pageStatusType == 2" v-model="this.$route.params.data.TemplateName" required placeholder="接粉入群（群名称）" />
+                <a-input v-if="pageStatusType == 1" v-model="form.TemplateName" required placeholder="接粉入群（群名称）" />
+                <a-input v-if="pageStatusType == 2" v-model="form.TemplateName" required placeholder="接粉入群（群名称）" />
                 <!-- <a-input
                     v-decorator="[
                     'this.$route.params.data.TemplateName',
@@ -84,7 +84,7 @@
                                     placeholder="请输入"
                                 />
                                 <div class="operate-btn">
-                                    <span>修改</span>
+                                    <span @click="templEdit(item, 0, index)">修改</span>
                                     <span>删除</span>
                                 </div>
                             </a-form-item>
@@ -94,8 +94,8 @@
                                     placeholder="内容 1"
                                 /> -->
                                 <div class="img-box"><img :src="item.MessageContent" alt="" style="height: 180px"></div>
-                                <div class="operate-btn">
-                                    <span>修改</span>
+                                <div class="operate-btn" style="line-height: 210px">
+                                    <span @click="templEdit(item, 1, index)">修改</span>
                                     <span>删除</span>
                                 </div>
                             </a-form-item>
@@ -104,9 +104,9 @@
                                     v-model="item.picture"
                                     placeholder="内容 1"
                                 /> -->
-                                <div class="img-box"><audio :src="item.MessageContent" controls="controls" /></div>
-                                <div class="operate-btn">
-                                    <span>修改</span>
+                                <div class="img-box" style="height: 96px"><audio :src="item.MessageContent" controls="controls" /></div>
+                                <div class="operate-btn" style="line-height: 96px">
+                                    <span @click="templEdit(item, 3, index)">修改</span>
                                     <span>删除</span>
                                 </div>
                             </a-form-item>
@@ -116,8 +116,8 @@
                                     placeholder="内容 1"
                                 /> -->
                                 <div class="img-box"><video :src="item.MessageContent" alt="" controls="controls" style="height: 180px" /></div>
-                                <div class="operate-btn">
-                                    <span>修改</span>
+                                <div class="operate-btn" style="line-height: 210px">
+                                    <span @click="templEdit(item, 4, index)">修改</span>
                                     <span>删除</span>
                                 </div>
                             </a-form-item>
@@ -141,8 +141,8 @@
                 :wrapper-col="formItemLayout.wrapperCol"
                 label="备注"
                 >
-                    <a-input v-if="pageStatusType == 1" v-model="form.remarks" required placeholder="接粉入群（群名称）" />
-                    <a-input v-if="pageStatusType == 2" v-model="this.$route.params.data.Remarks" required placeholder="接粉入群（群名称）" />
+                    <a-input v-if="pageStatusType == 1" v-model="form.Remarks" required placeholder="接粉入群（群名称）" />
+                    <a-input v-if="pageStatusType == 2" v-model="form.Remarks" required placeholder="接粉入群（群名称）" />
                 <!-- <a-input
                     v-decorator="[
                     'Remarks',
@@ -153,6 +153,9 @@
                 </a-form-item>
                 <a-form-item :label-col="formTailLayout.labelCol" :wrapper-col="formTailLayout.wrapperCol">
                 <!-- <a-form-item> -->
+                <a-button type="primary" @click="clickDel">
+                    取消
+                </a-button>
                 <a-button type="primary" @click="check">
                     确定
                 </a-button>
@@ -195,15 +198,15 @@
                     </a-upload>
                 </div>
                 <div v-if="MessageType == 5">
-                    <a-form :form="form" :rule="fansRule">
-                        <!-- <a-form-item label="粉丝群" prop="fansGroup">
+                    <a-form :form="fansForm" :rule="fansRule">
+                        <a-form-item label="粉丝群" prop="fansGroup" style="display: flex">
                             <a-select
                                 style="width: 100px"
                                 v-model="fansForm.fansGroupName"
                                 :options="fansGroupList"
                             >
                             </a-select>
-                        </a-form-item> -->
+                        </a-form-item>
                     </a-form>
                 </div>
                 <div class="subBtn">
@@ -251,9 +254,17 @@ export default {
       formTailLayout,
     //   form: this.$form.createForm(this, { name: 'dynamic_rule' }),
       form: {
-          tempName: '',
-          remarks: ''
+          TemplateName: '',
+          Remarks: ''
       },
+    //   修改
+      updateIndex: null,
+      newDomData: {},
+    //   编辑
+    //   editForm: {
+    //       tempName: '',
+    //       remarks: ''
+    //   },
       newForm: {},
       addEditStatusType: 0,//0新增，1删除， 2修改
       addBtnList: [
@@ -307,7 +318,11 @@ export default {
       fansForm: {
           fansGroupName: ''
       },
-      fansGroupList: [],
+      fansGroupList: [
+          { value: '', label: '请选择'},
+        //   { value: 1, label: '111'},
+        //   { value: 2, label: '222'}
+      ],
       fansRule: {
           fansGroup: [
               { required: true, message: '请选择粉丝群' }
@@ -318,8 +333,15 @@ export default {
   },
   created() {
       this.pageStatusType = this.$route.params.pageStatusType
-      this.modeDataForm = this.$route.params.data.PushMessageTemplateDetail
-      console.log('route---', this.$route.params)
+      if(this.$route.params.pageStatusType == 2) {
+        this.modeDataForm = this.$route.params.data.PushMessageTemplateDetail
+        this.moreDataArr = this.$route.params.data.PushMessageTemplateDetail
+        this.form.TemplateName = this.$route.params.data.TemplateName
+        this.form.Remarks = this.$route.params.data.Remarks
+      }
+      console.log('route---modeDataForm,渲染表单数据', this.modeDataForm)
+      console.log('route---moreDataArr，提交模板数据', this.moreDataArr)
+      this.getSelectList()
   },
   methods: {
     check() {
@@ -331,10 +353,66 @@ export default {
     //     }
     //   });             
     //   const params = {...this.newForm,...this.fixData,...{Id: this.updateId},...{PushMessageTemplateDetail:this.moreDataArr}}
-      const params = {...this.form,...this.fixData,...{Id: this.updateId},...{PushMessageTemplateDetail:this.moreDataArr}}
-      CreatePushMessageTemplate(params).then(res => {
-          console.log('ti---jiao---', res)
+      console.log('t---j--this.moreDataArr', this.moreDataArr)
+      this.updateId = this.pageStatusType == 1 ? 0 : this.$route.params.data.Id
+      const newMoreDataArr = []
+      this.moreDataArr.forEach((item, index) => {
+          if(this.pageStatusType == 2){
+            if(!this.moreDataArr[index].Opt || this.moreDataArr[index].TemplateId) {
+                //   this.moreDataArr[index].Id = this.updateId
+                this.moreDataArr[index].Opt = 2
+                delete this.moreDataArr[index].TemplateId
+                //   newMoreDataArr.push(item)
+            } else if(this.moreDataArr[index].Opt) {
+                this.moreDataArr[index].Opt = 0
+                if(this.addEditStatusType == 2) {
+                    this.moreDataArr[index].Opt = 2
+                }
+            }
+          }
+           else if(this.pageStatusType == 1){
+               if(!this.moreDataArr[index].Opt) {
+                   this.moreDataArr[index].Opt = 0
+               }
+           }
       })
+      console.log('new------xxx', this.moreDataArr)
+      const params = {...this.form,...this.fixData,...{Id: this.updateId, TemplateKind: 1},...{PushMessageTemplateDetail:this.moreDataArr}}
+      CreatePushMessageTemplate(params).then(res => {
+      })
+    },
+    clickDel() {
+        console.log('取消')
+    },
+    // 点击修改
+    templEdit(data, num, index) {
+        console.log('修改----index---', index)
+        this.textVisible = true
+        this.MessageType = num
+        this.addEditStatusType = 2
+        this.updateIndex = index
+        console.log('z-------', this.newDomData)
+        // data = this.newDomData
+        // this.modeDataForm[updateIndex] = this.newDomData
+        console.log('xg--------', this.modeDataForm[index])
+        // this.clickSure()
+        console.log('修改------', data, '          ', num)
+    },
+    // 获取群邀请
+    getSelectList() {
+        PageList({PageNum: 1, PageSize: 20, IsAutoPass: -1, Status: -1}).then(res => {
+            // this.fansGroupList = res.Data
+            var leftStatus = []
+            for (let i in res.Data) {
+                let o = {}
+                o.value = res.Data[i].GroupName
+                o.label = res.Data[i].GroupName
+                o[i] = res.Data[i]
+                // leftStatus.push(o)
+                this.fansGroupList.push(o)
+            }
+            console.log('select-----------', this.fansGroupList)
+        })
     },
     // 点击添加dom按钮
     clickAddBtn(e) {
@@ -350,49 +428,64 @@ export default {
             this.MessageType = 4
         } else if(num == 4) {
             this.MessageType = 5
-            PageList({PageNum: 1, PageSize: 20, IsAutoPass: -1, Status: -1}).then(res => {
-                // this.fansGroupList = res.Data
-                var obj = {}
-                for(var i = 0;i<res.Data.length;i++) {
-                    obj.value = res.Data[i].Id
-                    obj.label = res.Data[i].GroupName
-                    if(this.fansGroupList.indexOf(obj) === -1){
-                        this.fansGroupList.push(obj)
-                        console.log('fs-----list---', this.fansGroupList)
-                    }
-                }
-            })
         }
         // 点击文本，图片，音频，视频，群邀请时
-        if(this.MessageType >= 1 || this.MessageType <= 5) {
+        // if(this.MessageType >= 1 || this.MessageType <= 5) {
+        if(this.pageStatusType == 1) {
             this.updateId = 0
             // 设置点击 删除时 updateId 为1 ，设置点击 修改时 updateId 为2
+        } else if(this.pageStatusType == 2) {
+            this.updateId = this.$route.params.data.Id
         }
-        console.log('add--', this.MessageType)
+        console.log('add-66--', this.updateId)
     },
     // 弹窗新增文本
     clickSure() {
         // 新增
         //文本
         var addContent
-        if(this.MessageType == 0) {
-            addContent = this.textContent
-        } else if(this.MessageType == 1) {
-            addContent = this.imageUrl
-        } else if(this.MessageType == 3) {
-            addContent = this.voiceUrl
-        } else if(this.MessageType == 4) {
-            addContent = this.videoUrl
+        switch (this.MessageType) {
+            case 0:
+                addContent = this.textContent
+                break;
+            case 1:
+                addContent = this.imageUrl
+                break;
+            case 3:
+                addContent = this.voiceUrl
+                break;
+            case 4:
+                addContent = this.videoUrl
+                break;
+            case 5:
+                addContent = this.fansForm.fansGroupName
+                break;
+            default:
+                break;
         }
         console.log('file0---url---', addContent)
+        var Opts
+        if(this.pageStatusType == 1) {
+            Opts = 0
+        } else if(this.pageStatusType == 2 ) {
+            Opts = 2
+        }
         var textObj = {
-              Id: this.updateId,//新增的时候默认0，编辑或者删除的是必传，根据列表获取	
-              Opt: 0,//操作类型 0新增 1删除 2修改
+              Id: this.addEditStatusType == 2 ? this.modeDataForm[this.updateIndex].Id : this.updateId,//新增的时候默认0，编辑或者删除的是必传，根据列表获取	
+              Opt: Opts,//0,//操作类型 0新增 1删除 2修改
               Sort: Math.floor(Math.random(1,10)*10),// int  new Date().getTime()  
               MessageContent: addContent,//this.textContent消息内容	路径地址
               MessageType: this.MessageType//消息类型 0文本 1图片 3音频 4视频 5群邀请	int
            }
-        this.moreDataArr.push(textObj)
+        if(this.addEditStatusType == 2) {
+            //
+            // this.newDomData = textObj
+            this.modeDataForm[this.updateIndex] = textObj
+            console.log('m------', textObj)
+        } else {
+            this.moreDataArr.push(textObj)
+        }
+        
         // 新增文本[]
         var newTextObj
         if(this.pageStatusType ==1) {
@@ -410,26 +503,35 @@ export default {
                 this.newAddVideoFile.push(newTextObj)
             }
         } else if(this.pageStatusType == 2) {
-            if(this.MessageType == 0) {
-                newTextObj = {textContent: this.textContent}
-                this.modeDataForm.push(newTextObj)
-            } else if(this.MessageType == 1) {
-                newTextObj = { picture: this.imageUrl }
-                this.modeDataForm.push(newTextObj)
-            } else if(this.MessageType == 3) {
-                newTextObj = { voiceUrl: this.voiceUrl }
-                this.modeDataForm.push(newTextObj)
-            } else if(this.MessageType == 4) {
-                newTextObj = { video: this.videoUrl }
-                this.modeDataForm.push(newTextObj)
-            }
+            // this.modeDataForm.push(textObj)
+            console.log('textObj------', textObj)
+            this.modeDataForm[this.updateIndex] = textObj
+            console.log('2-----this.modeDataForm', this.modeDataForm)
+            // this.moreDataArr = this.modeDataForm
+            // delete this.modeDataForm[this.updateIndex]
+            // this.modeDataForm = this.moreDataArr
+
+            // if(this.MessageType == 0) {
+            //     newTextObj = {textContent: this.textContent}
+            //     this.modeDataForm.push(newTextObj)
+            // } else if(this.MessageType == 1) {
+            //     newTextObj = { picture: this.imageUrl }
+            //     this.modeDataForm.push(newTextObj)
+            // } else if(this.MessageType == 3) {
+            //     newTextObj = { voiceUrl: this.voiceUrl }
+            //     this.modeDataForm.push(newTextObj)
+            // } else if(this.MessageType == 4) {
+            //     newTextObj = { video: this.videoUrl }
+            //     this.modeDataForm.push(newTextObj)
+            // }
         }
         // console.log('666---------', this.modeDataForm)
         // console.log('img---------', this.newAddPictureFile)
         // console.log('video---------', this.newAddVideoFile)
-        console.log('video---------', this.newAddVoiceFile)
+        // console.log('video---------', this.newAddVoiceFile)
         this.textVisible = false
-        console.log('确定', this.moreDataArr)
+        console.log('确定-', this.moreDataArr)
+        // debugger
     },
     clickCancel() {
         this.textVisible = false
@@ -553,6 +655,7 @@ export default {
             .operate-btn{
                 width: 160px;
                 span{
+                    cursor: pointer;
                     text-decoration: underline;
                     margin-left: 20px;
                     color: rgba(24, 144, 255, 1);

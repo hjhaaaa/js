@@ -143,7 +143,7 @@ export default {
         getTemplateList() {
             // const params = Object.assign({}, this.queryList, this.form)
             this.tempLoading = true
-            const params = {...this.QueryList, ...this.form, ...{TemplateType: -1}}
+            const params = {...this.QueryList, ...this.form, ...{TemplateType: -1}, ...{TemplateKind: 1}}
             params.StartDate = params.StartDate ? new Date(+new Date(params.StartDate)).toISOString().replace(/T/g,' ').replace(/\.[\d]{3}Z/,'') : null
             params.EndDate = params.EndDate ? new Date(+new Date(params.EndDate)).toISOString().replace(/T/g,' ').replace(/\.[\d]{3}Z/,'') : null
             PagedList(params).then(res => {

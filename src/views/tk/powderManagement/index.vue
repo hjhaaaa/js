@@ -294,7 +294,7 @@ export default {
                 this.dialogModal = 2
             }
             console.log('this.visible', this.visible)
-            const selectObj =  Object.assign({}, this.queryList, {TemplateType: num})
+            const selectObj =  Object.assign({}, this.queryList, {TemplateType: num}, {TemplateKind: 1})
             selectList(selectObj).then(res => {
                 this.dialogSelect = res.Data
             })

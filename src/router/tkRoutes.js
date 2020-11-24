@@ -253,6 +253,18 @@ const routes = [
         }
       }
     ]
+  },
+  {
+    path: '/activationCode',
+    name: 'ActivationCode',
+    component: TkLayout,
+    children: [
+      {
+        path: 'index',
+        name: '激活码',
+        component: () => import('@/views/tk/activationCode/index.vue')
+      }
+    ]
   }
 ]
 
