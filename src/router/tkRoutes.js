@@ -245,8 +245,8 @@ const routes = [
         component: () => import('@/views/tk/templateManagement/index.vue')
       },
       {
-        path: 'addEditTemplate',
-        name: '新增编辑模板',
+        path: 'addEditTemplate/:id',
+        name: 'AddEditTemplate',
         component: () => import('@/views/tk/templateManagement/addEditTemplate.vue'),
         params: {
           userName: ''

@@ -50,7 +50,7 @@
                 </div>
                 <div slot="GroupName" slot-scope="row" align="center">
                     <div class="operate-dom">
-                        <a class="temp-edit">编辑</a>
+                        <a class="temp-edit" @click="clickSkipEdit(row.Id, row)">编辑</a>
                         <a class="temp-del" @click="clickDelete(row.Id)">删除</a>
                     </div>
                 </div>
@@ -137,7 +137,6 @@ export default {
     },
     methods: {
         handleSearch() {
-            console.log('form--', this.form)
             this.getTemplateList()
         },
         // get list
@@ -153,22 +152,25 @@ export default {
                 this.total = res.TotalCount
                 this.QueryList.PageNum = res.PageNum
                 this.QueryList.PageSize = res.PageSize
-                console.log('temp-----', res)
             })
         },
-        createdTemplate() {},
+        createdTemplate() {
+            this.$router.push({name: 'AddEditTemplate', params: { pageStatusType: 1 }})
+        },
+        // 编辑
+        clickSkipEdit(id, data) {
+            this.$router.push({ name: 'AddEditTemplate', params: { id, data, pageStatusType: 2}})
+        },
         // 删除
         clickDelete(Id){
-            console.log('tel--id-----', Id)
             this.tempVisible = true
             this.delId = Id
         },
         tempDelSure() {
             DeletePushMessageTemplate({Id: this.delId}).then(res => {
                 this.tempVisible = false
-                tipMessage.succecss('操作成功！')
                 this.getTemplateList()
-                console.log('del-------temp--', res)
+                tipMessage.success('操作成功！')
             })
         },
         tempDelCancal() {
