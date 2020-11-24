@@ -519,6 +519,7 @@ export default {
 						// 		{ label: '基础版 有效期30天 10个发单群', value: 1 },
 						// { label: '增强版 有效期30天 60个发单群', value: 2 },
 						if (row.StationRechageType == 1) {
+							this.rechargeInfo.NeedCardCodeCount = 1
 							this.rechargeOptions.length = 0
 							this.rechargeOptions.push({
 								label: '基础版 有效期30天 10个发单群',
@@ -526,6 +527,7 @@ export default {
 							})
 							this.rechargeInfo.RechageType = 1
 						} else if (row.StationRechageType == 2) {
+							this.rechargeInfo.NeedCardCodeCount = 3
 							this.rechargeOptions.length = 0
 							this.rechargeOptions.push({
 								label: '增强版 有效期30天 60个发单群',
