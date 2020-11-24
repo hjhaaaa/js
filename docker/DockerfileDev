@@ -10,4 +10,4 @@ FROM nginx
 # copy dist from the first stage
 COPY --from=builder /app/dist /usr/share/nginx/html
 # copy nginx.conf
-COPY proxynginx.conf /etc/nginx/conf.d/proxynginx.conf
+COPY docker/proxynginx-dev.conf /etc/nginx/conf.d/proxynginx.conf
