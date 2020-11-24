@@ -763,8 +763,10 @@ export default {
 			var workEndTime = moment(row.EndTime)
 
 			var duration = moment.duration(workEndTime.diff(nowTime))
-			//  console.log('duration', duration)
-			return duration._data.days <= 7 && duration._data.days > 0
+			// if (row.Id == 117) {
+			// 	console.log('duration', duration)
+			// }
+			return duration._milliseconds < 604800000 && duration._milliseconds > 0
 		},
 		isShowTimeoutTag(row) {
 			// console.log(row)
@@ -776,7 +778,7 @@ export default {
 
 			var duration = moment.duration(workEndTime.diff(nowTime))
 			//  console.log('duration', duration)
-			return duration._data.days <= 0
+			return duration._milliseconds <= 0
 		},
 		getWorkStatus(row) {
 			try {
