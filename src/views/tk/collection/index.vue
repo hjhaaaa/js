@@ -82,13 +82,20 @@
 						:scroll="{ x: 800 }"
 					>
 						<div slot="messageType" slot-scope="row">
-							<a-tag v-if="row.MessageType == 1">文本</a-tag>
-							<a-tag v-else-if="row.MessageType == 2" color="blue">图片</a-tag>
-							<a-tag v-else-if="row.MessageType == 3" color="purple"
-								>视频</a-tag
+							<a-tag v-if="row.MessageType == 1">文本消息</a-tag>
+							<a-tag v-else-if="row.MessageType == 2" color="blue"
+								>视频消息</a-tag
 							>
-							<a-tag v-else-if="row.MessageType == 4" color="orange"
-								>表情</a-tag
+							<a-tag v-else-if="row.MessageType == 3" color="purple"
+								>语音消息</a-tag
+							>
+							<a-tag
+								v-else-if="row.MessageType == 4 || row.MessageType == 6"
+								color="orange"
+								>图片</a-tag
+							>
+							<a-tag v-else-if="row.MessageType == 5" color="yellow"
+								>Emoji表情</a-tag
 							>
 						</div>
 					</a-table>
@@ -331,7 +338,7 @@ export default {
 				.catch(() => {})
 		},
 		EditStatusChange(row) {
-			var newStaus=!row.IsOpen
+			var newStaus = !row.IsOpen
 			EditCollectionGroupStatus(row.Id, newStaus)
 				.then((res) => {
 					if (res.IsSuccess) {
