@@ -81,6 +81,10 @@
 				<div slot="opSwitchStatus" slot-scope="row">
 					{{ !!row.SwitchStatus ? '开启' : '关闭' }}
 				</div>
+				<div slot="DockerInfoIdSlot" slot-scope="row">
+					{{ row.DockerInfoId <= 0 ? '未分配' : row.DockerInfoId }}
+				</div>
+
 				<div class="table operation" slot="actionSlot" slot-scope="row">
 					<a-button
 						type="primary"
@@ -166,7 +170,7 @@ export default {
 				},
 				{
 					title: '用户名',
-					width: '180px',
+					width: '130px',
 					scopedSlots: { customRender: 'UserNameSlot' },
 				},
 				{
@@ -193,8 +197,9 @@ export default {
 				},
 				{
 					title: '所在服务器',
-					width: '150px',
-					dataIndex: 'Ip',
+					width: '100px',
+					//dataIndex: 'Ip',
+					scopedSlots: { customRender: 'DockerInfoIdSlot' },
 				},
 				{
 					title: '充值类型',

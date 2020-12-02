@@ -98,11 +98,19 @@
 								>Emoji表情</a-tag
 							>
 						</div>
+						<div slot="contentTextSlot" slot-scope="row">
+							<!-- <span title="asd">{{ formatContentText(row)}}</span> -->
+							<a-tooltip>
+								<template slot="title">{{ row.ContentText }}</template>
+								
+								{{ formatContentText(row) }}
+							</a-tooltip>
+						</div>
 					</a-table>
 				</div>
 				<div>
 					<!-- <a-form layout="inline" :form="form" >
-
+{{ formatContentText(row)}}
 					</a-form>-->
 				</div>
 				<div></div>
@@ -210,7 +218,8 @@ export default {
 				{
 					title: '采集内容',
 					width: '200px',
-					dataIndex: 'ContentText',
+					//dataIndex: 'ContentText',
+					scopedSlots: { customRender: 'contentTextSlot' },
 				},
 			],
 			logData: [],
@@ -349,6 +358,13 @@ export default {
 					}
 				})
 				.catch(() => {})
+		},
+		formatContentText(row) {
+			if (row.ContentText.length > 10) {
+				return row.ContentText.substring(0, 10) + '...'
+			}
+
+			return row.ContentText
 		},
 	},
 }

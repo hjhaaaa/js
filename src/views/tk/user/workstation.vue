@@ -321,7 +321,7 @@ export default {
 				{
 					title: '用户名',
 					Key: 'UserName',
-					width: '170px',
+					width: '150px',
 					// dataIndex: 'UserName',
 					scopedSlots: { customRender: 'UserNameSlot' },
 				},

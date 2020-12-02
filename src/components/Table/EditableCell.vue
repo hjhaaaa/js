@@ -26,13 +26,15 @@
 		<div v-else class="editable-cell-text-wrapper">
 			<span class="aaa">{{ value || ' ' }}</span>
 			<!-- <a-textarea :value="value" @pressEnter="check" :auto-size="{ minRows: 3, maxRows: 6 }"  /> -->
-			<a
-				type="link"
-				class="editable-cell-icon-check"
-				@click="edit"
-				:title="editTitle"
-				>编辑</a
-			>
+			<div class="action">
+				<a
+					type="link"
+					class="editable-cell-icon-check"
+					@click="edit"
+					:title="editTitle"
+					>编辑</a
+				>
+			</div>
 		</div>
 	</div>
 </template>
@@ -108,10 +110,10 @@ export default {
 }
 .editable-cell .aaa {
 	display: inline-block;
-	padding: 5px 24px 5px 5px;
+	/* padding: 5px 24px 5px 5px; */
 	height: 17px;
 	box-sizing: border-box;
-	width: 80%;
+	width: 100%;
 }
 .action {
 	text-align: right;

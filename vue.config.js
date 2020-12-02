@@ -67,8 +67,8 @@ module.exports = {
         //host: 'test.sxytest.sitezt.cn',
         proxy: {
             '/api': {
-                // target: 'https://msyfd.comzt.cn', // 正式
-                 target: 'https://192.168.9.155:30080', // 后端服务器(wzy本地)
+                 target: 'https://msyfd.comzt.cn', // 正式
+               //  target: 'https://192.168.9.155:30080', // 后端服务器(wzy本地)
                 // target: 'http://47.99.153.221:30081', // 后端服务器(容器测试)
                 // target: 'https://yfdwebapitest.sitezt.cn', // 后端服务器
                 //target: 'https://yfdcallbacktest.comzt.cn:30080', // 155服务器
@@ -81,8 +81,8 @@ module.exports = {
                 }
             },
             '/signalr': {
-                // target: 'https://msyfd.comzt.cn', // 正式
-                  target: 'https://192.168.9.155:30080', // 后端服务器(wzy本地)
+                 target: 'https://msyfd.comzt.cn', // 正式
+                //  target: 'https://192.168.9.155:30080', // 后端服务器(wzy本地)
                 //  target: 'http://47.99.153.221:30081', // 后端服务器(容器测试)
                 // target: 'https://yfdwebapitest.sitezt.cn', // 后端服务器
                 //target: 'https://yfdcallbacktest.comzt.cn:30080', // 155服务器
