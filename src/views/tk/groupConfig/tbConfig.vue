@@ -4,7 +4,7 @@
       <a-col :span="24" style="margin-bottom: 10px">
         <div style="padding: 0 5px">
           <a-switch v-model="conp.DomainType" checked-children="开" un-checked-children="关" />&ensp;采用系统自带域名
-          <span class="t-tips">*勾选此项则使用系统自带的快站中间页域名，建议使用自有域名，更耐用更抗封。自定义域名请A记录解析到47.110.34.187</span><br/>
+          <span class="t-tips">*勾选此项则使用系统自带的快站中间页域名，建议使用自有域名，更耐用更抗封。自定义域名请A记录解析到118.31.229.180</span><br/>
           <a-textarea 
             v-model="con.UseDomain"
             style="margin-top: 10px;max-width: 600px"
