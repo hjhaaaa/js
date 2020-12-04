@@ -127,10 +127,10 @@
 			title="客服微信二维码"
 			:footer="null"
 			@cencel="closeKfQr"
-			width="400px"
+			width="500px"
 		>
 			<div style="text-align: center">
-				<img style="width: 240px; height: 240px" src />
+				<img style="width: 400px; height: 400px" src="@/assets/images/kf_weixin.jpg" />
 			</div>
 		</a-modal>
 
