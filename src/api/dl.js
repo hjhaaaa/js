@@ -72,5 +72,25 @@ export function dlLogin(params) {
   return request.post('/UserLogin/Proxy', params)
 }
 
+// 群管号群列表
+export function getGroupMana(params) {
+  return request.get('/FansProxyPort/GetGroupMana', {params})
+}
+
+// 设置群管号开关
+export function setGroupMana(params) {
+  return request.get('/FansProxyPort/SetGroupMana', {params})
+}
+
+// 获取承接粉丝号
+export function getAcceptFans(params) {
+  return request.get('/FansProxyPort/GetAcceptFans', {params})
+}
+
+// 设置承接粉丝开关
+export function setAcceptFans(params) {
+  return request.get('/FansProxyPort/SetAcceptFans', {params})
+}
+
 
 
