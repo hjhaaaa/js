@@ -12,4 +12,4 @@ npm run build
 
 ```
 
-http://www2.sxytest.sitezt.cn/
+http://www2.sxytest.sitezt.cn/"# js" 
