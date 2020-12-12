@@ -47,6 +47,12 @@ let menus = [
     path: '/cardcode/manage',
     title: '激活码管理'
   },
+  {
+    id: '75',
+    icon: 'credit-card',
+    path: '/cardcode/manage2',
+    title: '我的测试分组'
+  },
 ]
 
 export default menus

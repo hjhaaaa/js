@@ -1,5 +1,18 @@
 <template>
 	<div class="classifygroup">
+		<drag-verify :width="width" 
+			 :height="height" 
+			 :text="text" 
+			 :success-text="successText" 
+			 :background="background" 
+			 :progress-bar-bg="progressBarBg" 
+			 :completed-bg="completedBg" 
+			 :handler-bg="handlerBg" 
+			 :handler-icon="handlerIcon" 
+			 :text-size="textSize" 
+			 :success-icon="successIcon" 
+			 :circle="getShape"></drag-verify>
+
 		<a-card title="分组管理223" :bordered="false">
 			<a-form layout="inline" style="margin-bottom: 10px">
 				<a-form-item label="开启分组">
@@ -99,6 +112,8 @@
 </template>
 
 <script>
+import Vue from 'vue'
+import dragVerify from 'vue-drag-verify'
 import moment from 'moment'
 import tipMessage from '@/utils/messageUtil.js'
 import { GetLoginUserInfo } from '@/api/tk/userApi.js'
@@ -362,6 +377,10 @@ export default {
 		this.getLoginUserInfo()
 		this.query()
 	},
+	 name: 'app',
+  components:{
+    dragVerify
+  }
 }
 </script>
 
