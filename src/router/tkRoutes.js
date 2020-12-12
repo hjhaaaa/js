@@ -139,6 +139,18 @@ const routes = [
     ]
   },
   {
+    path: '/classifygroup',
+    name: 'classifygroupManage',
+    component: TkLayout,
+    children: [
+      {
+        path: 'manage2',
+        name: '',
+        component: () => import('@/views/tk/classifygroup/classifygroup2.vue')
+      },
+    ]
+  },
+  {
     path: '/moments',
     name: 'moments',
     component: TkLayout,
