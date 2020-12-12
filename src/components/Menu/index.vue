@@ -125,7 +125,7 @@ export default {
     title: '激活码管理'
   },
   {
-    id: '75',
+    id: '78',
     icon: 'credit-card',
     path: '/classifygroup/manage2',
     title: '我的测试分组'
